@@ -3,9 +3,14 @@
 using LinearAlgebra
 using Printf
 
-include(joinpath(@__DIR__, "..", "test_codes", "test_bmad_scibmad.jl"))
+include(joinpath(@__DIR__, "..", "..", "test_codes", "test_bmad_scibmad.jl"))
 
-const RF_ON_REFERENCE = joinpath(@__DIR__, "bmad_reference_rf_on_output.tar.gz")
+const RF_ON_REFERENCE = joinpath(
+  @__DIR__,
+  "..",
+  "bmad_optics_outputs",
+  "bmad_reference_rf_on_output.tar.gz",
+)
 
 function main()
   text = read_reference(RF_ON_REFERENCE)

@@ -6,7 +6,8 @@
 - RF cavities: `RF_W1`, `RF_W2`, `RF_E1`, and `RF_E2`
 - Voltage: 1.5 MV per cavity (6 MV total)
 - RF frequency: 499.7669603784 MHz
-- Bmad reference: `bmad_reference_rf_on_output.tar.gz`
+- Bmad reference:
+  `bmad_optics_outputs/bmad_reference_rf_on_output.tar.gz`
 - SciBmad lattice: `cesr.jl`, loaded with `load_cesr()` and enabled with
   `set_cesr_rf!(ring; on=true)`
 
@@ -106,8 +107,8 @@ coasting-beam closed-orbit calculation.
 ```bash
 julia --project=. test_codes/test_bmad_scibmad.jl \
   --rf-on \
-  --reference=bmad_comparison/bmad_reference_rf_on_output.tar.gz \
-  --csv=bmad_comparison/bmad_scibmad_rf_on_comparison.csv
+  --reference=bmad_comparison/bmad_optics_outputs/bmad_reference_rf_on_output.tar.gz \
+  --csv=bmad_comparison/optic_maps_rf_on/bmad_scibmad_rf_on_comparison.csv
 
-julia --project=. bmad_comparison/compare_rf_on_optics.jl
+julia --project=. bmad_comparison/optic_maps_rf_on/compare_rf_on_optics.jl
 ```

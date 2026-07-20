@@ -36,7 +36,7 @@ interface for all element transfer matrices and writes `tao_fallback.txt`.
 
 Run this from Windows PowerShell:
 
-    scp jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/bmad_reference_output.tar.gz bmad_comparison/
+    scp jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/bmad_reference_output.tar.gz bmad_comparison/bmad_optics_outputs/
 
 Return the archive without modifying its contents. The JSON contains enough
 information to compare Bmad and SciBmad element maps and to identify the first
@@ -51,7 +51,8 @@ From the repository root on the machine with Julia and SciBmad installed:
 The test validates the archive, aligns Bmad tracking indices 1 through 869 with
 the SciBmad line, and uses GTPSA to linearize every SciBmad element about the
 same Bmad entrance trajectory used for the corresponding Tao matrix. It writes
-the per-element diagnostics to `bmad_comparison/bmad_scibmad_comparison.csv`.
+the per-element diagnostics to
+`bmad_comparison/optic_maps_rf_off/bmad_scibmad_comparison.csv`.
 
 For a quick archive check or a short smoke test, use:
 
