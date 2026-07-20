@@ -19,9 +19,6 @@ calculation.
 | `cesr.jl` | Static SciBmad lattice. It contains the physical ring elements, their baseline numerical settings, the consolidated solenoid model, the CESR wigglers, kicker strengths, and RF-cavity helpers. It does not contain mutable control settings. |
 | `cesr_controls.jl` | Deferred-expression control layer generated from `cesr.bmad`. It implements the Bmad-style Overlays and Groups and propagates their contributions to physical element attributes. |
 | `cesr_model.jl` | Main model entry point. `load_cesr_model()` creates an independent copy of the static ring and attaches the complete control layer. It can also explicitly enable or disable the RF cavities. |
-| `Project.toml` | Julia project definition and direct package dependencies. |
-| `.gitignore` | Excludes the local Julia `Manifest.toml` and Jupyter checkpoint directories from version control. |
-| `.gitattributes` | Repository text-file settings. |
 
 The initialized model returned by `load_cesr_model()` contains two fields:
 `model.ring`, the independent CESR beamline, and `model.controls`, the mutable
