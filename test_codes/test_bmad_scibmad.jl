@@ -33,12 +33,12 @@ const COMPARISON_DIR = joinpath(PROJECT_ROOT, "bmad_comparison")
 const DEFAULT_REFERENCE = joinpath(
     COMPARISON_DIR,
     "bmad_optics_outputs",
-    "bmad_reference_output.tar.gz",
+    "bmad_reference_rf_off_output.tar.gz",
 )
 const DEFAULT_CSV = joinpath(
     COMPARISON_DIR,
     "optic_maps_rf_off",
-    "bmad_scibmad_comparison.csv",
+    "bmad_scibmad_rf_off_comparison.csv",
 )
 const NUMBER_RE = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[EeDd][-+]?\d+)?"
 
@@ -62,7 +62,12 @@ numbers(s) = parse_number.(getproperty.(collect(eachmatch(NUMBER_RE, s)), :match
 function read_reference(path::AbstractString)
     isfile(path) || error("Bmad reference file does not exist: $path")
     if endswith(lowercase(path), ".tar.gz") || endswith(lowercase(path), ".tgz")
-        member = "bmad_reference_output/tao_fallback.txt"
+        archive_members = readlines(pipeline(`tar -tzf $path`))
+        fallback_members = filter(member -> endswith(member, "/tao_fallback.txt"), archive_members)
+        length(fallback_members) == 1 || error(
+            "Expected exactly one tao_fallback.txt in $path; found $(length(fallback_members))",
+        )
+        member = only(fallback_members)
         try
             return read(pipeline(`tar -xOzf $path $member`), String)
         catch err

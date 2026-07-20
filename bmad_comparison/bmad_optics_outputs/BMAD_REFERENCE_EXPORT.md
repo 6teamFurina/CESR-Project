@@ -6,14 +6,14 @@ records maps in the Bmad coordinate order `(x, px, y, py, z, pz)`.
 
 ## Files to copy to the Linux VM
 
-- `bmad_comparison/run_bmad_reference.sh`
-- `bmad_comparison/export_bmad_reference.py`
+- `bmad_comparison/bmad_optics_outputs/run_bmad_reference.sh`
+- `bmad_comparison/bmad_optics_outputs/export_bmad_reference.py`
 - `cesr.bmad`
 
 From the CESR project root in a Windows PowerShell prompt, not from inside the
 SSH session, one possible copy command is:
 
-    scp bmad_comparison/run_bmad_reference.sh bmad_comparison/export_bmad_reference.py cesr.bmad jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/
+    scp bmad_comparison/bmad_optics_outputs/run_bmad_reference.sh bmad_comparison/bmad_optics_outputs/export_bmad_reference.py cesr.bmad jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/
 
 ## Run on Linux
 
@@ -24,10 +24,10 @@ SSH session, one possible copy command is:
 The preferred path uses PyTao and may take several minutes because it requests
 both a local and a cumulative 6-by-6 map at every tracking position. It writes:
 
-- `bmad_reference_output/bmad_reference.json`
-- `bmad_reference_output/element_index.csv`
-- `bmad_reference_output/run.log`
-- `bmad_reference_output.tar.gz`
+- `bmad_reference_rf_off_output/bmad_reference.json`
+- `bmad_reference_rf_off_output/element_index.csv`
+- `bmad_reference_rf_off_output/run.log`
+- `bmad_reference_rf_off_output.tar.gz`
 
 If PyTao is not installed, the wrapper automatically asks the Tao command-line
 interface for all element transfer matrices and writes `tao_fallback.txt`.
@@ -36,7 +36,7 @@ interface for all element transfer matrices and writes `tao_fallback.txt`.
 
 Run this from Windows PowerShell:
 
-    scp jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/bmad_reference_output.tar.gz bmad_comparison/bmad_optics_outputs/
+    scp jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/bmad_reference_rf_off_output.tar.gz bmad_comparison/bmad_optics_outputs/
 
 Return the archive without modifying its contents. The JSON contains enough
 information to compare Bmad and SciBmad element maps and to identify the first
@@ -52,7 +52,7 @@ The test validates the archive, aligns Bmad tracking indices 1 through 869 with
 the SciBmad line, and uses GTPSA to linearize every SciBmad element about the
 same Bmad entrance trajectory used for the corresponding Tao matrix. It writes
 the per-element diagnostics to
-`bmad_comparison/optic_maps_rf_off/bmad_scibmad_comparison.csv`.
+`bmad_comparison/optic_maps_rf_off/bmad_scibmad_rf_off_comparison.csv`.
 
 For a quick archive check or a short smoke test, use:
 

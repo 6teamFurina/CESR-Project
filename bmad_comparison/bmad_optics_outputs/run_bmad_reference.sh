@@ -11,7 +11,7 @@ if [[ ! -f "${default_lattice}" && -f "${script_dir}/cesr.bmad" ]]; then
   default_lattice="${script_dir}/cesr.bmad"
 fi
 lattice="${1:-${default_lattice}}"
-output_dir="${2:-${script_dir}/bmad_reference_output}"
+output_dir="${2:-${script_dir}/bmad_reference_rf_off_output}"
 archive="${output_dir}.tar.gz"
 
 if [[ ! -f "${lattice}" ]]; then

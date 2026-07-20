@@ -42,13 +42,14 @@ This directory contains the Bmad/Tao reference outputs and the numerical
 comparison between the Bmad and SciBmad models:
 
 - `bmad_optics_outputs/` contains the exported RF-off and RF-on Bmad
-  optics/map references: `bmad_reference_output.tar.gz` and
+  optics/map references: `bmad_reference_rf_off_output.tar.gz` and
   `bmad_reference_rf_on_output.tar.gz`, respectively. In this naming
-  convention, the reference without an `rf_on` suffix is the RF-off version.
+  convention, both modes have an explicit suffix.
 - `optic_maps_rf_off/` and `optic_maps_rf_on/` contain the corresponding
   SciBmad comparison results and mode-specific comparison programs.
-- `optic_maps_rf_on/bmad_scibmad_rf_on_comparison.csv` contains the
-  element-by-element RF-on comparison.
+- `optic_maps_rf_off/bmad_scibmad_rf_off_comparison.csv` and
+  `optic_maps_rf_on/bmad_scibmad_rf_on_comparison.csv` contain the
+  element-by-element RF-off and RF-on comparisons.
 - `bmad_scibmad_rf_on_comparison_summary.md` summarizes the closed-orbit,
   tune, local-map, cumulative-map, and element-orbit differences.
 - `test_control_response_scibmad.jl` computes the complete SciBmad
@@ -57,11 +58,13 @@ comparison between the Bmad and SciBmad models:
 - `bmad_scibmad_control_response_summary.md` summarizes the RF-on and RF-off
   control-response comparisons. Detailed matrices and reports are stored in
   `bmad_control_response_rf_on/` and `bmad_control_response_rf_off/`.
-- `run_bmad_reference.sh` and `export_bmad_reference.py` generate the Bmad
-  reference data on a Linux system with Bmad/Tao installed.
+- `bmad_optics_outputs/run_bmad_reference.sh` and
+  `bmad_optics_outputs/export_bmad_reference.py` generate the Bmad reference
+  data on a Linux system with Bmad/Tao installed.
 - `optic_maps_rf_on/compare_rf_on_optics.jl` compares the RF-on closed orbit
   and tunes.
-- `BMAD_REFERENCE_EXPORT.md` documents the Bmad export workflow.
+- `bmad_optics_outputs/BMAD_REFERENCE_EXPORT.md` documents the Bmad export
+  workflow.
 
 ### `test_codes/`
 
