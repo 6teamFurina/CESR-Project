@@ -159,12 +159,26 @@ function matrix_worst(A::AbstractMatrix)
     return maximum(abs, A), location[1], location[2]
 end
 
+function relative_difference(difference, reference_scale)
+    iszero(reference_scale) && return iszero(difference) ? 0.0 : Inf
+    return difference / reference_scale
+end
+
 function write_csv(path, rows)
     columns = (
         :index, :name, :bmad_key, :scibmad_kind, :bmad_length_m,
-        :scibmad_length_m, :length_error_m, :local_R_max, :local_R_fro,
-        :local_R_row, :local_R_col, :vec0_max, :orbit_out_max,
-        :bmad_affine_residual, :cumulative_R_max,
+        :scibmad_length_m, :length_error_m, :length_relative,
+        :length_relative_percent,
+        :local_R_max, :bmad_local_R_max_scale, :local_R_max_relative,
+        :local_R_max_relative_percent,
+        :local_R_fro, :bmad_local_R_fro_scale, :local_R_fro_relative,
+        :local_R_fro_relative_percent,
+        :local_R_row, :local_R_col, :vec0_max,
+        :orbit_out_max, :bmad_orbit_out_max_scale, :orbit_out_max_relative,
+        :orbit_out_max_relative_percent,
+        :bmad_affine_residual,
+        :cumulative_R_max, :bmad_cumulative_R_max_scale,
+        :cumulative_R_max_relative, :cumulative_R_max_relative_percent,
     )
     open(path, "w") do io
         println(io, join(string.(columns), ','))
@@ -225,22 +239,55 @@ function compare(reference; max_elements::Union{Nothing,Int}=nothing, csv_path=D
         cumulative_scibmad = R_scibmad * cumulative_scibmad
         bmad_affine_out = bmad.R * bmad_in + bmad.vec0
 
+        bmad_length = bmad.s_end - bmad.s_start
+        scibmad_length = element_length(element)
+        length_error = abs(scibmad_length - bmad_length)
+        length_relative = relative_difference(length_error, abs(bmad_length))
+        local_R_max_scale = maximum(abs, bmad.R)
+        local_R_max_relative = relative_difference(local_R_max, local_R_max_scale)
+        local_R_fro = norm(delta_R)
+        local_R_fro_scale = norm(bmad.R)
+        local_R_fro_relative = relative_difference(local_R_fro, local_R_fro_scale)
+        orbit_out_max = maximum(abs, out_scibmad - bmad.orbit_out)
+        orbit_out_max_scale = maximum(abs, bmad.orbit_out)
+        orbit_out_max_relative = relative_difference(orbit_out_max, orbit_out_max_scale)
+        cumulative_R_max = maximum(abs, cumulative_scibmad - cumulative_bmad)
+        cumulative_R_max_scale = maximum(abs, cumulative_bmad)
+        cumulative_R_max_relative = relative_difference(
+            cumulative_R_max,
+            cumulative_R_max_scale,
+        )
+
         push!(rows, (
             index=i,
             name=bmad.name,
             bmad_key=bmad.key,
             scibmad_kind=element_kind(element),
-            bmad_length_m=bmad.s_end - bmad.s_start,
-            scibmad_length_m=element_length(element),
-            length_error_m=abs(element_length(element) - (bmad.s_end - bmad.s_start)),
+            bmad_length_m=bmad_length,
+            scibmad_length_m=scibmad_length,
+            length_error_m=length_error,
+            length_relative=length_relative,
+            length_relative_percent=100length_relative,
             local_R_max=local_R_max,
-            local_R_fro=norm(delta_R),
+            bmad_local_R_max_scale=local_R_max_scale,
+            local_R_max_relative=local_R_max_relative,
+            local_R_max_relative_percent=100local_R_max_relative,
+            local_R_fro=local_R_fro,
+            bmad_local_R_fro_scale=local_R_fro_scale,
+            local_R_fro_relative=local_R_fro_relative,
+            local_R_fro_relative_percent=100local_R_fro_relative,
             local_R_row=worst_row,
             local_R_col=worst_col,
             vec0_max=maximum(abs, vec0_scibmad - bmad.vec0),
-            orbit_out_max=maximum(abs, out_scibmad - bmad.orbit_out),
+            orbit_out_max=orbit_out_max,
+            bmad_orbit_out_max_scale=orbit_out_max_scale,
+            orbit_out_max_relative=orbit_out_max_relative,
+            orbit_out_max_relative_percent=100orbit_out_max_relative,
             bmad_affine_residual=maximum(abs, bmad_affine_out - bmad.orbit_out),
-            cumulative_R_max=maximum(abs, cumulative_scibmad - cumulative_bmad),
+            cumulative_R_max=cumulative_R_max,
+            bmad_cumulative_R_max_scale=cumulative_R_max_scale,
+            cumulative_R_max_relative=cumulative_R_max_relative,
+            cumulative_R_max_relative_percent=100cumulative_R_max_relative,
         ))
         (i == 1 || i % 100 == 0 || i == n) && @printf("Compared %d/%d elements\n", i, n)
     end
@@ -254,6 +301,8 @@ function print_summary(rows, reference, csv_path)
     worst_local = sort(rows; by=row -> row.local_R_max, rev=true)[1:min(15, length(rows))]
     worst_orbit = argmax(getproperty.(rows, :orbit_out_max))
     worst_cumulative = argmax(getproperty.(rows, :cumulative_R_max))
+    worst_local_relative = argmax(getproperty.(rows, :local_R_max_relative))
+    worst_cumulative_relative = argmax(getproperty.(rows, :cumulative_R_max_relative))
     max_affine = maximum(getproperty.(rows, :bmad_affine_residual))
     max_length = maximum(getproperty.(rows, :length_error_m))
 
@@ -268,6 +317,16 @@ function print_summary(rows, reference, csv_path)
         rows[worst_cumulative].cumulative_R_max,
         rows[worst_cumulative].index,
         rows[worst_cumulative].name)
+    @printf("Worst local relative R error:  %.3e (%.6f%%) at #%d %s\n",
+        rows[worst_local_relative].local_R_max_relative,
+        rows[worst_local_relative].local_R_max_relative_percent,
+        rows[worst_local_relative].index,
+        rows[worst_local_relative].name)
+    @printf("Worst cumulative relative R:   %.3e (%.6f%%) at #%d %s\n",
+        rows[worst_cumulative_relative].cumulative_R_max_relative,
+        rows[worst_cumulative_relative].cumulative_R_max_relative_percent,
+        rows[worst_cumulative_relative].index,
+        rows[worst_cumulative_relative].name)
     println("\nLargest local matrix discrepancies:")
     println(" index  element                    Bmad key          SciBmad kind       max|dR|      entry")
     for row in worst_local

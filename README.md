@@ -71,18 +71,29 @@ that the ring and its control structure run correctly:
 ## Current Agreement with Bmad
 
 The comparison must be described by several metrics rather than a single
-accuracy number. With the RF cavities enabled, the current results are:
+accuracy number. Matrix percentages are normalized by the corresponding Bmad
+matrix scale, using `max(abs(R_SciBmad - R_Bmad)) / max(abs(R_Bmad))`; this
+avoids unstable percentages from individual Bmad matrix entries that are zero
+or nearly zero. With the RF cavities enabled, the current results are:
 
-- maximum local element transfer-matrix difference: `2.476e-4`;
-- CESR wiggler local matrix differences: approximately `3.8e-5` to `4.0e-5`;
+- maximum local element transfer-matrix difference: `2.476e-4`, corresponding
+  to a maximum normalized relative difference of `0.007645%`;
+- CESR wiggler local matrix differences: approximately `3.8e-5` to `4.0e-5`,
+  corresponding to `0.00160%` to `0.00168%` relative difference;
 - solenoid-quadrupole overlap local matrix differences: approximately
-  `9.1e-5`;
-- maximum isolated-element exit-orbit difference: `2.526e-6`;
-- maximum closed-orbit coordinate difference: `6.404e-7`;
-- maximum cumulative transfer-matrix difference around the ring: `1.267e-2`.
+  `9.1e-5`, or approximately `0.00584%` relative difference;
+- maximum isolated-element exit-orbit difference: `2.526e-6`, or `0.02697%`
+  relative to the largest Bmad orbit coordinate at that element;
+- maximum closed-orbit coordinate difference: `6.404e-7`; the complete orbit
+  vectors differ by `0.0390%` in relative 2-norm;
+- maximum cumulative transfer-matrix difference around the ring: `1.267e-2`,
+  equal to `0.05221%` of the Bmad cumulative-map scale at that location; the
+  maximum normalized cumulative difference over all locations is `0.16772%`.
 
-Therefore, the characteristic local agreement is in the `10^-5` to `10^-4`
-range, while the worst local discrepancy is currently at the `10^-4` level.
-The cumulative one-turn difference is larger because the local discrepancies
-accumulate around the full ring. Detailed results and the reproduction commands
-are available in `bmad_comparison/bmad_scibmad_rf_on_comparison_summary.md`.
+Therefore, the characteristic local relative agreement is at the `10^-5`
+level, with a worst local relative discrepancy of `7.645e-5` (`0.007645%`).
+The cumulative normalized discrepancy reaches the `10^-3` level because the
+local differences accumulate around the full ring. Detailed absolute and
+relative results, including percentage differences for the closed orbit and
+tunes, are available in
+`bmad_comparison/bmad_scibmad_rf_on_comparison_summary.md`.
