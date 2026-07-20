@@ -3,3 +3,7 @@ Manifest.toml
 
 # Jupyter-generated notebook checkpoints.
 **/.ipynb_checkpoints/
+
+# Generated Tao control-response artifacts.
+*.npy
+*.init

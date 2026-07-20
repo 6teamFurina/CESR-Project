@@ -48,6 +48,12 @@ comparison between the Bmad and SciBmad models:
   comparison.
 - `bmad_scibmad_rf_on_comparison_summary.md` summarizes the closed-orbit,
   tune, local-map, cumulative-map, and element-orbit differences.
+- `test_control_response_scibmad.jl` computes the complete SciBmad
+  control-to-closed-orbit response matrix with first-order GTPSA parameters
+  and compares it with the labeled Tao/Bmad matrix.
+- `bmad_scibmad_control_response_summary.md` summarizes the RF-on and RF-off
+  control-response comparisons. Detailed matrices and reports are stored in
+  `bmad_control_response_rf_on/` and `bmad_control_response_rf_off/`.
 - `run_bmad_reference.sh` and `export_bmad_reference.py` generate the Bmad
   reference data on a Linux system with Bmad/Tao installed.
 - `compare_rf_on_optics.jl` compares the RF-on closed orbit and tunes.
@@ -61,12 +67,89 @@ that the ring and its control structure run correctly:
 - `generate_cesr_controls.py` reads the Overlay and Group definitions from
   `cesr.bmad` and regenerates the coefficient tables in `cesr_controls.jl`.
 - `test_cesr_controls.jl` verifies zero-control consistency, direct Overlays,
-  Group-to-Overlay propagation, sextupole controls, and controls on
-  superimposed element slices.
+  Group-to-Overlay propagation, sextupole controls, controls on superimposed
+  element slices, and the conversion of laboratory-frame Bmad kicks into
+  tilted SciBmad element coordinates. The current suite contains 24 passing
+  tests.
 - `test_rf_on_twiss.jl` verifies the six-dimensional RF-on closed orbit and
   Twiss calculation.
 - `test_bmad_scibmad.jl` performs the GTPSA element-by-element comparison with
   the exported Bmad transfer maps.
+- `test_control_response_tao.py` runs in the Linux Bmad/PyTao environment and
+  exports the labeled CESR control-to-closed-orbit response matrix for either
+  the RF-off or RF-on lattice.
+
+## Control-Response Validation
+
+The control-response test differentiates the horizontal and vertical closed
+orbit at 99 `DET_*` markers with respect to 119 Bmad-compatible CESR Overlay
+controls (58 horizontal and 61 vertical). The resulting matrix has shape
+`198 x 119` and units of `m/rad`.
+
+The Bmad reference is generated with
+`test_codes/test_control_response_tao.py`. The SciBmad comparison is run from
+the project root with:
+
+```console
+julia --project=. bmad_comparison/test_control_response_scibmad.jl --mode=both
+```
+
+All 119 SciBmad control derivatives are calculated simultaneously using
+first-order GTPSA parameters. If the one-turn map derivatives are `A = dF/dz`
+and `B = dF/dk`, the closed-orbit response is obtained from
+`d z_closed/dk = (I - A)^-1 B`. RF-on uses the full 6D closed orbit. RF-off
+uses the corresponding 4D coasting-beam equation with fixed `z = pz = 0`.
+
+The current comparison results are:
+
+| Mode | Relative Frobenius difference | Maximum absolute difference (m/rad) | Full-matrix correlation | GTPSA closure residual |
+|---|---:|---:|---:|---:|
+| RF-on | `0.203229%` | `6.7472e-2` | `0.999997991471` | `7.105e-15` |
+| RF-off | `0.201201%` | `6.7263e-2` | `0.999998031423` | `7.105e-15` |
+
+Agreement by response block is:
+
+| Mode | `x <- H` | `x <- V` | `y <- H` | `y <- V` |
+|---|---:|---:|---:|---:|
+| RF-on | `0.04864%` | `0.49898%` | `0.18615%` | `0.24958%` |
+| RF-off | `0.04779%` | `0.49911%` | `0.18526%` | `0.24716%` |
+
+The block values are relative Frobenius differences. The overall agreement is
+therefore approximately `0.2%`, with correlations above `0.9999979` in both
+RF configurations.
+
+Bmad `HKICK` and `VKICK` controls specify laboratory-frame orbit kicks, while
+SciBmad normal and skew dipole multipoles rotate with the element alignment.
+For alignment tilt `t`, the control layer applies
+`HKICK -> (Kn0L, Ks0L) = (-cos(t), -sin(t)) HKICK` and
+`VKICK -> (Kn0L, Ks0L) = (-sin(t), cos(t)) VKICK`. This conversion is required
+for the correct sign of horizontal responses and for vertical correctors
+implemented by 45-degree tilted elements.
+
+The current SciBmad coasting closed-orbit path faults when ForwardDiff passes
+through the CESR implicit integrator. The RF-off test therefore finds only the
+baseline 4D closed orbit with a Float64 finite-difference Newton Jacobian. The
+reported 119 control derivatives are still calculated with GTPSA and do not
+use control finite differences.
+
+Each RF-mode output directory contains:
+
+- `scibmad_control_response_<mode>.csv`: the labeled SciBmad `198 x 119`
+  response matrix;
+- `bmad_scibmad_control_response_entries_<mode>.csv`: all 23,562 individual
+  Bmad/SciBmad entry comparisons and differences;
+- `bmad_scibmad_control_response_columns_<mode>.csv`: one relative 2-norm
+  error for each of the 119 control columns;
+- `bmad_scibmad_control_response_summary_<mode>.md`: detailed mode-specific
+  metrics, response blocks, worst entries, worst control, and singular values.
+
+The root `bmad_scibmad_control_response_summary.md` combines both modes and
+records the coordinate convention and RF-off solver details. It can be
+regenerated from existing matrices without rerunning the GTPSA tracking:
+
+```console
+julia --project=. bmad_comparison/test_control_response_scibmad.jl --mode=summary
+```
 
 ## Current Agreement with Bmad
 

@@ -667,8 +667,6 @@ const CESR_GROUP_TERMS = [
 
 
 const _CESR_ATTRIBUTE_MAP = Dict(
-    "HKICK" => :Kn0L,
-    "VKICK" => :Ks0L,
     "K1" => :Kn1,
     "K2" => :Kn2,
     "TILT" => :tilt,
@@ -744,6 +742,39 @@ function _cesr_add_contribution!(table, target, attribute, contribution)
 end
 
 """
+Translate a Bmad control attribute into SciBmad element-frame multipoles.
+
+Bmad `HKICK` and `VKICK` are laboratory-frame orbit kicks. SciBmad's normal
+and skew dipole multipoles use the magnetic sign convention and rotate with an
+element's alignment tilt, so a kick generally drives both `Kn0L` and `Ks0L`.
+"""
+function _cesr_physical_control_terms(ring, target, bmad_attribute, coefficient)
+    if bmad_attribute == "HKICK" || bmad_attribute == "VKICK"
+        elements = _cesr_target_elements(ring, target)
+        tilts = Float64[Beamlines.deval(ele.tilt) for ele in elements]
+        all(isapprox(tilt, first(tilts); atol=1e-14, rtol=0.0) for tilt in tilts) ||
+            error("Kick target $target has slices with different alignment tilts")
+
+        tilt = first(tilts)
+        physical_terms = if bmad_attribute == "HKICK"
+            ((:Kn0L, -coefficient * cos(tilt)),
+             (:Ks0L, -coefficient * sin(tilt)))
+        else
+            ((:Kn0L, -coefficient * sin(tilt)),
+             (:Ks0L, coefficient * cos(tilt)))
+        end
+        return [(target, attribute, physical_coefficient)
+                for (attribute, physical_coefficient) in physical_terms
+                if !iszero(physical_coefficient)]
+    end
+
+    attribute = get(_CESR_ATTRIBUTE_MAP, bmad_attribute) do
+        error("Unsupported Bmad control attribute: $bmad_attribute")
+    end
+    return [(target, attribute, coefficient)]
+end
+
+"""
     attach_cesr_controls!(ring; zero_value=0.0)
 
 Attach all Bmad CESR Overlay and Group definitions to a copied static ring using
@@ -761,11 +792,21 @@ function attach_cesr_controls!(ring; zero_value=0.0)
 
     for (overlay, variable, target, coefficient) in CESR_OVERLAY_TERMS
         overlay_variables[overlay] = variable
-        attribute = _CESR_ATTRIBUTE_MAP[variable]
-        push!(get!(overlay_targets, overlay, Tuple{String,Symbol,Float64}[]),
-              (target, attribute, coefficient))
-        contribution = CESRControlContribution(controls.overlays[overlay], coefficient)
-        _cesr_add_contribution!(contributions, target, attribute, contribution)
+        for (physical_target, attribute, physical_coefficient) in
+            _cesr_physical_control_terms(ring, target, variable, coefficient)
+            push!(get!(overlay_targets, overlay, Tuple{String,Symbol,Float64}[]),
+                  (physical_target, attribute, physical_coefficient))
+            contribution = CESRControlContribution(
+                controls.overlays[overlay],
+                physical_coefficient,
+            )
+            _cesr_add_contribution!(
+                contributions,
+                physical_target,
+                attribute,
+                contribution,
+            )
+        end
     end
 
     overlay_names = Set(keys(overlay_targets))
@@ -794,11 +835,16 @@ function attach_cesr_controls!(ring; zero_value=0.0)
             isempty(bmad_attribute) && error(
                 "Group $group targets physical element $target without an attribute",
             )
-            attribute = get(_CESR_ATTRIBUTE_MAP, bmad_attribute) do
-                error("Unsupported Bmad control attribute: $bmad_attribute")
+            for (physical_target, attribute, physical_coefficient) in
+                _cesr_physical_control_terms(ring, target, bmad_attribute, coefficient)
+                contribution = CESRControlContribution(group_knob, physical_coefficient)
+                _cesr_add_contribution!(
+                    contributions,
+                    physical_target,
+                    attribute,
+                    contribution,
+                )
             end
-            contribution = CESRControlContribution(group_knob, coefficient)
-            _cesr_add_contribution!(contributions, target, attribute, contribution)
         end
     end
 
