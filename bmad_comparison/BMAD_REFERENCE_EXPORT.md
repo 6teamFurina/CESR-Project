@@ -6,16 +6,14 @@ records maps in the Bmad coordinate order `(x, px, y, py, z, pz)`.
 
 ## Files to copy to the Linux VM
 
-- `run_bmad_reference.sh`
-- `export_bmad_reference.py`
+- `bmad_comparison/run_bmad_reference.sh`
+- `bmad_comparison/export_bmad_reference.py`
+- `cesr.bmad`
 
-The existing Linux directory must also contain `cesr.bmad`.
+From the CESR project root in a Windows PowerShell prompt, not from inside the
+SSH session, one possible copy command is:
 
-From a Windows PowerShell prompt, not from inside the SSH session, one possible
-copy command is:
-
-    scp run_bmad_reference.sh export_bmad_reference.py \
-      jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/
+    scp bmad_comparison/run_bmad_reference.sh bmad_comparison/export_bmad_reference.py cesr.bmad jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/
 
 ## Run on Linux
 
@@ -38,7 +36,7 @@ interface for all element transfer matrices and writes `tao_fallback.txt`.
 
 Run this from Windows PowerShell:
 
-    scp jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/bmad_reference_output.tar.gz .
+    scp jn577@lnx201.classe.cornell.edu:/home/jn577/cesr_scibmad/bmad_reference_output.tar.gz bmad_comparison/
 
 Return the archive without modifying its contents. The JSON contains enough
 information to compare Bmad and SciBmad element maps and to identify the first
@@ -48,17 +46,17 @@ location where their cumulative maps diverge.
 
 From the repository root on the machine with Julia and SciBmad installed:
 
-    julia --project=. lattices/cesr/test_bmad_scibmad.jl
+    julia --project=. test_codes/test_bmad_scibmad.jl
 
 The test validates the archive, aligns Bmad tracking indices 1 through 869 with
 the SciBmad line, and uses GTPSA to linearize every SciBmad element about the
 same Bmad entrance trajectory used for the corresponding Tao matrix. It writes
-the per-element diagnostics to `bmad_scibmad_comparison.csv`.
+the per-element diagnostics to `bmad_comparison/bmad_scibmad_comparison.csv`.
 
 For a quick archive check or a short smoke test, use:
 
-    julia --project=. lattices/cesr/test_bmad_scibmad.jl --parse-only
-    julia --project=. lattices/cesr/test_bmad_scibmad.jl --max-elements=10
+    julia --project=. test_codes/test_bmad_scibmad.jl --parse-only
+    julia --project=. test_codes/test_bmad_scibmad.jl --max-elements=10
 
 The normal run is diagnostic and succeeds after producing the report even when
 physics discrepancies exist. Add `--strict` when the models are expected to

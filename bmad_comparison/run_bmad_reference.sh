@@ -6,7 +6,11 @@ set -u
 set -o pipefail
 
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-lattice="${1:-${script_dir}/cesr.bmad}"
+default_lattice="${script_dir}/../cesr.bmad"
+if [[ ! -f "${default_lattice}" && -f "${script_dir}/cesr.bmad" ]]; then
+  default_lattice="${script_dir}/cesr.bmad"
+fi
+lattice="${1:-${default_lattice}}"
 output_dir="${2:-${script_dir}/bmad_reference_output}"
 archive="${output_dir}.tar.gz"
 

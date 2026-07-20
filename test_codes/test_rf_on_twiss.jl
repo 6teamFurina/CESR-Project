@@ -3,7 +3,7 @@
 using SciBmad
 using GTPSA: Descriptor
 
-include("cesr.jl")
+include(joinpath(@__DIR__, "..", "cesr.jl"))
 
 ring = load_cesr()
 set_cesr_rf!(ring; on=true)

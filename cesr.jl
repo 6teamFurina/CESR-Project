@@ -4,7 +4,7 @@
 using Beamlines
 using SciBmad: SolenoidKick
 
-include("wiggler.jl")
+include(joinpath(@__DIR__, "wigglers", "wiggler.jl"))
 using .WigglerModels: PlanarWiggler
 
 CESRWiggler(; kwargs...) = PlanarWiggler(;

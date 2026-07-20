@@ -1,0 +1,5 @@
+# Julia environment lockfiles are machine-specific for this project.
+Manifest.toml
+
+# Jupyter-generated notebook checkpoints.
+**/.ipynb_checkpoints/

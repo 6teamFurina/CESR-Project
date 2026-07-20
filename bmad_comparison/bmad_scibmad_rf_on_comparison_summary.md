@@ -82,10 +82,10 @@ coasting-beam closed-orbit calculation.
 ## Reproduction
 
 ```bash
-julia --project=. lattices/cesr/test_bmad_scibmad.jl \
+julia --project=. test_codes/test_bmad_scibmad.jl \
   --rf-on \
-  --reference=lattices/cesr/bmad_reference_rf_on_output.tar.gz \
-  --csv=lattices/cesr/bmad_scibmad_rf_on_comparison.csv
+  --reference=bmad_comparison/bmad_reference_rf_on_output.tar.gz \
+  --csv=bmad_comparison/bmad_scibmad_rf_on_comparison.csv
 
-julia --project=. lattices/cesr/compare_rf_on_optics.jl
+julia --project=. bmad_comparison/compare_rf_on_optics.jl
 ```

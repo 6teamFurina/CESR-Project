@@ -9,7 +9,7 @@ being hidden inside a one-turn product.
 
 Run from the repository root with:
 
-    julia --project=. lattices/cesr/test_bmad_scibmad.jl
+    julia --project=. test_codes/test_bmad_scibmad.jl
 
 Useful options:
 
@@ -28,11 +28,13 @@ using GTPSA
 import Beamlines
 
 const HERE = @__DIR__
-const DEFAULT_REFERENCE = joinpath(HERE, "bmad_reference_output.tar.gz")
-const DEFAULT_CSV = joinpath(HERE, "bmad_scibmad_comparison.csv")
+const PROJECT_ROOT = normpath(joinpath(HERE, ".."))
+const COMPARISON_DIR = joinpath(PROJECT_ROOT, "bmad_comparison")
+const DEFAULT_REFERENCE = joinpath(COMPARISON_DIR, "bmad_reference_output.tar.gz")
+const DEFAULT_CSV = joinpath(COMPARISON_DIR, "bmad_scibmad_comparison.csv")
 const NUMBER_RE = r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[EeDd][-+]?\d+)?"
 
-include(joinpath(HERE, "cesr.jl"))
+include(joinpath(PROJECT_ROOT, "cesr.jl"))
 
 struct BmadElementMap
     index::Int
