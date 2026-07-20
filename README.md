@@ -43,8 +43,7 @@ comparison between the Bmad and SciBmad models:
 
 - `bmad_optics_outputs/` contains the exported RF-off and RF-on Bmad
   optics/map references: `bmad_reference_rf_off_output.tar.gz` and
-  `bmad_reference_rf_on_output.tar.gz`, respectively. In this naming
-  convention, both modes have an explicit suffix.
+  `bmad_reference_rf_on_output.tar.gz`, respectively. 
 - `optic_maps_rf_off/` and `optic_maps_rf_on/` contain the corresponding
   SciBmad comparison results and mode-specific comparison programs.
 - `optic_maps_rf_off/bmad_scibmad_rf_off_comparison.csv` and
