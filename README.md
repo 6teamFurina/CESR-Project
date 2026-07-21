@@ -176,12 +176,11 @@ For alignment tilt `t`, the control layer applies
 for the correct sign of horizontal responses and for vertical correctors
 implemented by 45-degree tilted elements.
 
-The stored control-response comparison retains its original Float64
-finite-difference baseline solve for reproducibility. The external coasting
-patch described above now provides a ForwardDiff alternative using SciBmad's
-native `BatchSolve.newton!`. In both workflows, the reported 119 control
-derivatives are calculated with GTPSA and do not use control finite
-differences.
+The RF-off control-response workflow now uses the external coasting patch for
+its baseline orbit: six-direction ForwardDiff supplies the transverse `4 x 4`
+Jacobian and SciBmad's native `BatchSolve.newton!` solves the 4D closed-orbit
+equation. The reported 119 control derivatives are calculated simultaneously
+with GTPSA and do not use control finite differences.
 
 Each RF-mode output directory contains:
 

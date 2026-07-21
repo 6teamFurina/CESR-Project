@@ -15,8 +15,10 @@ differencing from
     X = dz_closed/dk = (I - A) \\ B.
 
 For an RF-off coasting beam the fixed-z, fixed-pz four-dimensional form is
-used.  The parameterized closed orbit is then tracked element by element and
-the parameter coefficients of x and y are recorded at every DET_* marker.
+used. Its baseline orbit uses the external six-direction ForwardDiff adapter
+and SciBmad's native BatchSolve Newton solver. The parameterized closed orbit
+is then tracked element by element and the parameter coefficients of x and y
+are recorded at every DET_* marker.
 
 Run from the CESR Project directory:
 
@@ -36,6 +38,8 @@ const HERE = @__DIR__
 const PROJECT_ROOT = normpath(joinpath(HERE, ".."))
 
 include(joinpath(PROJECT_ROOT, "cesr_model.jl"))
+include(joinpath(PROJECT_ROOT, "scibmad_coasting_forwarddiff_patch.jl"))
+using .SciBmadCoastingForwardDiffPatch
 
 struct LabeledMatrix
     row_labels::Vector{String}
@@ -168,61 +172,13 @@ function track_map(ring, coordinates)
     return vec(bunch.coords.v)
 end
 
-function coasting_closed_orbit(ring; tolerance=1e-13, max_iterations=20)
-    # SciBmad's current coasting-beam solver differentiates through the CESR
-    # implicit integrator with ForwardDiff, which faults on this lattice. Use a
-    # Float64 finite-difference Jacobian only for the baseline 4D Newton solve;
-    # the 119 requested control derivatives remain analytic GTPSA parameters.
-    state = zeros(4)
-    residual(state4) = track_map(ring, [state4; 0.0; 0.0])[1:4] - state4
-    current = residual(state)
-
-    for iteration in 0:max_iterations
-        residual_norm = maximum(abs, current)
-        residual_norm <= tolerance && return (
-            orbit=[state; 0.0; 0.0],
-            solution=(coasting_beam=true, iterations=iteration, residual=residual_norm),
-        )
-        iteration == max_iterations && break
-
-        jacobian = zeros(4, 4)
-        for coordinate in 1:4
-            step = 1e-7 * max(1.0, abs(state[coordinate]))
-            plus = copy(state)
-            minus = copy(state)
-            plus[coordinate] += step
-            minus[coordinate] -= step
-            jacobian[:, coordinate] .= (residual(plus) - residual(minus)) / (2step)
-        end
-        newton_step = -(jacobian \ current)
-
-        accepted = false
-        scale = 1.0
-        for _ in 1:12
-            trial_state = state + scale * newton_step
-            trial_residual = residual(trial_state)
-            if maximum(abs, trial_residual) < residual_norm
-                state = trial_state
-                current = trial_residual
-                accepted = true
-                break
-            end
-            scale *= 0.5
-        end
-        accepted || error(
-            "Float64 coasting closed-orbit Newton line search failed at iteration $iteration",
-        )
-    end
-    error(
-        "Float64 coasting closed-orbit solve did not converge; " *
-        "residual=$(maximum(abs, current))",
-    )
-end
-
 function closed_orbit_vector(ring, rf_on::Bool)
     if !rf_on
-        result = coasting_closed_orbit(ring)
-        return result.orbit, result.solution
+        solution = find_closed_orbit_coasting_forwarddiff(
+            ring;
+            coasting_beam=true,
+        )
+        return solution.orbit, solution
     end
 
     solution = find_closed_orbit(
@@ -401,6 +357,7 @@ function write_mode_summary(
         println(io, "- Matrix shape: `$(size(candidate.values, 1)) x $(size(candidate.values, 2))`")
         println(io, "- Units: `m/rad`")
         println(io, "- Closed-orbit model: `$(coasting_beam ? "4D coasting beam with fixed z and pz" : "6D RF-confined beam")`")
+        coasting_beam && println(io, "- Baseline solver: `six-direction ForwardDiff 4 x 4 Jacobian adapter + SciBmad BatchSolve.newton!`")
         println(io, "- SciBmad baseline closed orbit: `[$(format_vector(closed_orbit))]`")
         println(io, @sprintf("- GTPSA closure-equation residual: `%.6e`", maximum(abs, closure_residual)))
         println(io, @sprintf("- Runtime: `%.3f s`", runtime_seconds))
@@ -552,7 +509,7 @@ function write_overall_summary(path, results, failures)
             println(io)
             println(io, "- Bmad `HKICK`/`VKICK` are laboratory-frame kicks. For element alignment tilt `t`, SciBmad uses `HKICK -> (Kn0L, Ks0L) = (-cos(t), -sin(t)) HKICK` and `VKICK -> (Kn0L, Ks0L) = (-sin(t), cos(t)) VKICK`.")
             println(io, "- RF-on uses the 6D RF-confined closed orbit. RF-off uses a 4D coasting closed orbit with fixed `z=pz=0`.")
-            println(io, "- The RF-off baseline orbit is found with a Float64 finite-difference Newton Jacobian to avoid the current ForwardDiff/implicit-integrator fault. All 119 control derivatives in both modes are still computed simultaneously with first-order GTPSA parameters.")
+            println(io, "- The RF-off baseline orbit uses the six-direction ForwardDiff adapter to extract the transverse `4 x 4` Jacobian, followed by SciBmad's native `BatchSolve.newton!`. All 119 control derivatives in both modes are computed simultaneously with first-order GTPSA parameters.")
         end
         if !isempty(failures)
             println(io)
