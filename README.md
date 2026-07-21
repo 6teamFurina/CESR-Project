@@ -79,11 +79,55 @@ that the ring and its control structure run correctly:
   tests.
 - `test_rf_on_twiss.jl` verifies the six-dimensional RF-on closed orbit and
   Twiss calculation.
+- `test_rf_off_closed_orbit.jl` verifies the patched four-dimensional RF-off
+  coasting closed orbit against an independent Float64 central-difference
+  Newton solve.
 - `test_bmad_scibmad.jl` performs the GTPSA element-by-element comparison with
   the exported Bmad transfer maps.
 - `test_control_response_tao.py` runs in the Linux Bmad/PyTao environment and
   exports the labeled CESR control-to-closed-orbit response matrix for either
   the RF-off or RF-on lattice.
+
+## RF-Off Coasting Closed-Orbit Patch
+
+`scibmad_coasting_forwarddiff_patch.jl` fixes the CESR RF-off closed-orbit
+failure without modifying the installed SciBmad or BeamTracking packages. When
+`coasting_beam == true`, the physical closed-orbit problem contains only the
+four transverse unknowns `(x, px, y, py)`, while `z` and `pz` remain fixed.
+
+SciBmad already selects this 4D formulation for a coasting beam. The failure
+occurred because the current BeamTracking implicit-integrator ForwardDiff path
+assumes that each `Dual` value carries six partial derivatives, whereas the
+native coasting path seeds only four. The external adapter therefore evaluates
+the one-turn residual with six ForwardDiff directions and extracts the
+transverse `4 x 4` Jacobian. Only this Jacobian construction is patched; the
+closed-orbit iteration, convergence checks, singular-matrix handling, and
+return code use SciBmad's native `BatchSolve.newton!` implementation.
+
+The patched RF-off orbit can be calculated with:
+
+```julia
+include("scibmad_coasting_forwarddiff_patch.jl")
+using .SciBmadCoastingForwardDiffPatch
+
+solution = find_closed_orbit_coasting_forwarddiff(
+    ring;
+    coasting_beam=true,
+)
+```
+
+The regression comparison is run from the project root with:
+
+```console
+julia --project=. test_codes/test_rf_off_closed_orbit.jl
+```
+
+For the current CESR lattice, both the patched ForwardDiff/BatchSolve method
+and the Float64 central-difference reference converge in three Newton
+iterations. Their closed-orbit vectors differ by at most `8.37e-16`; the
+patched orbit has a one-turn transverse closure residual of `3.03e-15`, and
+the maximum row-sum difference between the two `4 x 4` residual Jacobians is
+`1.79e-8`.
 
 ## Control-Response Validation
 
@@ -132,11 +176,12 @@ For alignment tilt `t`, the control layer applies
 for the correct sign of horizontal responses and for vertical correctors
 implemented by 45-degree tilted elements.
 
-The current SciBmad coasting closed-orbit path faults when ForwardDiff passes
-through the CESR implicit integrator. The RF-off test therefore finds only the
-baseline 4D closed orbit with a Float64 finite-difference Newton Jacobian. The
-reported 119 control derivatives are still calculated with GTPSA and do not
-use control finite differences.
+The stored control-response comparison retains its original Float64
+finite-difference baseline solve for reproducibility. The external coasting
+patch described above now provides a ForwardDiff alternative using SciBmad's
+native `BatchSolve.newton!`. In both workflows, the reported 119 control
+derivatives are calculated with GTPSA and do not use control finite
+differences.
 
 Each RF-mode output directory contains:
 
