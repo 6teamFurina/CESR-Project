@@ -62,6 +62,12 @@ comparison between the Bmad and SciBmad models:
   data on a Linux system with Bmad/Tao installed.
 - `optic_maps_rf_on/compare_rf_on_optics.jl` compares the RF-on closed orbit
   and tunes.
+- `nonlinear_twiss/compute_nonlinear_twiss.jl` computes the RF-off second-order
+  GTPSA Twiss table, exports chromatic and alpha/beta momentum derivatives to
+  CSV, and plots the three quantities around the ring. With RF cavities on,
+  `pz` (`delta`) is a dynamical variable rather than a controllable parameter,
+  so it cannot serve as the independent variable for these derivatives. The
+  nonlinear Twiss study therefore uses RF cavities off.
 - `bmad_optics_outputs/BMAD_REFERENCE_EXPORT.md` documents the Bmad export
   workflow.
 
