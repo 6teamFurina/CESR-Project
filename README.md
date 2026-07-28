@@ -24,6 +24,126 @@ The initialized model returned by `load_cesr_model()` contains two fields:
 `model.ring`, the independent CESR beamline, and `model.controls`, the mutable
 collection of Overlay and Group knobs.
 
+## Dataset Vision
+
+The validated CESR model is intended to support a reproducible
+parameter-to-observable dataset and later uncertainty-aware inverse problems.
+This section records the current dataset design; it is a research plan, not a
+claim that the complete generator or every proposed observable has already
+been implemented and validated.
+
+### Dataset semantics
+
+The first dataset uses the following simplified parameter and observation
+model:
+
+```text
+command = nominal
+physical = apply_element_errors(command, error)
+physics_output = SciBmad(physical)
+observable_readback = measurement_model(physics_output, noise)
+```
+
+- `nominal` and `command` are equal in the first version.
+- `command` contains the known settings supplied to the accelerator model.
+- `physical` contains the latent values that actually enter SciBmad. It can
+  differ from `command` because of errors attached to physical accelerator
+  elements, including strength, calibration, alignment, and field errors.
+- `physics_output` contains the noise-free simulator results.
+- `observable_readback` contains the simulated beam-diagnostic observations,
+  optionally with measurement noise, missing channels, or other diagnostic
+  effects.
+
+Control-system setpoint and indicated-setting errors are deliberately out of
+scope for the first dataset. The qualified name `observable_readback` is used
+because accelerator control systems also commonly use "readback" for a
+device's indicated setting.
+
+Every parameter and observation must retain a stable device or element
+identifier, physical units, coordinate convention, availability mask,
+uncertainty information, random seed, lattice/configuration version, and
+generation provenance. The stored physical values remain available as
+simulation truth even when selected values are hidden from a particular
+training task.
+
+### Candidate generated data
+
+The parameter side can include quadrupole and sextupole strengths, corrector
+kicks, RF settings, element alignment, calibration or field errors, and other
+explicitly supported mutable lattice quantities. Error realizations may be
+independent, family-correlated, spatially correlated, slowly varying, or
+discrete faults, provided their distributions and seeds are recorded.
+
+The initial observable and label set can include:
+
+- closed orbit around the ring and horizontal/vertical orbit at the 99
+  `DET_*` markers;
+- transverse and longitudinal tunes where defined;
+- Twiss functions, dispersion, chromaticity, and RF-off momentum derivatives
+  of selected Twiss quantities;
+- local, cumulative, one-turn, orbit-response, and selected optics-response
+  maps;
+- solver convergence, closure residual, linear stability, and physical or
+  control-limit flags;
+- noise-free physics outputs together with noisy or partially missing
+  observable readbacks.
+
+Expensive nonlinear outputs are planned as a separate, linked high-fidelity
+data product rather than as mandatory fields in every base sample. Candidate
+outputs include dynamic aperture, momentum aperture, tune footprint, particle
+survival, survival turns, and loss location. A dynamic-aperture record should
+retain the boundary or survival map as a function of launch angle, momentum
+offset, and tracking turns, together with the tracking and aperture
+configuration; a single scalar aperture area is not a sufficient primary
+label.
+
+### Planned learning tasks
+
+The same generated machine states can expose different task-specific views:
+
+1. **Forward observable prediction:** use all `command` values to predict
+   `observable_readback`. With zero element error this is a deterministic
+   nominal forward model. If latent errors vary while only commands are
+   provided, the target is a conditional distribution rather than a unique
+   deterministic value.
+2. **Masked physical-parameter reconstruction:** provide observable readbacks,
+   an explicit parameter mask, and any unmasked physical-parameter context,
+   then infer the masked physical values. Masks may cover individual devices,
+   element families, contiguous lattice regions, parameter types, or
+   combinations of faults.
+3. **Physical-error localization and estimation:** provide `command` and
+   `observable_readback`, then infer the locations, types, magnitudes, and
+   uncertainty of the latent physical errors that separate `physical` from
+   `command`.
+4. **Later intervention and diagnosis tasks:** combine multiple observations
+   from the same latent machine state under known corrector, quadrupole, RF, or
+   diagnostic excitations to improve identifiability and test
+   counterfactual predictions.
+
+Evaluation should include physical consistency: inferred parameters should be
+placed back into SciBmad and judged by their ability to reproduce the observed
+machine state and predict held-out interventions, not only by componentwise
+parameter error.
+
+### Open research-design questions
+
+Two issues require explicit study before the corresponding benchmarks are
+finalized:
+
+1. **Inverse degeneracy and identifiability.** Different element errors may
+   produce indistinguishable or nearly indistinguishable orbit, tune, or Twiss
+   observations. Candidate treatments include sensitivity-Jacobian
+   rank/singular-value analysis, identifiable parameter groups, multiple
+   diagnostic excitations, physically motivated priors, posterior or
+   multi-hypothesis predictions, and evaluation in the observable or
+   identifiable subspace rather than requiring an unjustified unique inverse.
+2. **Dynamic-aperture and nonlinear-data generation.** The launch-coordinate
+   convention, momentum slices, tracking turns, physical apertures, radiation
+   settings, boundary-search method, fidelity hierarchy, storage
+   representation, and Bmad comparison protocol must be fixed. The nonlinear
+   labels must then be validated before they are described as high-confidence
+   CESR training targets.
+
 ## Directories
 
 ### `wigglers/`

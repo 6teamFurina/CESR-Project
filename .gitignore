@@ -4,6 +4,9 @@ Manifest.toml
 # Jupyter-generated notebook checkpoints.
 **/.ipynb_checkpoints/
 
+# Local persistent context for Codex; not part of the published project.
+PROJECT_MEMORY.md
+
 # Generated Tao control-response artifacts.
 *.npy
 *.init
