@@ -12,10 +12,10 @@ julia --project=. bmad_comparison/nonlinear_twiss/compute_nonlinear_twiss.jl
 
 The `RF_off/` directory contains:
 
-- `nonlinear_twiss.csv`: tunes, global chromaticities, accumulated chromatic
-  phase derivatives, beta/alpha functions, and their first derivatives with
-  respect to relative momentum deviation `delta` at every saved longitudinal
-  position;
+- `nonlinear_twiss.csv`: closed orbit, tunes, global chromaticities,
+  accumulated chromatic phase derivatives, beta/alpha functions, and their
+  first derivatives with respect to relative momentum deviation `delta` at
+  every saved longitudinal position;
 - `chromaticity_along_ring.svg`: accumulated `d(phi_i)/d(delta)`, whose ring-end
   value is the corresponding global chromaticity;
 - `beta_derivative_along_ring.svg`: `d(beta_i)/d(delta)` for modes 1 and 2;

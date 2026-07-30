@@ -1,0 +1,29 @@
+{
+  "format": "cesr-dataset-benchmark-v1",
+  "engine": "Bmad/Tao/PyTao",
+  "mode": "rf_on",
+  "input_csv": "/home/jn577/cesr_scibmad/bmad_comparison/dataset_benchmark/results/preliminary_10/shared_input/cesr_corrector_samples_10.csv",
+  "lattice": "/home/jn577/cesr_scibmad/cesr.bmad",
+  "output_csv": "/home/jn577/cesr_scibmad/bmad_comparison/dataset_benchmark/outputs/bmad_rf_on_samples_10.csv",
+  "sample_count": 10,
+  "control_count": 119,
+  "observable_count": 198,
+  "detector_count": 99,
+  "converged_count": 10,
+  "failed_count": 0,
+  "initialization_seconds": 1.3005313200410455,
+  "warmup_sample_count": 2,
+  "warmup_seconds": 0.304281760007143,
+  "physics_seconds": 0.568615053081885,
+  "variable_update_and_lattice_seconds": 0.49613825883716345,
+  "observable_read_seconds": 0.07243885728530586,
+  "samples_per_second": 17.58659034051271,
+  "write_seconds": 0.003415259998291731,
+  "python_version": "3.9.25",
+  "platform": "Linux-5.14.0-687.23.2.el9_8.x86_64-x86_64-with-glibc2.34",
+  "tao_version_raw": [
+    "Version: 20260726-0"
+  ],
+  "execution_model": "one persistent Tao instance; 119 variable commands batched with suppress_lattice_calc=True; one model recalculation per sample",
+  "timed_region": "variable update + lattice recalculation + observable read"
+}

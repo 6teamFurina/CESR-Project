@@ -177,6 +177,7 @@ comparison between the Bmad and SciBmad models:
 - `bmad_scibmad_control_response_summary.md` summarizes the RF-on and RF-off
   control-response comparisons. Detailed matrices and reports are stored in
   `bmad_control_response_rf_on/` and `bmad_control_response_rf_off/`.
+
 - `bmad_optics_outputs/run_bmad_reference.sh` and
   `bmad_optics_outputs/export_bmad_reference.py` generate the Bmad reference
   data on a Linux system with Bmad/Tao installed.
@@ -190,6 +191,15 @@ comparison between the Bmad and SciBmad models:
   nonlinear Twiss study therefore uses RF cavities off.
 - `bmad_optics_outputs/BMAD_REFERENCE_EXPORT.md` documents the Bmad export
   workflow.
+
+### `dataset_benchmark/`
+
+This independent directory contains the matched RF-on dataset-throughput
+benchmark. Bmad and SciBmad consume the same deterministic 1000-sample,
+119-control input and produce the same 198 labeled detector coordinates. It
+contains the runners, shared inputs, archived source package, Bmad-compatible
+reference lattice, preliminary runs, formal 1000-sample results, and numerical
+comparison reports.
 
 ### `test_codes/`
 

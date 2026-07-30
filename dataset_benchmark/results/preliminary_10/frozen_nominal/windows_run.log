@@ -1,0 +1,10 @@
+SciBmad CESR batch benchmark: 10 samples x 119 controls
+Warmup/compilation batch (2 samples): 57.758 s
+Nominal z0: setup 0.480 s + solve 0.051 s, 3 Newton iterations
+Nominal z0 [x, px, y, py, z, pz] = [-1.6685198602033575e-05, 2.3901125031495305e-03, 1.0543112225980547e-06, 1.7969303419546103e-06, -3.9936116702395509e-04, -7.8037211957000425e-06]
+Model setup: 0.152 s
+Physics: 4.918 s (solve 4.899 + track 0.018), 2.033 samples/s, converged 10/10
+Newton iterations: min 0, median 3.0, mean 2.700, max 3
+Frozen Jacobian: factorization 0.000007 s, closure norm median 1.833e-12, max 7.417e-12
+Output:   D:\Onedrive\Cornell\Accelerator Physics\Ring_Design_Development\CESR Project\dataset_benchmark\results\preliminary_10\frozen_nominal\scibmad_rf_on_samples.csv
+Metadata: D:\Onedrive\Cornell\Accelerator Physics\Ring_Design_Development\CESR Project\dataset_benchmark\results\preliminary_10\frozen_nominal\scibmad_rf_on_metadata.toml

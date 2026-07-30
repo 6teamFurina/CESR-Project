@@ -1,0 +1,7 @@
+SciBmad CESR batch benchmark: 1000 samples x 119 controls
+Warmup/compilation batch (2 samples): 75.016 s
+Model setup: 0.158 s
+Physics: 26.457 s (solve 25.894 + track 0.562), 37.798 samples/s, converged 1000/1000
+Newton iterations: min 3, median 3.0, mean 3.000, max 3
+Output:   D:\Onedrive\Cornell\Accelerator Physics\Ring_Design_Development\CESR Project\dataset_benchmark\results\formal_1000\scibmad_bmad_tolerance_zero\scibmad_rf_on_samples.csv
+Metadata: D:\Onedrive\Cornell\Accelerator Physics\Ring_Design_Development\CESR Project\dataset_benchmark\results\formal_1000\scibmad_bmad_tolerance_zero\scibmad_rf_on_metadata.toml
