@@ -90,7 +90,6 @@ julia --threads=1 --project=. \
   dataset_benchmark/benchmark_scibmad.jl \
   --initial-guess=response-linear \
   --jacobian-mode=frozen-nominal \
-  --fallback-full-newton=true \
   --reltol=1e-8 \
   --abstol=1e-10
 ```
@@ -163,68 +162,37 @@ or replaced before an equivalent batched RF-off benchmark is claimed.
 
 ## Current results
 
-All formal runs completed all 1000 samples. On the shared Linux host
-`lnx201.classe.cornell.edu`, Bmad/Tao/PyTao used `67.370 s` for timed physics
-work (`14.843 samples/s`), while SciBmad with one Julia thread and module-cache
-creation disabled used `280.486 s` (`3.565 samples/s`). The observed
-same-host result makes Bmad `4.16x` faster in the timed physics region.
-However, GNU `time` reports only `49%` average CPU for the SciBmad process, so
-the paired runs should be repeated under controlled host load before treating
-this as a stable hardware-normalized ratio. See
-`results/formal_1000/bmad_scibmad_lnx201_comparison.md`.
+All rows used the same 1000 samples and compared all 198 detector coordinates
+per sample. `Maximum output residual` is the largest absolute detector value
+difference from the Bmad table over all 198,000 comparisons. `Maximum closure
+residual` is the final six-dimensional one-turn closure norm; `--` means that
+the older run did not record this diagnostic.
 
-For context, the Windows SciBmad run on an AMD Ryzen 9 5900HX used `65.155 s`
-(`15.348 samples/s`), but that cross-machine number cannot establish a speedup.
-It is retained in `bmad_scibmad_cross_machine_comparison.md`.
+| Result | Machine | Tolerances `(rel, abs)` | Initial guess / Jacobian | Converged | Physics time (s) | Samples/s | Maximum output residual vs Bmad (m) | Correlation vs Bmad | Maximum closure residual |
+|---|---|---|---|---:|---:|---:|---:|---:|---:|
+| Bmad/Tao/PyTao | `lnx201` Linux | defaults `(1e-8, 1e-10)` | previous orbit; Tao one-turn matrix reuse | 1000/1000 | 67.370 | 14.843 | 0 | 1 | -- |
+| SciBmad, high precision | `lnx201` Linux | `(1e-13, 1e-13)` | zero; full batched AD Jacobian | 1000/1000 | 280.486 | 3.565 | `8.138494e-6` | `0.999999966415495` | -- |
+| SciBmad, high precision | local Windows, Ryzen 9 5900HX | `(1e-13, 1e-13)` | zero; full batched AD Jacobian | 1000/1000 | 64.356 | 15.539 | `8.138494e-6` | `0.999999966415495` | -- |
+| SciBmad, normal precision | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | zero; full batched AD Jacobian | 1000/1000 | 26.457 | 37.798 | `8.138494e-6` | `0.999999966415495` | -- |
+| SciBmad, frozen + fallback | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | fixed nominal `z0`; frozen nominal Jacobian | 1000/1000 | 8.163 | 122.506 | `8.138494e-6` | `0.999999966415489` | `9.802e-11` |
+| SciBmad, response + frozen + fallback | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | per-sample `z0 + R*delta-k`; frozen nominal Jacobian | 1000/1000 | **6.855** | **145.885** | `8.138494e-6` | `0.999999966415499` | `8.104e-11` |
 
-All 1000 samples converged in both engines. Across the complete `1000 x 198`
-Bmad/SciBmad tables, correlation is `0.999999966415`, global RMSE is
-`2.268e-6 m`, and median per-sample relative 2-norm difference is `0.0338%`.
-The Linux and Windows SciBmad output tables are exactly equal, with zero
-differing numerical entries.
+The final response-initialized row is the maintained default. It checks every
+lane's closure and reruns only failed lanes with full-AD Newton; the formal
+run needed zero fallbacks. Relative to fixed `z0`, the response predictor
+reduced median/mean iterations from `3 / 2.994` to `2 / 1.995` and recurring
+physics time by `16.0%`.
 
-On the local Windows machine, a controlled initial-guess comparison found that
-using the nominal closed orbit reduced mean Newton iterations from `4.034` to
-`3.101`, but left the maximum at `12`. The measured physics time was
-`64.356 s` from a zero guess and `65.709 s` from the nominal orbit, so a shared
-`z0` alone did not accelerate the current single batched solve. The two output
-tables agree to a maximum absolute difference of `1.574e-13 m`. See
-`results/formal_1000/scibmad_initial_guess_comparison.md`.
+The cached `6 x 119` response loaded in `0.000617 s` in the validation run.
+The original matrix construction took `2.389 s` after compilation. Recompute
+it after changes to the lattice, RF configuration, energy, or control
+definitions.
 
-Aligning SciBmad's tolerance values with Bmad's defaults (`reltol=1e-8`,
-`abstol=1e-10`) reduced the local Windows physics time from `64.356 s` to
-`26.457 s`, a `2.432x` speedup. All 1000 samples converged in exactly three
-Newton iterations. Relative to the original `1e-13` SciBmad result, the maximum
-orbit change was only `1.608e-13 m`. Bmad and SciBmad still use different
-mathematical stopping rules, and the existing Bmad timing was measured on a
-different machine. See
-`results/formal_1000/scibmad_tolerance_comparison.md`.
-
-A local experimental solver then reused one nominal `6 x 6` closed-orbit
-Jacobian for all 1000 samples and modified-Newton iterations. With the same
-nominal-`z0` initial guess and Bmad-default tolerance values, the full-AD solver
-used `22.247 s` while frozen Jacobian used `7.535 s`, a controlled `2.952x`
-physics speedup. All samples converged; the maximum final one-turn residual
-norm was `9.802e-11`, and the maximum detector-orbit difference from full AD
-was `5.566e-10 m`. The runner now checks every lane's final closure and sends
-only failed lanes through a full-AD Newton sub-batch. The fallback-enabled
-1,000-sample repeat used `8.163 s` with zero fallbacks; a forced single-lane
-test recovered that lane successfully. See
-`results/formal_1000/scibmad_frozen_jacobian_comparison.md`.
-
-Using the GTPSA-derived `6 x 119` closed-orbit control response to form an
-independent initial guess for every sample reduced the frozen solver's
-median/mean iterations from `3 / 2.994` to `2 / 1.995`. The recurring physics
-time fell from `8.163 s` to `6.855 s` (`1.191x`, or `16.0%` less time), with
-all 1000 samples converged, zero fallbacks, and maximum closure norm
-`8.104e-11`. The response matrix itself took `2.389 s` to build after
-compilation, so this is a net benefit when the matrix is reused for later
-digital-twin batches; it is not a cold-start speedup claim. The first-process
-warmup/compilation cost for the response path was `100.764 s`.
-
-The requested Bmad, Linux SciBmad, and local SciBmad configurations are
-collected in one table in
-`results/formal_1000/all_benchmark_results_comparison.md`.
+The Bmad and Linux SciBmad measurements share `lnx201`, but were run at
+different times on a shared host; the SciBmad process reported only `49%`
+average CPU utilization. Local Windows versus Linux Bmad timing ratios are
+cross-machine context, not controlled speedup claims. Detailed comparisons
+remain in `results/formal_1000/`.
 
 ## Directory layout
 

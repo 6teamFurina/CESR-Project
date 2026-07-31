@@ -32,7 +32,6 @@ function parse_args(args)
         "warmup-samples" => "2",
         "initial-guess" => "response-linear",
         "jacobian-mode" => "frozen-nominal",
-        "fallback-full-newton" => "true",
         "response-matrix-cache" => joinpath(HERE, "reference", "closed_orbit_response_6x119.csv"),
         "recompute-response" => "false",
     )
@@ -54,8 +53,6 @@ function parse_args(args)
         options["initial-guess"] in ("nominal-z0", "response-linear") ||
             error("--jacobian-mode=frozen-nominal requires --initial-guess=nominal-z0 or response-linear")
     end
-    lowercase(options["fallback-full-newton"]) in ("true", "false") ||
-        error("--fallback-full-newton must be true or false")
     lowercase(options["recompute-response"]) in ("true", "false") ||
         error("--recompute-response must be true or false")
     return options
@@ -501,7 +498,6 @@ function simulate_batch(
     values::Matrix{Float64};
     initial_guess_mode::String,
     jacobian_mode::String,
-    fallback_full_newton::Bool,
     response_matrix_cache::AbstractString,
     recompute_response::Bool,
     reltol::Float64,
@@ -541,7 +537,7 @@ function simulate_batch(
     else
         error("Unsupported Jacobian mode: $jacobian_mode")
     end
-    if jacobian_mode == "frozen-nominal" && fallback_full_newton
+    if jacobian_mode == "frozen-nominal"
         result = apply_full_newton_fallback(
             result,
             names,
@@ -624,8 +620,6 @@ function main(args=ARGS)
     maxiter = parse(Int, options["maxiter"])
     initial_guess_mode = options["initial-guess"]
     jacobian_mode = options["jacobian-mode"]
-    fallback_full_newton =
-        lowercase(options["fallback-full-newton"]) == "true"
     response_matrix_cache = abspath(options["response-matrix-cache"])
     recompute_response =
         lowercase(options["recompute-response"]) == "true"
@@ -641,7 +635,6 @@ function main(args=ARGS)
         samples.values[1:warmup_samples, :];
         initial_guess_mode,
         jacobian_mode,
-        fallback_full_newton,
         response_matrix_cache,
         recompute_response,
         reltol,
@@ -714,7 +707,7 @@ function main(args=ARGS)
                 maxiter,
             )
         end
-        if jacobian_mode == "frozen-nominal" && fallback_full_newton
+        if jacobian_mode == "frozen-nominal"
             current_result = apply_full_newton_fallback(
                 current_result,
                 samples.names,
@@ -791,7 +784,8 @@ function main(args=ARGS)
         "warmup_seconds" => warmup_elapsed,
         "initial_guess_mode" => initial_guess_mode,
         "jacobian_mode" => jacobian_mode,
-        "fallback_full_newton_enabled" => fallback_full_newton,
+        "fallback_full_newton_enabled" =>
+            jacobian_mode == "frozen-nominal",
         "nominal_model_setup_seconds" => guess.nominal_model_setup_seconds,
         "nominal_closed_orbit_seconds" => guess.nominal_solve_seconds,
         "nominal_closed_orbit_iterations" => guess.nominal_iterations,
@@ -819,6 +813,8 @@ function main(args=ARGS)
         "newton_iterations_median" => median(result.iterations),
         "newton_iterations_mean" => mean(result.iterations),
         "newton_iterations_max" => maximum(result.iterations),
+        "final_closure_norm_median" => median(result.closure_norms),
+        "final_closure_norm_max" => maximum(result.closure_norms),
         "detector_tracking_seconds" => result.track_seconds,
         "samples_per_second" => size(samples.values, 1) / physics_seconds,
         "write_seconds" => write_seconds,
@@ -839,8 +835,6 @@ function main(args=ARGS)
     if jacobian_mode == "frozen-nominal"
         metadata["frozen_jacobian_factorization_seconds"] =
             result.factorization_seconds
-        metadata["final_closure_norm_median"] = median(result.closure_norms)
-        metadata["final_closure_norm_max"] = maximum(result.closure_norms)
         metadata["fallback_count"] = result.fallback_count
         metadata["fallback_success_count"] = result.fallback_success_count
         metadata["fallback_seconds"] = result.fallback_seconds

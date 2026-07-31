@@ -17,7 +17,8 @@ automatic differentiation at each iteration. The experimental solver:
 3. computes one pivoted LU factorization;
 4. reuses that factorization for every sample and modified-Newton iteration;
 5. recomputes the full nonlinear one-turn residual at every iteration;
-6. independently checks final one-turn closure while collecting detector data.
+6. independently checks final one-turn closure while collecting detector data;
+7. reruns only failed lanes with full-AD Newton.
 
 This freezes only the derivative. It does not replace nonlinear CESR tracking
 with a linear model.
@@ -27,12 +28,12 @@ with a linear model.
 | Solver | Converged | Closed-orbit solve | Solve + detector tracking | Throughput | Iterations (min / median / mean / max) |
 |---|---:|---:|---:|---:|---:|
 | Full AD Jacobian each iteration | 1000/1000 | 21.655 s | 22.247 s | 44.950 samples/s | 0 / 2 / 1.998 / 2 |
-| Frozen nominal Jacobian | 1000/1000 | 6.986 s | 7.535 s | 132.709 samples/s | 0 / 3 / 2.994 / 3 |
+| Frozen nominal Jacobian + full-AD fallback | 1000/1000 | 7.601 s | 8.163 s | 122.506 samples/s | 0 / 3 / 2.994 / 3 |
 
-With the same initial guess and tolerances, frozen Jacobian is `2.952x` faster
-in the timed physics region. It needs one extra modified-Newton iteration, but
-ordinary residual tracking is much cheaper than rebuilding the full batched AD
-Jacobian.
+With the same initial guess and tolerances, the maintained fallback-enabled
+frozen solver is `2.725x` faster in the timed physics region. It needs one
+extra modified-Newton iteration, but ordinary residual tracking is much
+cheaper than rebuilding the full batched AD Jacobian.
 
 The one-time LU factorization took `6.6e-6 s`. Its cost is negligible. The
 speedup comes from eliminating repeated full-ring derivative tracking, not from
@@ -75,13 +76,13 @@ corrector changes are small enough that one nominal Jacobian remains accurate.
 
 The current implementation is experimental and calls private SciBmad residual
 helpers. It now checks every final closure and reruns only failed lanes in a
-full-AD Newton sub-batch. The fallback-enabled 1,000-sample repeat used
-`8.163 s`, converged 1000/1000, and required zero fallbacks. A forced
-single-lane test triggered the duplicate-lane path required by BatchParam,
-recovered 1/1 lanes, and produced a final closure norm of `7.439e-12`.
-A production implementation should still expose a supported residual API.
+full-AD Newton sub-batch. The 1,000-sample run required zero fallbacks. A
+forced single-lane test triggered the duplicate-lane path required by
+BatchParam, recovered 1/1 lanes, and produced a final closure norm of
+`7.439e-12`. A production implementation should still expose a supported
+residual API.
 
 The existing remote Bmad result used 67.370 s while this local frozen-Jacobian
-run used 7.535 s. The resulting `8.941x` throughput ratio is cross-machine and
-must not be presented as a controlled Bmad/SciBmad speedup. The same run should
-be repeated on `lnx201`.
+run used 8.163 s. The resulting `8.253x` throughput ratio is cross-machine
+and must not be presented as a controlled Bmad/SciBmad speedup. The same run
+should be repeated on `lnx201`.

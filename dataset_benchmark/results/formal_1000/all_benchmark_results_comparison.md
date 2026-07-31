@@ -54,9 +54,7 @@ For the frozen-Jacobian implementation:
 
 A separate same-initial-guess test isolates the Jacobian strategy: local
 full-AD Newton with nominal `z0` used `22.247 s`; the fallback-enabled frozen
-repeat used `8.163 s`, an observed `2.725x` speedup. The earlier frozen run
-without fallback used `7.535 s`, indicating ordinary run-to-run timing
-variation of several percent.
+repeat used `8.163 s`, an observed `2.725x` speedup.
 
 The new `6 x 119` response predictor reduced the frozen solver's iteration
 count from median/mean `3 / 2.994` to `2 / 1.995`. Physics time fell from
