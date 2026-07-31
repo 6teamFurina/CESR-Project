@@ -9,6 +9,7 @@ loading, Julia compilation warmup, and CSV writing are reported separately.
 """
 
 using Beamlines
+using GTPSA
 using LinearAlgebra
 using Printf
 using SciBmad
@@ -22,16 +23,18 @@ include(joinpath(PROJECT_ROOT, "cesr_model.jl"))
 function parse_args(args)
     options = Dict{String,String}(
         "inputs" => joinpath(HERE, "inputs", "cesr_corrector_samples_1000.csv"),
-        "output" => joinpath(HERE, "results", "formal_1000", "scibmad", "scibmad_rf_on_samples.csv"),
-        "metadata" => joinpath(HERE, "results", "formal_1000", "scibmad", "scibmad_rf_on_metadata.toml"),
+        "output" => joinpath(HERE, "results", "formal_1000", "scibmad_response_initial_frozen_fallback_bmad_tolerance", "scibmad_rf_on_samples.csv"),
+        "metadata" => joinpath(HERE, "results", "formal_1000", "scibmad_response_initial_frozen_fallback_bmad_tolerance", "scibmad_rf_on_metadata.toml"),
         "mode" => "rf_on",
-        "reltol" => "1e-13",
-        "abstol" => "1e-13",
+        "reltol" => "1e-8",
+        "abstol" => "1e-10",
         "maxiter" => "100",
         "warmup-samples" => "2",
-        "initial-guess" => "zero",
-        "jacobian-mode" => "full",
+        "initial-guess" => "response-linear",
+        "jacobian-mode" => "frozen-nominal",
         "fallback-full-newton" => "true",
+        "response-matrix-cache" => joinpath(HERE, "reference", "closed_orbit_response_6x119.csv"),
+        "recompute-response" => "false",
     )
     for argument in args
         startswith(argument, "--") ||
@@ -43,16 +46,18 @@ function parse_args(args)
     end
     options["mode"] == "rf_on" ||
         error("The first benchmark release supports --mode=rf_on only")
-    options["initial-guess"] in ("zero", "nominal-z0") ||
-        error("--initial-guess must be zero or nominal-z0")
+    options["initial-guess"] in ("zero", "nominal-z0", "response-linear") ||
+        error("--initial-guess must be zero, nominal-z0, or response-linear")
     options["jacobian-mode"] in ("full", "frozen-nominal") ||
         error("--jacobian-mode must be full or frozen-nominal")
     if options["jacobian-mode"] == "frozen-nominal"
-        options["initial-guess"] == "nominal-z0" ||
-            error("--jacobian-mode=frozen-nominal requires --initial-guess=nominal-z0")
+        options["initial-guess"] in ("nominal-z0", "response-linear") ||
+            error("--jacobian-mode=frozen-nominal requires --initial-guess=nominal-z0 or response-linear")
     end
     lowercase(options["fallback-full-newton"]) in ("true", "false") ||
         error("--fallback-full-newton must be true or false")
+    lowercase(options["recompute-response"]) in ("true", "false") ||
+        error("--recompute-response must be true or false")
     return options
 end
 
@@ -360,12 +365,16 @@ end
 
 function prepare_initial_guess(
     names::Vector{String},
-    n_samples::Int,
+    values::Matrix{Float64},
     mode::String;
+    response_matrix_cache::AbstractString,
+    recompute_response::Bool,
     reltol::Float64,
     abstol::Float64,
     maxiter::Int,
 )
+    n_samples, n_controls = size(values)
+    n_controls == length(names) || error("Control matrix width does not match labels")
     if mode == "zero"
         return (;
             v0=zeros(n_samples, 6),
@@ -374,10 +383,18 @@ function prepare_initial_guess(
             nominal_model_setup_seconds=0.0,
             nominal_solve_seconds=0.0,
             nominal_iterations=0,
+            response_matrix=zeros(6, n_controls),
+            response_model_setup_seconds=0.0,
+            response_map_seconds=0.0,
+            response_load_seconds=0.0,
+            response_cache_write_seconds=0.0,
+            response_closure_residual_max=0.0,
+            response_source="not-used",
         )
     end
 
-    mode == "nominal-z0" || error("Unsupported initial-guess mode: $mode")
+    mode in ("nominal-z0", "response-linear") ||
+        error("Unsupported initial-guess mode: $mode")
     setup_seconds = @elapsed nominal_model = load_cesr_model(
         zero_value=0.0,
         rf_on=true,
@@ -398,13 +415,84 @@ function prepare_initial_guess(
     nominal_orbit = vec(copy(nominal_solution.v0))
     nominal_jacobian = Matrix(nominal_solution.sol.jac)
     nominal_iterations = Int(nominal_solution.sol.iters)
+
+    response_matrix = zeros(6, n_controls)
+    response_model_setup_seconds = 0.0
+    response_map_seconds = 0.0
+    response_load_seconds = 0.0
+    response_cache_write_seconds = 0.0
+    response_closure_residual_max = 0.0
+    response_source = "not-used"
+    if mode == "response-linear"
+        if isfile(response_matrix_cache) && !recompute_response
+            response_load_seconds = @elapsed begin
+                response_matrix .= read_response_matrix(
+                    response_matrix_cache,
+                    names,
+                )
+            end
+            response_source = "loaded"
+        else
+            response_model_setup_seconds = @elapsed begin
+                descriptor = Descriptor(6, 1, n_controls, 1)
+                variables = vars(descriptor)
+                parameters = params(descriptor)
+                response_model = load_cesr_model(
+                    zero_value=zero(parameters[1]),
+                    rf_on=true,
+                )
+                for (index, name) in enumerate(names)
+                    response_model.controls[name] = parameters[index]
+                end
+            end
+            response_map_seconds = @elapsed begin
+                input_map = [
+                    nominal_orbit[index] + copy(variables[index])
+                    for index in 1:6
+                ]
+                bunch = Bunch(v=reshape(input_map, 1, 6))
+                SciBmad.BTBL.check_bl_bunch!(bunch, response_model.ring, false)
+                track!(bunch, response_model.ring)
+                full_jacobian = Matrix(
+                    GTPSA.jacobian(vec(bunch.coords.v); include_params=true),
+                )
+                size(full_jacobian) == (6, 6 + n_controls) ||
+                    error("Unexpected one-turn GTPSA Jacobian size: $(size(full_jacobian))")
+                A = full_jacobian[:, 1:6]
+                B = full_jacobian[:, 7:end]
+                response_matrix .= (I - A) \ B
+                response_closure_residual_max = maximum(
+                    abs,
+                    (I - A) * response_matrix - B,
+                )
+            end
+            response_cache_write_seconds = @elapsed write_response_matrix(
+                response_matrix_cache,
+                names,
+                response_matrix,
+            )
+            response_source = "computed"
+        end
+    end
+
+    v0 = repeat(reshape(nominal_orbit, 1, 6), n_samples, 1)
+    if mode == "response-linear"
+        v0 .+= values * transpose(response_matrix)
+    end
     return (;
-        v0=repeat(reshape(nominal_orbit, 1, 6), n_samples, 1),
+        v0,
         nominal_orbit,
         nominal_jacobian,
         nominal_model_setup_seconds=setup_seconds,
         nominal_solve_seconds=solve_seconds,
         nominal_iterations,
+        response_matrix,
+        response_model_setup_seconds,
+        response_map_seconds,
+        response_load_seconds,
+        response_cache_write_seconds,
+        response_closure_residual_max,
+        response_source,
     )
 end
 
@@ -414,14 +502,18 @@ function simulate_batch(
     initial_guess_mode::String,
     jacobian_mode::String,
     fallback_full_newton::Bool,
+    response_matrix_cache::AbstractString,
+    recompute_response::Bool,
     reltol::Float64,
     abstol::Float64,
     maxiter::Int,
 )
     guess = prepare_initial_guess(
         names,
-        size(values, 1),
+        values,
         initial_guess_mode;
+        response_matrix_cache,
+        recompute_response,
         reltol,
         abstol,
         maxiter,
@@ -479,6 +571,48 @@ function write_outputs(path, sample_ids, result)
     return labels
 end
 
+function write_response_matrix(path, names, response_matrix)
+    size(response_matrix) == (6, length(names)) ||
+        error("Closed-orbit response matrix has an unexpected size")
+    mkpath(dirname(path))
+    coordinate_labels = ("x", "px", "y", "py", "z", "pz")
+    open(path, "w") do io
+        println(io, join(vcat("coordinate", names), ','))
+        for row in 1:6
+            fields = Any[coordinate_labels[row]]
+            append!(fields, response_matrix[row, :])
+            println(io, join(fields, ','))
+        end
+    end
+    return path
+end
+
+function read_response_matrix(path, names)
+    lines = readlines(path)
+    length(lines) == 7 ||
+        error("Cached closed-orbit response must have one header and six rows: $path")
+    header = split(lines[1], ',')
+    first(header) == "coordinate" ||
+        error("Cached response first column must be coordinate: $path")
+    String.(header[2:end]) == names ||
+        error("Cached response control names/order do not match the input CSV: $path")
+    coordinate_labels = ("x", "px", "y", "py", "z", "pz")
+    response_matrix = Matrix{Float64}(undef, 6, length(names))
+    for row in 1:6
+        fields = split(lines[row + 1], ',')
+        length(fields) == length(header) ||
+            error("Cached response row $row has the wrong width: $path")
+        fields[1] == coordinate_labels[row] ||
+            error("Cached response coordinate order is invalid at row $row: $path")
+        for column in eachindex(names)
+            response_matrix[row, column] = parse(Float64, fields[column + 1])
+        end
+    end
+    all(isfinite, response_matrix) ||
+        error("Cached response contains a non-finite value: $path")
+    return response_matrix
+end
+
 function main(args=ARGS)
     options = parse_args(args)
     inputs = abspath(options["inputs"])
@@ -492,6 +626,9 @@ function main(args=ARGS)
     jacobian_mode = options["jacobian-mode"]
     fallback_full_newton =
         lowercase(options["fallback-full-newton"]) == "true"
+    response_matrix_cache = abspath(options["response-matrix-cache"])
+    recompute_response =
+        lowercase(options["recompute-response"]) == "true"
     warmup_samples = min(parse(Int, options["warmup-samples"]), size(samples.values, 1))
     warmup_samples >= 1 || error("--warmup-samples must be positive")
 
@@ -505,6 +642,8 @@ function main(args=ARGS)
         initial_guess_mode,
         jacobian_mode,
         fallback_full_newton,
+        response_matrix_cache,
+        recompute_response,
         reltol,
         abstol,
         maxiter,
@@ -513,13 +652,15 @@ function main(args=ARGS)
 
     guess = prepare_initial_guess(
         samples.names,
-        size(samples.values, 1),
+        samples.values,
         initial_guess_mode;
+        response_matrix_cache,
+        recompute_response,
         reltol,
         abstol,
         maxiter,
     )
-    if initial_guess_mode == "nominal-z0"
+    if initial_guess_mode != "zero"
         @printf(
             "Nominal z0: setup %.3f s + solve %.3f s, %d Newton iterations\n",
             guess.nominal_model_setup_seconds,
@@ -530,6 +671,24 @@ function main(args=ARGS)
             "Nominal z0 [x, px, y, py, z, pz] = [%s]\n",
             join((@sprintf("%.16e", value) for value in guess.nominal_orbit), ", "),
         )
+    end
+    if initial_guess_mode == "response-linear"
+        if guess.response_source == "loaded"
+            @printf(
+                "Closed-orbit response 6x%d: loaded cache in %.6f s\n",
+                length(samples.names),
+                guess.response_load_seconds,
+            )
+        else
+            @printf(
+                "Closed-orbit response 6x%d: setup %.3f s + one-turn map %.3f s, equation residual max %.3e\n",
+                length(samples.names),
+                guess.response_model_setup_seconds,
+                guess.response_map_seconds,
+                guess.response_closure_residual_max,
+            )
+        end
+        println("Response cache: $response_matrix_cache")
     end
 
     model_timed = @timed prepare_batch_model(samples.names, samples.values)
@@ -603,6 +762,18 @@ function main(args=ARGS)
 
     write_seconds = @elapsed labels = write_outputs(output, samples.sample_ids, result)
     mkpath(dirname(metadata_path))
+    response_matrix_path = ""
+    if initial_guess_mode == "response-linear"
+        response_matrix_path = joinpath(
+            dirname(metadata_path),
+            "closed_orbit_response_6x119.csv",
+        )
+        write_response_matrix(
+            response_matrix_path,
+            samples.names,
+            guess.response_matrix,
+        )
+    end
     metadata = Dict(
         "format" => "cesr-dataset-benchmark-v1",
         "engine" => "SciBmad",
@@ -625,6 +796,17 @@ function main(args=ARGS)
         "nominal_closed_orbit_seconds" => guess.nominal_solve_seconds,
         "nominal_closed_orbit_iterations" => guess.nominal_iterations,
         "nominal_closed_orbit" => guess.nominal_orbit,
+        "response_matrix_path" => response_matrix_path,
+        "response_matrix_cache" => response_matrix_cache,
+        "response_matrix_source" => guess.response_source,
+        "response_matrix_shape" => [size(guess.response_matrix)...],
+        "response_model_setup_seconds" => guess.response_model_setup_seconds,
+        "response_map_seconds" => guess.response_map_seconds,
+        "response_load_seconds" => guess.response_load_seconds,
+        "response_cache_write_seconds" =>
+            guess.response_cache_write_seconds,
+        "response_closure_residual_max" =>
+            guess.response_closure_residual_max,
         "nominal_jacobian_condition_number" => (
             jacobian_mode == "frozen-nominal" ?
             cond(guess.nominal_jacobian) : 0.0
@@ -670,6 +852,8 @@ function main(args=ARGS)
     end
     println("Output:   $output")
     println("Metadata: $metadata_path")
+    isempty(response_matrix_path) ||
+        println("Response: $response_matrix_path")
     return 0
 end
 

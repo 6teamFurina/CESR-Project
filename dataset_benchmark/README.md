@@ -54,8 +54,14 @@ The SciBmad runner represents each corrector as a `BatchParam` containing all
 sample values, solves the RF-on closed orbits as one batch, and then tracks the
 solved orbits once around the ring to collect detector coordinates.
 
-The default Newton initial guess is the six-dimensional zero vector. To first
-solve the zero-control nominal closed orbit and use it for every sample:
+By default, the runner calculates the nominal closed orbit and the `6 x 119`
+closed-orbit control response, uses `z0 + R * delta-k` as each sample's
+initial guess, and runs the frozen-nominal-Jacobian solver with automatic
+full-AD fallback. The default tolerances are the normal/Bmad-default values
+`reltol=1e-8` and `abstol=1e-10`.
+
+To instead solve the zero-control nominal closed orbit and use the same `z0`
+for every sample:
 
 ```console
 julia --threads=1 --project=. \
@@ -64,7 +70,49 @@ julia --threads=1 --project=. \
 ```
 
 The runner records the nominal-orbit cost and the Newton iteration statistics
-separately.
+separately. The original full-AD, zero-initial-guess configuration remains
+available explicitly:
+
+```console
+julia --threads=1 --project=. \
+  dataset_benchmark/benchmark_scibmad.jl \
+  --initial-guess=zero \
+  --jacobian-mode=full
+```
+
+To calculate the first-order `6 x 119` closed-orbit response
+`R = dz_closed/dk`, give every sample its own `z0 + R * delta-k` initial
+guess, reuse the nominal Jacobian, and automatically send any failed lanes
+back through full-AD Newton:
+
+```console
+julia --threads=1 --project=. \
+  dataset_benchmark/benchmark_scibmad.jl \
+  --initial-guess=response-linear \
+  --jacobian-mode=frozen-nominal \
+  --fallback-full-newton=true \
+  --reltol=1e-8 \
+  --abstol=1e-10
+```
+
+The generated response matrix is saved beside the metadata as
+`closed_orbit_response_6x119.csv`. Response construction, nominal-orbit
+solution, recurring physics, and warmup/compilation are timed separately.
+The default run first loads the validated cache at
+`reference/closed_orbit_response_6x119.csv`; it checks the `6 x 119` shape,
+coordinate labels, control names and exact control-column order. If the cache
+is missing, the runner calculates it with GTPSA and writes it to that path.
+Force a refresh after changing the lattice, RF configuration, energy, or
+control definitions with:
+
+```console
+julia --threads=1 --project=. \
+  dataset_benchmark/benchmark_scibmad.jl \
+  --recompute-response=true
+```
+
+An alternative cache can be selected with
+`--response-matrix-cache=path/to/response.csv`.
 
 ## Bmad/Tao run
 
@@ -164,7 +212,17 @@ only failed lanes through a full-AD Newton sub-batch. The fallback-enabled
 test recovered that lane successfully. See
 `results/formal_1000/scibmad_frozen_jacobian_comparison.md`.
 
-The five requested Bmad, Linux SciBmad, and local SciBmad configurations are
+Using the GTPSA-derived `6 x 119` closed-orbit control response to form an
+independent initial guess for every sample reduced the frozen solver's
+median/mean iterations from `3 / 2.994` to `2 / 1.995`. The recurring physics
+time fell from `8.163 s` to `6.855 s` (`1.191x`, or `16.0%` less time), with
+all 1000 samples converged, zero fallbacks, and maximum closure norm
+`8.104e-11`. The response matrix itself took `2.389 s` to build after
+compilation, so this is a net benefit when the matrix is reused for later
+digital-twin batches; it is not a cold-start speedup claim. The first-process
+warmup/compilation cost for the response path was `100.764 s`.
+
+The requested Bmad, Linux SciBmad, and local SciBmad configurations are
 collected in one table in
 `results/formal_1000/all_benchmark_results_comparison.md`.
 

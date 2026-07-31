@@ -13,6 +13,7 @@ detectors (`1000 x 198` output table), RF on.
 | SciBmad, local high precision | Windows, Ryzen 9 5900HX | `(1e-13, 1e-13)` | zero; full batched AD Jacobian each Newton iteration | 1000/1000 | 74.790 | 64.356 | 139.962 | 15.539 | 1.047 | `2.268158e-6` |
 | SciBmad, local normal precision | Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | zero; full batched AD Jacobian each Newton iteration | 1000/1000 | 75.016 | 26.457 | 102.270 | 37.798 | 2.546 | `2.268158e-6` |
 | SciBmad, local frozen Jacobian + fallback | Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | nominal `z0`; one nominal Jacobian reused; failed lanes use full AD | 1000/1000 | 59.235 | 8.163 | 68.123** | 122.506 | 8.253 | `2.268158e-6` |
+| SciBmad, response initial guess + frozen Jacobian + fallback | Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | per-sample `z0 + (dz/dk) delta-k`; nominal Jacobian reused; failed lanes use full AD | 1000/1000 | 100.764 | 6.855 | 110.602*** | 145.885 | 9.829 | `2.268158e-6` |
 
 \* Bmad and SciBmad use different mathematical stopping rules even when the
 two tolerance values match. Bmad checks component-wise one-turn closure;
@@ -23,9 +24,16 @@ nominal closed-orbit/Jacobian calculation (`0.216 s`), regular model setup,
 warmup, physics, and writing. Other totals are the sums of the components
 available in their metadata. They are not external wall-clock measurements.
 
+\*** The response-initialized component total additionally includes construction
+of the parameterized GTPSA model and its `6 x 119` closed-orbit response
+matrix (`2.389 s` after compilation). Its `100.764 s` warmup includes
+first-process compilation of this GTPSA path. The matrix can be reused by a
+long-lived digital twin; the `6.855 s` physics time is the recurring-batch
+quantity, not the cold-start total.
+
 ## Interpretation
 
-Only the three local SciBmad rows are same-machine comparisons. The
+Only the four local SciBmad rows are same-machine comparisons. The
 `Observed rate / Bmad` column is included to place all requested results in one
 table, but ratios involving local Windows SciBmad and Linux Bmad are
 cross-machine and are not controlled speedup claims.
@@ -49,6 +57,14 @@ full-AD Newton with nominal `z0` used `22.247 s`; the fallback-enabled frozen
 repeat used `8.163 s`, an observed `2.725x` speedup. The earlier frozen run
 without fallback used `7.535 s`, indicating ordinary run-to-run timing
 variation of several percent.
+
+The new `6 x 119` response predictor reduced the frozen solver's iteration
+count from median/mean `3 / 2.994` to `2 / 1.995`. Physics time fell from
+`8.163 s` to `6.855 s`, an observed `1.191x` recurring-batch speedup
+(`16.0%` less time). All 1000 lanes passed the final closure check, with no
+full-AD fallback; the maximum closure norm was `8.104e-11`. Relative to the
+fixed-`z0` frozen output, detector-orbit RMSE was `9.411e-12 m` and the maximum
+difference was `5.563e-10 m`.
 
 ## Numerical agreement
 
