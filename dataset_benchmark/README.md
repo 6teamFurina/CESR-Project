@@ -172,6 +172,7 @@ the older run did not record this diagnostic.
 |---|---|---|---|---:|---:|---:|---:|---:|---:|
 | Bmad/Tao/PyTao | `lnx201` Linux | defaults `(1e-8, 1e-10)` | previous orbit; Tao one-turn matrix reuse | 1000/1000 | 67.370 | 14.843 | 0 | 1 | -- |
 | SciBmad, high precision | `lnx201` Linux | `(1e-13, 1e-13)` | zero; full batched AD Jacobian | 1000/1000 | 280.486 | 3.565 | `8.138494e-6` | `0.999999966415495` | -- |
+| SciBmad, response + frozen + fallback | `lnx201` Linux | `(1e-8, 1e-10)` | per-sample `z0 + R*delta-k`; frozen nominal Jacobian | 1000/1000 | **33.178** | **30.140** | `8.138494e-6` | `0.999999966415499` | `8.104e-11` |
 | SciBmad, high precision | local Windows, Ryzen 9 5900HX | `(1e-13, 1e-13)` | zero; full batched AD Jacobian | 1000/1000 | 64.356 | 15.539 | `8.138494e-6` | `0.999999966415495` | -- |
 | SciBmad, normal precision | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | zero; full batched AD Jacobian | 1000/1000 | 26.457 | 37.798 | `8.138494e-6` | `0.999999966415495` | -- |
 | SciBmad, frozen + fallback | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | fixed nominal `z0`; frozen nominal Jacobian | 1000/1000 | 8.163 | 122.506 | `8.138494e-6` | `0.999999966415489` | `9.802e-11` |
@@ -183,16 +184,18 @@ run needed zero fallbacks. Relative to fixed `z0`, the response predictor
 reduced median/mean iterations from `3 / 2.994` to `2 / 1.995` and recurring
 physics time by `16.0%`.
 
-The cached `6 x 119` response loaded in `0.000617 s` in the validation run.
-The original matrix construction took `2.389 s` after compilation. Recompute
-it after changes to the lattice, RF configuration, energy, or control
-definitions.
+On `lnx201`, the maintained SciBmad solver used `33.178 s` versus Bmad's
+`67.370 s`, a measured `2.031x` same-host physics throughput advantage. Its
+cached `6 x 119` response loaded in `0.000730 s`; the original local matrix
+construction took `2.389 s` after compilation. Recompute it after changes to
+the lattice, RF configuration, energy, or control definitions.
 
-The Bmad and Linux SciBmad measurements share `lnx201`, but were run at
-different times on a shared host; the SciBmad process reported only `49%`
-average CPU utilization. Local Windows versus Linux Bmad timing ratios are
-cross-machine context, not controlled speedup claims. Detailed comparisons
-remain in `results/formal_1000/`.
+The Bmad and optimized SciBmad measurements share `lnx201`, but were run at
+different times on a shared host. The optimized SciBmad process reported only
+`49%` average CPU utilization, so a back-to-back repetition is still desirable
+for the strongest hardware-normalized claim. Local Windows versus Linux Bmad
+timing ratios are cross-machine context, not controlled speedup claims.
+Detailed comparisons remain in `results/formal_1000/`.
 
 ## Directory layout
 

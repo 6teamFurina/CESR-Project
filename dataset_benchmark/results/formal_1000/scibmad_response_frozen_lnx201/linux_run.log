@@ -1,0 +1,37 @@
+SciBmad CESR batch benchmark: 1000 samples x 119 controls
+Warmup/compilation batch (2 samples): 386.686 s
+Nominal z0: setup 0.581 s + solve 0.219 s, 3 Newton iterations
+Nominal z0 [x, px, y, py, z, pz] = [-1.6685198602033575e-05, 2.3901125031495305e-03, 1.0543112225980547e-06, 1.7969303419546103e-06, -3.9936116702395509e-04, -7.8037211957000425e-06]
+Closed-orbit response 6x119: loaded cache in 0.000730 s
+Response cache: /home/jn577/cesr_scibmad/dataset_benchmark/reference/closed_orbit_response_6x119.csv
+Model setup: 1.843 s
+Physics: 33.178 s (solve 30.022 + track 3.104), 30.140 samples/s, converged 1000/1000
+Newton iterations: min 0, median 2.0, mean 1.995, max 2
+Frozen Jacobian: factorization 0.000016 s, closure norm median 3.947e-12, max 8.104e-11
+Full-AD fallback: 0 attempted, 0 succeeded, 0.000 s
+Output:   /home/jn577/cesr_scibmad/dataset_benchmark/results/formal_1000/scibmad_response_frozen_lnx201/scibmad_rf_on_samples.csv
+Metadata: /home/jn577/cesr_scibmad/dataset_benchmark/results/formal_1000/scibmad_response_frozen_lnx201/scibmad_rf_on_metadata.toml
+Response: /home/jn577/cesr_scibmad/dataset_benchmark/results/formal_1000/scibmad_response_frozen_lnx201/closed_orbit_response_6x119.csv
+	Command being timed: "/home/jn577/.juliaup/bin/julia --startup-file=no --compiled-modules=existing --pkgimages=existing --project=. dataset_benchmark/benchmark_scibmad.jl --output=dataset_benchmark/results/formal_1000/scibmad_response_frozen_lnx201/scibmad_rf_on_samples.csv --metadata=dataset_benchmark/results/formal_1000/scibmad_response_frozen_lnx201/scibmad_rf_on_metadata.toml"
+	User time (seconds): 263.35
+	System time (seconds): 1.93
+	Percent of CPU this job got: 49%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 8:56.57
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 1317652
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 342278
+	Voluntary context switches: 77
+	Involuntary context switches: 16621
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 8600
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
