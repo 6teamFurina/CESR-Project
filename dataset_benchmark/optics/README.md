@@ -28,9 +28,10 @@ The table reports stable physics time only. Compilation/warmup, model setup,
 closed-orbit setup, and CSV writing are recorded separately in metadata. The
 reference for correlations and errors is SciBmad pointwise `twiss`.
 
-| Method | Result type | Physics time | Samples/s | Speedup vs Bmad | Speedup vs pointwise SciBmad | Maximum closure residual | Median column correlation | Minimum column correlation |
+| Method | Result type | Physics time | Samples/s | Speedup vs `lnx201` Bmad | Speedup vs pointwise SciBmad | Maximum closure residual | Median column correlation | Minimum column correlation |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
-| Bmad/Tao | Exact per sample | 701.528 s | 1.425 | 1.000x | 0.814x | `1.99e-13` | 0.999995 | 0.095562 [1] |
+| Bmad/Tao (`lnx201`) | Exact per sample | 701.528 s | 1.425 | 1.000x | 0.814x | `1.99e-13` | 0.999995 | 0.095562 [1] |
+| Bmad/Tao (local WSL2, Ryzen 9 5900HX) | Exact per sample | **134.498 s** | **7.435** | **5.216x** | **4.244x** | `1.99e-13` | 0.999995 | 0.095562 [1][3] |
 | SciBmad pointwise `twiss` | Exact per sample | 570.771 s | 1.752 | 1.229x | 1.000x | `2.44e-12` | 1.000000 | 1.000000 |
 | SciBmad prototype `twiss!` | Exact per sample | 513.273 s | 1.948 | 1.367x | 1.112x | `2.44e-12` | 1.000000 | 1.000000 |
 | SciBmad one parameterized `twiss` | First-order corrector surrogate | 73.130 s | 13.674 | 9.593x | 7.805x | `1.29e-13` nominal only [2] | 0.999996 | 0.997779 |
@@ -45,6 +46,22 @@ lattices.
 orbit. It does not perform 1,000 independent closure solves, so its residual is
 not an all-sample maximum. Accuracy is instead checked directly against all
 pointwise output rows.
+
+[3] The local Bmad accuracy metrics were recomputed against
+`scibmad_twiss_reuse`, which is bit-for-bit identical to the saved pointwise
+SciBmad result for every compared field. Its detailed values differ from the
+older Bmad comparison only at roundoff level; the displayed correlations and
+errors are unchanged. Timing comes from
+`results/bmad_chromatic_fixed_1000/bmad_chromatic_optics_metadata.json`
+(Bmad/Tao `20260801-1`).
+
+Local WSL2 Bmad is `5.216x` faster than the historical `lnx201` Bmad run, but
+that ratio is cross-machine and cross-version. On the local Ryzen 9 5900HX it
+is `4.244x` faster than pointwise SciBmad and `3.816x` faster than the reusable
+exact `twiss!` prototype. The first-order parameterized SciBmad surrogate is
+still `1.839x` faster than local Bmad. The local Bmad and SciBmad results share
+the physical machine but used WSL2 and Windows respectively and were not
+measured back-to-back.
 
 The prototype `twiss!` output is bit-for-bit identical to pointwise SciBmad for
 all compared numeric fields. For the parameterized method, the worst

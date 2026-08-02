@@ -171,12 +171,19 @@ the older run did not record this diagnostic.
 | Result | Machine | Tolerances `(rel, abs)` | Initial guess / Jacobian | Converged | Physics time (s) | Samples/s | Maximum output residual vs Bmad (m) | Correlation vs Bmad | Maximum closure residual |
 |---|---|---|---|---:|---:|---:|---:|---:|---:|
 | Bmad/Tao/PyTao | `lnx201` Linux | defaults `(1e-8, 1e-10)` | previous orbit; Tao one-turn matrix reuse | 1000/1000 | 67.370 | 14.843 | 0 | 1 | -- |
+| Bmad/Tao/PyTao | local WSL2, Ryzen 9 5900HX | defaults `(1e-8, 1e-10)` | previous orbit; Tao one-turn matrix reuse | 1000/1000 | **11.858** | **84.330** | -- [1] | -- [1] | -- |
 | SciBmad, high precision | `lnx201` Linux | `(1e-13, 1e-13)` | zero; full batched AD Jacobian | 1000/1000 | 280.486 | 3.565 | `8.138494e-6` | `0.999999966415495` | -- |
 | SciBmad, response + frozen + fallback | `lnx201` Linux | `(1e-8, 1e-10)` | per-sample `z0 + R*delta-k`; frozen nominal Jacobian | 1000/1000 | **33.178** | **30.140** | `8.138494e-6` | `0.999999966415499` | `8.104e-11` |
 | SciBmad, high precision | local Windows, Ryzen 9 5900HX | `(1e-13, 1e-13)` | zero; full batched AD Jacobian | 1000/1000 | 64.356 | 15.539 | `8.138494e-6` | `0.999999966415495` | -- |
 | SciBmad, normal precision | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | zero; full batched AD Jacobian | 1000/1000 | 26.457 | 37.798 | `8.138494e-6` | `0.999999966415495` | -- |
 | SciBmad, frozen + fallback | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | fixed nominal `z0`; frozen nominal Jacobian | 1000/1000 | 8.163 | 122.506 | `8.138494e-6` | `0.999999966415489` | `9.802e-11` |
 | SciBmad, response + frozen + fallback | local Windows, Ryzen 9 5900HX | `(1e-8, 1e-10)` | per-sample `z0 + R*delta-k`; frozen nominal Jacobian | 1000/1000 | **6.855** | **145.885** | `8.138494e-6` | `0.999999966415499` | `8.104e-11` |
+
+[1] The local WSL2 run used the same committed 1,000-sample CSV and lattice.
+The archived `lnx201` Bmad output CSV is not present in this checkout, so its
+pointwise residual and correlation against the older Bmad run cannot be
+recomputed. Timing and convergence come from
+`results/formal_1000/bmad/bmad_rf_on_metadata.json` (Bmad/Tao `20260801-1`).
 
 The final response-initialized row is the maintained default. It checks every
 lane's closure and reruns only failed lanes with full-AD Newton; the formal
@@ -189,6 +196,13 @@ On `lnx201`, the maintained SciBmad solver used `33.178 s` versus Bmad's
 cached `6 x 119` response loaded in `0.000730 s`; the original local matrix
 construction took `2.389 s` after compilation. Recompute it after changes to
 the lattice, RF configuration, energy, or control definitions.
+
+On the local Ryzen 9 5900HX, WSL2 Bmad used `11.858 s` (`84.330` samples/s),
+which is `5.681x` faster than the historical `lnx201` Bmad timing. That ratio
+is cross-machine and cross-version. Against the existing local Windows
+response-initialized SciBmad result (`6.855 s`), SciBmad is `1.730x` faster
+than local WSL2 Bmad. These local runs share the physical machine but used
+different operating-system runtimes and were not measured back-to-back.
 
 The Bmad and optimized SciBmad measurements share `lnx201`, but were run at
 different times on a shared host. The optimized SciBmad process reported only

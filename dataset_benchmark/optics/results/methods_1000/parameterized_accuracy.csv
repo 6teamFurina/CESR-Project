@@ -1,0 +1,169 @@
+method,scope,column,correlation,max_absolute_error,max_error_over_reference_max
+Bmad/Tao,detector,alpha_1,0.9999994723402291,0.04371073406924708,0.0021011097172456356
+Bmad/Tao,detector,alpha_2,0.9999968529682309,0.2540716117544122,0.00725577525973391
+Bmad/Tao,detector,beta_1,0.9999959810119506,0.0890426994566269,0.0022626037213492206
+Bmad/Tao,detector,beta_2,0.9999412952829747,0.5541630383646208,0.008535806799006023
+Bmad/Tao,detector,c11,0.9999260985838686,0.0074416609093755914,0.017903457745098675
+Bmad/Tao,detector,c12,0.9998363909448118,0.02009797917042544,0.01832402693644969
+Bmad/Tao,detector,c21,0.9999822910117524,0.00521671938575749,0.014846913218844538
+Bmad/Tao,detector,c22,0.9998771492328332,0.013653272668159522,0.02041163175682688
+Bmad/Tao,detector,dalpha_1_ddelta,0.9999475865100691,8.743232169440375,0.01580612548091987
+Bmad/Tao,detector,dalpha_2_ddelta,0.9999149236755243,16.035191078586195,0.027872387558914566
+Bmad/Tao,detector,dbeta_1_ddelta,0.999990855017566,12.272494090322198,0.012705115882628704
+Bmad/Tao,detector,dbeta_2_ddelta,0.9999790389471682,44.09501395997677,0.01625928902222362
+Bmad/Tao,detector,dc11_ddelta,0.9999974047725805,1.4660207371837544,0.01637843171931455
+Bmad/Tao,detector,dc12_ddelta,0.999993816744045,3.85180664575131,0.016319529180304434
+Bmad/Tao,detector,dc21_ddelta,0.999999566304083,1.0602101240143895,0.016404292185891112
+Bmad/Tao,detector,dc22_ddelta,0.9999989326147412,2.741141606292132,0.016338095770499734
+Bmad/Tao,detector,dgamma_c_ddelta,0.9999995783252578,0.184209838859406,0.016572053142028743
+Bmad/Tao,detector,dorbit_px_ddelta,0.9999999957955977,6.327706578349024e-05,0.00016849496379759947
+Bmad/Tao,detector,dorbit_py_ddelta,0.9999932392830698,0.00022325345084120082,0.005522452820801853
+Bmad/Tao,detector,dorbit_pz_ddelta,,1.2212453270876722e-15,1.2212453270876722e-15
+Bmad/Tao,detector,dorbit_x_ddelta,0.9999999926413666,0.00025551365231724077,7.372079259536905e-05
+Bmad/Tao,detector,dorbit_y_ddelta,0.9999949075564213,0.00044603141875740326,0.0038711205160580327
+Bmad/Tao,detector,dorbit_z_ddelta,0.09556199876068003,8.838399077191324,450.36190115265964
+Bmad/Tao,detector,dphi_1_ddelta,0.9999977881411007,0.015494886076195868,0.003036720176741383
+Bmad/Tao,detector,dphi_2_ddelta,0.9999929475200441,0.14682736921651873,0.010908880557931608
+Bmad/Tao,detector,dphi_3_ddelta,0.9999999999892684,6.686984128911888e-05,7.557893270400784e-06
+Bmad/Tao,detector,gamma_c,0.9999617538371643,0.0009665674056666962,0.0009185210350077466
+Bmad/Tao,detector,orbit_px,0.9999999650798091,1.9127742796002517e-06,0.0002256879351135215
+Bmad/Tao,detector,orbit_py,0.9999998302712315,1.983820666299997e-06,0.0011019044987980605
+Bmad/Tao,detector,orbit_pz,,5.082197683525802e-21,
+Bmad/Tao,detector,orbit_x,0.9999999753960489,6.623209723000123e-06,0.00038161259288517117
+Bmad/Tao,detector,orbit_y,0.9999997038730384,5.36333201799999e-06,0.0007445191212386078
+Bmad/Tao,detector,orbit_z,0.9999993236305875,5.79883688180008e-06,0.0020918075018320553
+Bmad/Tao,detector,phi_1,0.9999999992472223,0.0004125855475720641,3.9871880213355475e-05
+Bmad/Tao,detector,phi_2,0.9999999863418073,0.0010264472290364424,0.00011292799156746615
+Bmad/Tao,detector,phi_3,,0.0,
+Bmad/Tao,ring,Qx_fractional,0.9997564531678087,0.00015654002219467333,0.0002950121739804014
+Bmad/Tao,ring,Qy_fractional,0.9999587441238018,0.0006308820561935491,0.001087238326760469
+Bmad/Tao,ring,slip_tps_constant,,0.0,
+Bmad/Tao,ring,xi_1,0.9997939977524133,0.00492160138138753,0.004138954185878325
+Bmad/Tao,ring,xi_2,0.9998075591874458,0.031467989622567805,0.03108969688551986
+Bmad/Tao,ring,slip_factor,0.9999966752590291,3.7752149347980435e-05,4.268860146224711e-06
+SciBmad pointwise `twiss`,detector,alpha_1,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,alpha_2,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,beta_1,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,beta_2,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,c11,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,c12,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,c21,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,c22,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dalpha_1_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dalpha_2_ddelta,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,dbeta_1_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dbeta_2_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dc11_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dc12_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dc21_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dc22_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dgamma_c_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dorbit_px_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dorbit_py_ddelta,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,dorbit_pz_ddelta,,0.0,0.0
+SciBmad pointwise `twiss`,detector,dorbit_x_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dorbit_y_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dorbit_z_ddelta,0.9999999999999998,0.0,0.0
+SciBmad pointwise `twiss`,detector,dphi_1_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dphi_2_ddelta,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,dphi_3_ddelta,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,gamma_c,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,orbit_px,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,orbit_py,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,detector,orbit_pz,,0.0,
+SciBmad pointwise `twiss`,detector,orbit_x,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,orbit_y,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,orbit_z,0.9999999999999998,0.0,0.0
+SciBmad pointwise `twiss`,detector,phi_1,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,phi_2,1.0,0.0,0.0
+SciBmad pointwise `twiss`,detector,phi_3,,0.0,
+SciBmad pointwise `twiss`,ring,Qx_fractional,1.0,0.0,0.0
+SciBmad pointwise `twiss`,ring,Qy_fractional,0.9999999999999999,0.0,0.0
+SciBmad pointwise `twiss`,ring,slip_tps_constant,,0.0,
+SciBmad pointwise `twiss`,ring,xi_1,1.0,0.0,0.0
+SciBmad pointwise `twiss`,ring,xi_2,1.0,0.0,0.0
+SciBmad pointwise `twiss`,ring,slip_factor,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,alpha_1,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,alpha_2,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,beta_1,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,beta_2,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,c11,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,c12,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,c21,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,c22,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dalpha_1_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dalpha_2_ddelta,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,dbeta_1_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dbeta_2_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dc11_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dc12_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dc21_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dc22_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dgamma_c_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dorbit_px_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dorbit_py_ddelta,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,dorbit_pz_ddelta,,0.0,0.0
+SciBmad prototype `twiss!`,detector,dorbit_x_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dorbit_y_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dorbit_z_ddelta,0.9999999999999998,0.0,0.0
+SciBmad prototype `twiss!`,detector,dphi_1_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dphi_2_ddelta,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,dphi_3_ddelta,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,gamma_c,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,orbit_px,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,orbit_py,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,detector,orbit_pz,,0.0,
+SciBmad prototype `twiss!`,detector,orbit_x,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,orbit_y,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,orbit_z,0.9999999999999998,0.0,0.0
+SciBmad prototype `twiss!`,detector,phi_1,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,phi_2,1.0,0.0,0.0
+SciBmad prototype `twiss!`,detector,phi_3,,0.0,
+SciBmad prototype `twiss!`,ring,Qx_fractional,1.0,0.0,0.0
+SciBmad prototype `twiss!`,ring,Qy_fractional,0.9999999999999999,0.0,0.0
+SciBmad prototype `twiss!`,ring,slip_tps_constant,,0.0,
+SciBmad prototype `twiss!`,ring,xi_1,1.0,0.0,0.0
+SciBmad prototype `twiss!`,ring,xi_2,1.0,0.0,0.0
+SciBmad prototype `twiss!`,ring,slip_factor,1.0,0.0,0.0
+SciBmad one parameterized `twiss`,detector,alpha_1,0.9999997581605986,0.10910539344218151,0.005244533345107112
+SciBmad one parameterized `twiss`,detector,alpha_2,0.9999998842824321,0.12471456950945026,0.003561597778384305
+SciBmad one parameterized `twiss`,detector,beta_1,0.9999999180191727,0.16257912041633205,0.004131187903247007
+SciBmad one parameterized `twiss`,detector,beta_2,0.999999782968847,0.33830843932645394,0.005210985353851456
+SciBmad one parameterized `twiss`,detector,c11,0.9999361270977407,0.011713282983056197,0.028180304033918416
+SciBmad one parameterized `twiss`,detector,c12,0.999942953085973,0.03041963177675311,0.02773463676857346
+SciBmad one parameterized `twiss`,detector,c21,0.99997062268669,0.008387656646628598,0.023871479589634276
+SciBmad one parameterized `twiss`,detector,c22,0.9998707594013109,0.0214924717062287,0.03213122807066137
+SciBmad one parameterized `twiss`,detector,dalpha_1_ddelta,0.9999875608537852,13.260914284954993,0.02397324823562788
+SciBmad one parameterized `twiss`,detector,dalpha_2_ddelta,0.9999937790311534,16.888324994733694,0.029355305912302482
+SciBmad one parameterized `twiss`,detector,dbeta_1_ddelta,0.9999986170730769,18.781892860704602,0.019443979645387948
+SciBmad one parameterized `twiss`,detector,dbeta_2_ddelta,0.9999993358293082,45.75432396339011,0.016871131461993615
+SciBmad one parameterized `twiss`,detector,dc11_ddelta,0.9999956242008415,1.2523766316677793,0.013991592771081557
+SciBmad one parameterized `twiss`,detector,dc12_ddelta,0.9999963789950115,3.362844980522283,0.014247871670559704
+SciBmad one parameterized `twiss`,detector,dc21_ddelta,0.9999965887656975,0.8654165457230931,0.013390313445406728
+SciBmad one parameterized `twiss`,detector,dc22_ddelta,0.9999953720788286,2.296981430089417,0.01369075661823391
+SciBmad one parameterized `twiss`,detector,dgamma_c_ddelta,0.9999955108625106,0.09321271788699104,0.008385687343850975
+SciBmad one parameterized `twiss`,detector,dorbit_px_ddelta,0.9999999989194696,0.00021711620326209102,0.0005781397470876916
+SciBmad one parameterized `twiss`,detector,dorbit_py_ddelta,0.999994883130414,0.000270393621207201,0.0066885237855726
+SciBmad one parameterized `twiss`,detector,dorbit_pz_ddelta,,0.0,0.0
+SciBmad one parameterized `twiss`,detector,dorbit_x_ddelta,0.9999999990138085,0.0005094972823305177,0.0001470001431937494
+SciBmad one parameterized `twiss`,detector,dorbit_y_ddelta,0.9999973002132895,0.0004163423706387004,0.003613448346696674
+SciBmad one parameterized `twiss`,detector,dorbit_z_ddelta,0.999561523964879,0.0018207543498856994,0.09277680079672057
+SciBmad one parameterized `twiss`,detector,dphi_1_ddelta,0.999999799072525,0.01108781227853628,0.002173012637626207
+SciBmad one parameterized `twiss`,detector,dphi_2_ddelta,0.9999999709847652,0.02128128530494422,0.0015811425400434347
+SciBmad one parameterized `twiss`,detector,dphi_3_ddelta,0.9999999999927438,0.00013032297783865943,1.4729617091908208e-05
+SciBmad one parameterized `twiss`,detector,gamma_c,0.9998502639625164,0.001180716529213477,0.0011220251811779928
+SciBmad one parameterized `twiss`,detector,orbit_px,0.9999999981566736,2.054321668200354e-06,0.00024238908913601525
+SciBmad one parameterized `twiss`,detector,orbit_py,0.9999996789505609,3.4690398055000184e-06,0.0019268629635356195
+SciBmad one parameterized `twiss`,detector,orbit_pz,,0.0,
+SciBmad one parameterized `twiss`,detector,orbit_x,0.9999999977711143,7.626916262800168e-06,0.0004394436251441645
+SciBmad one parameterized `twiss`,detector,orbit_y,0.9999998192591678,6.436766971600004e-06,0.000893529632927778
+SciBmad one parameterized `twiss`,detector,orbit_z,0.9991173080500614,0.00028998981857290005,0.10460768086951376
+SciBmad one parameterized `twiss`,detector,phi_1,0.9999999999886282,0.00016531592483737256,1.5975975870372682e-05
+SciBmad one parameterized `twiss`,detector,phi_2,0.9999999999914864,0.00015005004508594766,1.650825268637577e-05
+SciBmad one parameterized `twiss`,detector,phi_3,,0.0002086921681555481,
+SciBmad one parameterized `twiss`,ring,Qx_fractional,0.9994975447154012,3.984002789381158e-05,7.508171441151822e-05
+SciBmad one parameterized `twiss`,ring,Qy_fractional,0.9995141853574221,8.96662827074568e-05,0.00015452748769855307
+SciBmad one parameterized `twiss`,ring,slip_tps_constant,,0.0001671758168633,
+SciBmad one parameterized `twiss`,ring,xi_1,0.9986452773110548,0.0017281840171432528,0.0014533632282317222
+SciBmad one parameterized `twiss`,ring,xi_2,0.9977792480550873,0.007972442442581773,0.007876601649803623
+SciBmad one parameterized `twiss`,ring,slip_factor,0.9982280691872826,0.0002158950598847298,2.4412538963374892e-05
