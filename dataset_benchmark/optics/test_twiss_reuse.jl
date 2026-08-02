@@ -1,8 +1,8 @@
 include(joinpath(@__DIR__, "benchmark_scibmad_chromatic_optics.jl"))
 
-samples = read_samples(joinpath(DATASET_DIR, "inputs", "cesr_corrector_samples_1000.csv"))
+samples = read_samples(joinpath(ORBIT_DIR, "inputs", "cesr_corrector_samples_1000.csv"))
 values = Matrix(samples.values[1:2, :])
-response_cache = joinpath(DATASET_DIR, "reference", "closed_orbit_response_6x119.csv")
+response_cache = joinpath(ORBIT_DIR, "reference", "closed_orbit_response_6x119.csv")
 
 rf_on = solve_input_closed_orbits(
     samples.names,

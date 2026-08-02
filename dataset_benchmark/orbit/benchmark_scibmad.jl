@@ -17,7 +17,7 @@ using Statistics
 using TOML
 
 const HERE = @__DIR__
-const PROJECT_ROOT = normpath(joinpath(HERE, ".."))
+const PROJECT_ROOT = normpath(joinpath(HERE, "..", ".."))
 include(joinpath(PROJECT_ROOT, "cesr_model.jl"))
 
 function parse_args(args)

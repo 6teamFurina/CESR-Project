@@ -17,7 +17,7 @@ include(joinpath(@__DIR__, "benchmark_scibmad_chromatic_optics.jl"))
 
 function parse_parameterized_args(args)
     options = Dict{String,String}(
-        "inputs" => joinpath(DATASET_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
+        "inputs" => joinpath(ORBIT_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
         "sample-count" => "10",
         "output-dir" => joinpath(OPTICS_DIR, "results", "methods_10", "scibmad_parameterized"),
         "warmup" => "true",
@@ -25,7 +25,7 @@ function parse_parameterized_args(args)
         "reltol" => "1e-8",
         "abstol" => "1e-10",
         "maxiter" => "100",
-        "response-matrix-cache" => joinpath(DATASET_DIR, "reference", "closed_orbit_response_6x119.csv"),
+        "response-matrix-cache" => joinpath(ORBIT_DIR, "reference", "closed_orbit_response_6x119.csv"),
     )
     for argument in args
         startswith(argument, "--") ||

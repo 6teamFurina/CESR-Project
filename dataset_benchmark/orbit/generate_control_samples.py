@@ -12,17 +12,13 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_REFERENCE = (
-    HERE.parent
-    / "bmad_control_response_rf_on"
-    / "bmad_control_response_rf_on.csv"
-)
+DEFAULT_REFERENCE = HERE / "reference" / "closed_orbit_response_6x119.csv"
 
 
 def control_names(reference: Path) -> list[str]:
     with reference.open(encoding="utf-8", newline="") as stream:
         header = next(csv.reader(stream))
-    if not header or header[0] != "observable":
+    if not header or header[0] not in {"coordinate", "observable"}:
         raise RuntimeError(f"Unexpected response-matrix header in {reference}")
     names = header[1:]
     if len(names) != 119 or len(set(names)) != 119:

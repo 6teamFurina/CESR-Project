@@ -15,7 +15,7 @@ from typing import Any
 
 
 HERE = Path(__file__).resolve().parent
-PROJECT_ROOT = HERE.parent
+PROJECT_ROOT = HERE.parent.parent
 TEST_CODES = PROJECT_ROOT / "test_codes"
 sys.path.insert(0, str(TEST_CODES))
 

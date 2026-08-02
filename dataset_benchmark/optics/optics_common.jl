@@ -7,13 +7,14 @@ using TOML
 
 const OPTICS_DIR = @__DIR__
 const DATASET_DIR = normpath(joinpath(OPTICS_DIR, ".."))
+const ORBIT_DIR = joinpath(DATASET_DIR, "orbit")
 const PROJECT_DIR = normpath(joinpath(DATASET_DIR, ".."))
 
-include(joinpath(DATASET_DIR, "benchmark_scibmad.jl"))
+include(joinpath(ORBIT_DIR, "benchmark_scibmad.jl"))
 
 function parse_optics_args(args)
     options = Dict{String,String}(
-        "inputs" => joinpath(DATASET_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
+        "inputs" => joinpath(ORBIT_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
         "sample-count" => "10",
         "output-dir" => joinpath(OPTICS_DIR, "results", "chromatic_test_10"),
         "reltol" => "1e-8",
@@ -21,7 +22,7 @@ function parse_optics_args(args)
         "maxiter" => "100",
         "warmup" => "true",
         "twiss-mode" => "fresh",
-        "response-matrix-cache" => joinpath(DATASET_DIR, "reference", "closed_orbit_response_6x119.csv"),
+        "response-matrix-cache" => joinpath(ORBIT_DIR, "reference", "closed_orbit_response_6x119.csv"),
     )
     for argument in args
         startswith(argument, "--") ||
