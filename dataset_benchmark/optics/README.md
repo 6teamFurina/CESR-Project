@@ -9,6 +9,14 @@ The common samples, Bmad-compatible lattice, and closed-orbit response cache
 live under `../orbit/inputs` and `../orbit/reference`. Optics results remain
 under this directory's own `results/` tree.
 
+The files in `results/bmad_chromatic_fixed_1000/` have two explicitly
+documented provenances. The CSV files and JSON metadata are the local WSL2 run
+(Bmad/Tao `20260801-1`, `134.498 s`). The historical server diagnostics are
+named `bmad_lnx201_run.log`, `bmad_lnx201_time.log`, and
+`bmad_lnx201_exit_status.txt` (Bmad/Tao `20260726-0`, `701.528 s`). The
+`lnx201` logs describe the earlier server run and must not be treated as the
+execution log for the local WSL2 CSV/JSON artifacts.
+
 Each engine writes the zero-order periodic optics and their first derivatives
 with respect to relative momentum deviation `delta`:
 
