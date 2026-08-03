@@ -43,6 +43,123 @@ The committed formal input is:
 inputs/cesr_corrector_samples_1000.csv
 ```
 
+## Response-validity sweep in normalized input radius
+
+`run_response_rho_sweep.jl` measures the error of the direct first-order
+`198 x 119` detector-orbit response against converged nonlinear SciBmad RF-on
+closed orbits. It runs three input scenarios: all 119 correctors, only the 58
+horizontal correctors, and only the 61 vertical correctors.
+
+For each scenario, a Gaussian direction is normalized to exact unit RMS over
+the active controls. The applied kick is
+
+```text
+delta_k = rho * base_kick * normalized_gaussian_direction
+```
+
+so every trial at a requested `rho` has exactly that active-control RMS radius.
+The inactive controls are zero, and the same random directions are reused at
+every rho. By default, `base_kick = 5e-6 rad`, so `rho = 1` means an active-knob
+RMS kick of `5 microrad`. The horizontal-only and vertical-only definitions use
+RMS over their active plane, not over all 119 columns.
+
+The extended sweep uses 600 trials at each of 20 positive, approximately
+log-spaced rho values from `0.1` through `64`. The zero-control nominal state is
+computed once and shared by all three scenarios, giving
+`1 + 3 x 20 x 600 = 36,001` nonlinear states. The single Julia runner remains
+useful for a short range or one chunk:
+
+```powershell
+$env:JULIA_PKG_PRECOMPILE_AUTO='0'
+
+julia --threads=4 --project=. `
+  dataset_benchmark/orbit/run_response_rho_sweep.jl `
+  --rhos=0,0.1,0.14,0.2,0.28 `
+  --trials=600
+```
+
+For the complete extended range, a single batched Newton solve can be held back by a few
+hard high-rho lanes. The maintained Windows workflow therefore divides the 20
+positive rho values into five four-rho chunks. Four independent Julia processes
+run concurrently with four threads each; every chunk has 7,201 states, just
+above the corresponding `1750 x 4 = 7000` BeamTracking threading threshold.
+Each chunk is saved immediately and can be rerun independently:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File `
+  dataset_benchmark/orbit/run_response_rho_sweep_parallel.ps1
+```
+
+Merge the five completed chunks before plotting:
+
+```powershell
+python dataset_benchmark/orbit/merge_response_rho_sweep_chunks.py `
+  --root=dataset_benchmark/orbit/error_analysis/response_rho_sweep_600/chunks `
+  --output-dir=dataset_benchmark/orbit/error_analysis/response_rho_sweep_600/combined
+```
+
+For a short validation run:
+
+```powershell
+julia --threads=auto --project=. `
+  dataset_benchmark/orbit/run_response_rho_sweep.jl `
+  --rhos=0,0.5,1 `
+  --trials=4 `
+  --output-dir=dataset_benchmark/orbit/error_analysis/response_rho_sweep_smoke
+```
+
+The runner writes per-trial errors, a per-scenario/rho summary, and TOML
+metadata. For each plane, a trial error is the RMSE over all 99 detectors. The
+summary reports the mean trial RMSE and the maximum trial RMSE; the plot uses
+the latter as a one-sided upper error cap. It also retains the maximum absolute
+single-detector error separately.
+
+Plot the completed result with:
+
+```powershell
+python dataset_benchmark/orbit/render_response_rho_sweep_svg.py
+```
+
+By default, the normal and `--normalize-rho-squared` variants are written to
+`error_analysis/response_rho_sweep_600/figures` with distinct filenames.
+
+The plotting command uses only the Python standard library and writes SVG, so
+it does not require Matplotlib or another plotting package. By default it
+looks first for the merged 600-trial result under
+`error_analysis/response_rho_sweep_600/combined`, while retaining the earlier
+`results/response_rho_sweep_600/combined` and `results/response_rho_sweep`
+locations as fallbacks. The figure uses a
+colorblind-safe palette together with distinct markers and line styles for
+grayscale readability. It includes a quadratic reference guide anchored at
+the smallest complete all-corrector point, standard panel labels, sparse log
+ticks, and a direct statement of the physical input scale. If the sweep used a
+nondefault base kick, pass it explicitly, for example
+`--base-kick-urad=2.5`.
+
+Add `--normalize-rho-squared` to plot `RMSE / rho^2`; a flat curve identifies
+quadratic truncation error. Points whose exact reference did not converge for
+all 600 trials are marked with a high-contrast cross.
+
+### Current 600-trial extended result
+
+The 2026-08-03 run generated 36,001 unique nonlinear states in five saved
+chunks. The first four four-thread Julia processes ran concurrently; the fifth
+high-rho chunk ran separately with four threads. All three scenarios converged
+for every trial through `rho = 12.8`. At `rho = 18.1`, the all-control and
+vertical-only scenarios each had one failure out of 600. Across the full range,
+35,901/36,001 states converged, 302 lanes requested full-AD fallback, and 100
+lanes remained failed after fallback. Horizontal-only converged 600/600 through
+`rho = 64`.
+
+For the complete-reference range through `rho = 12.8`, the all-control X and Y
+mean-RMSE local log slopes remain close to 2. The horizontal-only X and Y errors
+remain nearly quadratic across the entire converged range. Vertical-only Y
+changes smoothly from a slope near 2 at small rho toward a slope near 3 by
+`rho = 12.8`, showing a genuine higher-order contribution before solver
+failures begin. High-rho all-control and vertical-only means are calculated
+only from converged trials and must not be interpreted as unbiased full-sample
+errors; the plots mark those incomplete points explicitly.
+
 ## SciBmad run
 
 ```console
