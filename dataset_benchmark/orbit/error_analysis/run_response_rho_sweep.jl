@@ -14,7 +14,9 @@ the maintained response-initialized, frozen-nominal-Jacobian solver with a
 full-AD Newton fallback and an independent final closure check.
 """
 
-include(joinpath(@__DIR__, "benchmark_scibmad.jl"))
+const ERROR_ANALYSIS_HERE = @__DIR__
+const CALCULATION_DIR = normpath(joinpath(ERROR_ANALYSIS_HERE, "..", "Orbit_Calculation"))
+include(joinpath(CALCULATION_DIR, "benchmark_scibmad.jl"))
 
 using Dates
 using Random
@@ -27,7 +29,7 @@ function parse_rho_args(args)
         "trials" => "600",
         "seed" => "20260803",
         "base-kick-rad" => "5e-6",
-        "output-dir" => joinpath(HERE, "results", "response_rho_sweep"),
+        "output-dir" => joinpath(ERROR_ANALYSIS_HERE, "response_rho_sweep"),
         "detector-response" => joinpath(
             PROJECT_ROOT,
             "bmad_comparison",
@@ -35,7 +37,7 @@ function parse_rho_args(args)
             "scibmad_control_response_rf_on.csv",
         ),
         "closed-orbit-response" => joinpath(
-            HERE,
+            ORBIT_ROOT,
             "reference",
             "closed_orbit_response_6x119.csv",
         ),
@@ -312,10 +314,12 @@ function main_rho_sweep(args=ARGS)
 
     control_reference = read_response_matrix(
         closed_orbit_response_path,
-        read_samples(joinpath(HERE, "inputs", "cesr_corrector_samples_1000.csv")).names,
+        read_samples(joinpath(CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv")).names,
     )
     size(control_reference) == (6, 119) || error("Invalid control reference")
-    names = read_samples(joinpath(HERE, "inputs", "cesr_corrector_samples_1000.csv")).names
+    names = read_samples(
+        joinpath(CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
+    ).names
     nominal_model = load_cesr_model(zero_value=0.0, rf_on=true)
     detectors = detector_names(nominal_model.ring)
     detector_response = read_detector_response(

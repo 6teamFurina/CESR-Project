@@ -11,11 +11,12 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_FIGURES = HERE / "error_analysis" / "response_rho_sweep_600" / "figures"
+CALCULATION_DIR = HERE.parent / "Orbit_Calculation"
+DEFAULT_FIGURES = HERE / "response_rho_sweep_600" / "figures"
 RESULT_CANDIDATES = (
-    HERE / "error_analysis" / "response_rho_sweep_600" / "combined",
-    HERE / "results" / "response_rho_sweep_600" / "combined",
-    HERE / "results" / "response_rho_sweep",
+    HERE / "response_rho_sweep_600" / "combined",
+    CALCULATION_DIR / "results" / "response_rho_sweep_600" / "combined",
+    CALCULATION_DIR / "results" / "response_rho_sweep",
 )
 
 

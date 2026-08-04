@@ -17,7 +17,8 @@ using Statistics
 using TOML
 
 const HERE = @__DIR__
-const PROJECT_ROOT = normpath(joinpath(HERE, "..", ".."))
+const ORBIT_ROOT = normpath(joinpath(HERE, ".."))
+const PROJECT_ROOT = normpath(joinpath(HERE, "..", "..", ".."))
 include(joinpath(PROJECT_ROOT, "cesr_model.jl"))
 
 function parse_args(args)
@@ -32,7 +33,7 @@ function parse_args(args)
         "warmup-samples" => "2",
         "initial-guess" => "response-linear",
         "jacobian-mode" => "frozen-nominal",
-        "response-matrix-cache" => joinpath(HERE, "reference", "closed_orbit_response_6x119.csv"),
+        "response-matrix-cache" => joinpath(ORBIT_ROOT, "reference", "closed_orbit_response_6x119.csv"),
         "recompute-response" => "false",
     )
     for argument in args

@@ -16,6 +16,35 @@ The experiment addresses three questions:
 3. Given an application-specific output-error budget, what active-corrector RMS
    perturbation can be accepted?
 
+## Code and layout
+
+The error-analysis code is colocated with its results:
+
+- `run_response_rho_sweep.jl`: generate exact/linear paired sweep data;
+- `run_response_rho_sweep_parallel.ps1`: run the maintained five-chunk sweep;
+- `merge_response_rho_sweep_chunks.py`: merge chunk outputs;
+- `analyze_response_rho_scaling.py`: calculate normalized errors and slopes;
+- `render_response_rho_sweep_svg.py`: dependency-free SVG rendering;
+- `response_rho_sweep_600/`: committed sweep results and figures;
+- `vertical_parity/`: signed-direction experiment, analysis, and report.
+
+From `CESR Project`, a short sweep can be run with:
+
+```console
+julia --project=. dataset_benchmark/orbit/error_analysis/run_response_rho_sweep.jl \
+  --rhos=0,0.5,1 --trials=4
+```
+
+The complete Windows workflow starts from:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File `
+  dataset_benchmark/orbit/error_analysis/run_response_rho_sweep_parallel.ps1
+```
+
+Shared inputs come from the sibling `../Orbit_Calculation/inputs/` directory;
+the validated response cache remains in `../reference/`.
+
 The results characterize the **SciBmad model and lattice used by this run**.
 They are not yet a machine-validated CESR error budget.
 
@@ -301,3 +330,24 @@ transferable CESR acceptance limits.
    calibration uncertainty, lattice/model discrepancy, and real CESR response
    measurements. Until this is done, the result validates a SciBmad
    approximation against nonlinear SciBmad, not a digital twin against CESR.
+
+## Signed-parity follow-up
+
+A signed vertical-corrector experiment was completed on 2026-08-04 to test the
+order of the early `vertical-only -> y` transition directly. The same 100
+random directions were evaluated at both signs for 15 radii over
+`0.05 <= rho <= 6.4`; all 3,001 nonlinear states converged.
+
+The paired decomposition shows that the vertical detector-orbit even component
+has slope 2, while the odd component after subtraction of the linear response
+has slope 3. Their mean RMSE values cross near `rho = 1.31`, or approximately
+`6.5 microrad` active-corrector RMS. At `rho = 6.4`, the mean odd/even ratio is
+`4.91`. The horizontal detector-orbit control remains overwhelmingly
+even/quadratic, with an odd/even ratio of only `3.05e-4` at the same radius.
+
+This confirms that the green curve leaves the pure-quadratic reference because
+an odd cubic contribution overtakes a small even quadratic contribution. It
+does not yet attribute the cubic coefficient to sextupole composition,
+octupoles, wigglers, or another nonlinear element. See
+[`vertical_parity/`](vertical_parity/) for the runnable experiment, analysis
+code, numerical result, and direction dependence.

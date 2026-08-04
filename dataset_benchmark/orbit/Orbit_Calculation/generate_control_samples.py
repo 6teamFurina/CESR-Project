@@ -12,7 +12,8 @@ from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
-DEFAULT_REFERENCE = HERE / "reference" / "closed_orbit_response_6x119.csv"
+ORBIT_ROOT = HERE.parent
+DEFAULT_REFERENCE = ORBIT_ROOT / "reference" / "closed_orbit_response_6x119.csv"
 
 
 def control_names(reference: Path) -> list[str]:

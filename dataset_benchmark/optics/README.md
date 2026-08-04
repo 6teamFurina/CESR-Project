@@ -6,7 +6,7 @@ markers. RF is off, so the result is four-dimensional coasting closed-orbit
 optics.
 
 The common samples, Bmad-compatible lattice, and closed-orbit response cache
-live under `../orbit/inputs` and `../orbit/reference`. Optics results remain
+live under `../orbit/Orbit_Calculation/inputs` and `../orbit/reference`. Optics results remain
 under this directory's own `results/` tree.
 
 The files in `results/bmad_chromatic_fixed_1000/` have two explicitly

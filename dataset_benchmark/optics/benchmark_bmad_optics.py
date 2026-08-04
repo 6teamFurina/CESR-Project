@@ -23,7 +23,8 @@ from typing import Any, Sequence, Union
 OPTICS_DIR = Path(__file__).resolve().parent
 DATASET_DIR = OPTICS_DIR.parent
 ORBIT_DIR = DATASET_DIR / "orbit"
-sys.path.insert(0, str(ORBIT_DIR))
+ORBIT_CALCULATION_DIR = ORBIT_DIR / "Orbit_Calculation"
+sys.path.insert(0, str(ORBIT_CALCULATION_DIR))
 
 from benchmark_bmad import (  # noqa: E402
     activate_benchmark_data,
@@ -39,7 +40,7 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--inputs",
         type=Path,
-        default=ORBIT_DIR / "inputs" / "cesr_corrector_samples_1000.csv",
+        default=ORBIT_CALCULATION_DIR / "inputs" / "cesr_corrector_samples_1000.csv",
     )
     parser.add_argument(
         "--lattice",

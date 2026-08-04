@@ -15,7 +15,8 @@ from typing import Any
 
 
 HERE = Path(__file__).resolve().parent
-PROJECT_ROOT = HERE.parent.parent
+ORBIT_ROOT = HERE.parent
+PROJECT_ROOT = HERE.parents[2]
 TEST_CODES = PROJECT_ROOT / "test_codes"
 sys.path.insert(0, str(TEST_CODES))
 
@@ -51,7 +52,7 @@ def make_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--lattice",
         type=Path,
-        default=HERE / "reference" / "cesr_bmad_compatible.bmad",
+        default=ORBIT_ROOT / "reference" / "cesr_bmad_compatible.bmad",
     )
     parser.add_argument(
         "--output",

@@ -5,7 +5,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $env:JULIA_PKG_PRECOMPILE_AUTO = "0"
-$projectRoot = Resolve-Path (Join-Path $PSScriptRoot "../..")
+$projectRoot = Resolve-Path (Join-Path $PSScriptRoot "../../..")
 $runner = Join-Path $PSScriptRoot "run_response_rho_sweep.jl"
 $outputRootPath = if ([System.IO.Path]::IsPathRooted($OutputRoot)) {
     [System.IO.Path]::GetFullPath($OutputRoot)
