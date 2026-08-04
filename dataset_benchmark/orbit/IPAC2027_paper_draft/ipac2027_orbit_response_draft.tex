@@ -160,6 +160,22 @@ each direction before taking percentiles,
  \label{eq:blockshare}
 \end{equation}
 
+The expected block structure follows from reflection about the machine
+midplane.  For an ideal midplane-symmetric lattice, reversing the vertical
+corrector vector at fixed horizontal input gives
+\begin{equation}
+ x(\bm h,-\bm v)=x(\bm h,\bm v), \qquad
+ y(\bm h,-\bm v)=-y(\bm h,\bm v).
+ \label{eq:selection}
+\end{equation}
+Thus the horizontal quadratic response permits the pure blocks $Q_{hh,x}$ and
+$Q_{vv,x}$ but suppresses $Q_{hv,x}$, whereas the vertical quadratic response
+permits $Q_{hv,y}$ but suppresses $Q_{hh,y}$ and $Q_{vv,y}$.  This is the
+closed-orbit form of the normal-multipole midplane selection rule
+\cite{wolski2011}.  It predicts which Hessian blocks are allowed, but not their
+absolute coefficients, the quantitative $vv$--to--$hh$ balance in $x$, or
+their lattice-element sources.
+
 The vertical $Q_{hv}/\rho^2$ coefficient changes by only 0.000423\% across the
 fit interval.  At $\rho=1.13$, the mean vertical rms components are
 \qty{0.00472}{\micro\metre}, \qty{0.00983}{\micro\metre}, and
@@ -177,19 +193,17 @@ terms.
 
 \input{figures/mixed_term_component_share_table.tex}
 
-\section{Vertical-Corrector Signed Parity}
+\section{Vertical-Only Cubic Response}
 
-For a midplane-symmetric ideal lattice, reversal of the vertical-corrector
-vector gives
-\begin{equation}
-  x(\bm v)=x(-\bm v), \qquad y(\bm v)=-y(-\bm v).
-  \label{eq:selection}
-\end{equation}
-Consequently, the vertical detector response to vertical-only input contains
-odd powers of $\bm v$.  After subtraction of the linear response, its leading
-allowed nonlinear term is cubic.  By contrast, the horizontal detector
-response permits a quadratic $\bm v^2$ term.  This is the closed-orbit form of
-the normal-multipole midplane selection rule \cite{wolski2011}.
+Setting $\bm h=0$ in Eq.~\eqref{eq:selection} removes the allowed vertical
+quadratic cross block $Q_{hv,y}$.  The remaining pure vertical block
+$Q_{vv,y}$ is symmetry suppressed: the vertical orbit contains odd powers of
+$\bm v$, so after subtraction of its allowed linear response the leading
+nonlinear term is cubic.  By contrast, the horizontal orbit is even in
+$\bm v$ and retains the allowed quadratic block $Q_{vv,x}$.  The
+vertical-corrector signed-parity experiment therefore tests the next-order
+consequence of the second-order block decomposition rather than an unrelated
+channel.
 
 The order was tested directly with 100 fixed 61-dimensional vertical-corrector
 directions and 27 radii.  Both signs of every direction were evaluated, giving
