@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="600" viewBox="0 0 960 600" role="img" aria-labelledby="cross-title cross-desc">
+<title id="cross-title">Vertical even and odd response near their crossover</title>
+<desc id="cross-desc">A focused log-log plot showing the quadratic even and cubic odd nonlinear mean responses crossing near rho 1.31.</desc>
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#202020">
+<text x="480" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical response near the even–odd crossover</text>
+<text x="480" y="56" text-anchor="middle" font-size="13" fill="#555">Focused log–log view; mean across the same 100 corrector directions</text>
+<line x1="246" y1="82" x2="282" y2="82" stroke="#D55E00" stroke-width="2.6"/>
+<rect x="261" y="79" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<text x="292" y="87" font-size="13">Even component (rho²)</text>
+<line x1="510" y1="82" x2="546" y2="82" stroke="#009E73" stroke-width="2.6"/>
+<polygon points="528,78.2 524.4,85 531.6,85" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<text x="556" y="87" font-size="13">Odd nonlinear component (rho³)</text>
+<line x1="105" y1="500.00" x2="875" y2="500.00" stroke="#E1E4E6"/>
+<text x="93" y="504.00" text-anchor="end" font-size="11">10^-4</text>
+<line x1="105" y1="401.25" x2="875" y2="401.25" stroke="#E1E4E6"/>
+<text x="93" y="405.25" text-anchor="end" font-size="11">10^-3</text>
+<line x1="105" y1="302.50" x2="875" y2="302.50" stroke="#E1E4E6"/>
+<text x="93" y="306.50" text-anchor="end" font-size="11">10^-2</text>
+<line x1="105" y1="203.75" x2="875" y2="203.75" stroke="#E1E4E6"/>
+<text x="93" y="207.75" text-anchor="end" font-size="11">10^-1</text>
+<line x1="105" y1="105.00" x2="875" y2="105.00" stroke="#E1E4E6"/>
+<text x="93" y="109.00" text-anchor="end" font-size="11">10^0</text>
+<line x1="105.00" y1="105" x2="105.00" y2="500" stroke="#ECEEEF"/>
+<text x="105.00" y="520" text-anchor="middle" font-size="11">0.4</text>
+<line x1="183.20" y1="105" x2="183.20" y2="500" stroke="#ECEEEF"/>
+<text x="183.20" y="520" text-anchor="middle" font-size="11">0.5</text>
+<line x1="347.91" y1="105" x2="347.91" y2="500" stroke="#ECEEEF"/>
+<text x="347.91" y="520" text-anchor="middle" font-size="11">0.8</text>
+<line x1="426.11" y1="105" x2="426.11" y2="500" stroke="#ECEEEF"/>
+<text x="426.11" y="520" text-anchor="middle" font-size="11">1</text>
+<line x1="568.20" y1="105" x2="568.20" y2="500" stroke="#ECEEEF"/>
+<text x="568.20" y="520" text-anchor="middle" font-size="11">1.5</text>
+<line x1="669.01" y1="105" x2="669.01" y2="500" stroke="#ECEEEF"/>
+<text x="669.01" y="520" text-anchor="middle" font-size="11">2</text>
+<line x1="811.11" y1="105" x2="811.11" y2="500" stroke="#ECEEEF"/>
+<text x="811.11" y="520" text-anchor="middle" font-size="11">3</text>
+<line x1="875.00" y1="105" x2="875.00" y2="500" stroke="#ECEEEF"/>
+<text x="875.00" y="520" text-anchor="middle" font-size="11">3.6</text>
+<line x1="519.89" y1="105" x2="519.89" y2="500" stroke="#666" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="528.89" y="125" font-size="12" fill="#555">Crossover: rho = 1.31</text>
+<polyline points="105.00,398.58 229.12,368.20 347.91,339.13 468.94,309.50 590.82,279.67 632.09,269.57 669.01,260.53 711.85,250.05 747.21,241.39 786.93,231.67 833.72,220.22 875.00,210.11" fill="none" stroke="#D55E00" stroke-width="2.6"/>
+<polyline points="105.00,449.36 229.12,403.79 347.91,360.18 468.94,315.74 590.82,270.99 632.09,255.83 669.01,242.28 711.85,226.55 747.21,213.56 786.93,198.97 833.72,181.78 875.00,166.62" fill="none" stroke="#009E73" stroke-width="2.6"/>
+<rect x="102.00" y="395.58" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="226.12" y="365.20" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="344.91" y="336.13" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="465.94" y="306.50" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="587.82" y="276.67" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="629.09" y="266.57" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="666.01" y="257.53" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="708.85" y="247.05" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="744.21" y="238.39" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="783.93" y="228.67" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="830.72" y="217.22" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<rect x="872.00" y="207.11" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>
+<polygon points="105.00,445.56 101.40,452.36 108.60,452.36" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="229.12,399.99 225.52,406.79 232.72,406.79" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="347.91,356.38 344.31,363.18 351.51,363.18" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="468.94,311.94 465.34,318.74 472.54,318.74" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="590.82,267.19 587.22,273.99 594.42,273.99" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="632.09,252.03 628.49,258.83 635.69,258.83" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="669.01,238.48 665.41,245.28 672.61,245.28" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="711.85,222.75 708.25,229.55 715.45,229.55" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="747.21,209.76 743.61,216.56 750.81,216.56" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="786.93,195.17 783.33,201.97 790.53,201.97" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="833.72,177.98 830.12,184.78 837.32,184.78" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<polygon points="875.00,162.82 871.40,169.62 878.60,169.62" fill="white" stroke="#009E73" stroke-width="1.5"/>
+<rect x="105" y="105" width="770" height="395" fill="none" stroke="#555"/>
+<text x="490.00" y="552" text-anchor="middle" font-size="13">Normalized vertical-corrector radius, rho (log scale)</text>
+<text x="25" y="302" text-anchor="middle" font-size="13" transform="rotate(-90 25 302)">Mean detector RMSE [micrometre] (log scale)</text>
+</g>
+</svg>

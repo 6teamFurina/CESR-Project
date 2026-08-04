@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="500" viewBox="0 0 1040 500">
+<rect width="100%" height="100%" fill="white"/>
+<text x="520" y="32" text-anchor="middle" font-size="21" font-weight="600">All-corrector Y quadratic block decomposition</text>
+<text x="520" y="55" text-anchor="middle" font-size="13" fill="#555">100 fixed H/V direction pairs; vector RMS at 99 detectors</text>
+<line x1="90" y1="410.00" x2="970" y2="410.00" stroke="#ddd"/>
+<text x="80" y="414.00" text-anchor="end" font-size="12">10^-5</text>
+<line x1="90" y1="345.00" x2="970" y2="345.00" stroke="#ddd"/>
+<text x="80" y="349.00" text-anchor="end" font-size="12">10^-4</text>
+<line x1="90" y1="280.00" x2="970" y2="280.00" stroke="#ddd"/>
+<text x="80" y="284.00" text-anchor="end" font-size="12">10^-3</text>
+<line x1="90" y1="215.00" x2="970" y2="215.00" stroke="#ddd"/>
+<text x="80" y="219.00" text-anchor="end" font-size="12">10^-2</text>
+<line x1="90" y1="150.00" x2="970" y2="150.00" stroke="#ddd"/>
+<text x="80" y="154.00" text-anchor="end" font-size="12">10^-1</text>
+<line x1="90" y1="85.00" x2="970" y2="85.00" stroke="#ddd"/>
+<text x="80" y="89.00" text-anchor="end" font-size="12">10^0</text>
+<line x1="90.00" y1="85" x2="90.00" y2="410" stroke="#eee"/>
+<text x="90.00" y="432" text-anchor="middle" font-size="11">0.1</text>
+<line x1="212.11" y1="85" x2="212.11" y2="410" stroke="#eee"/>
+<text x="212.11" y="432" text-anchor="middle" font-size="11">0.14</text>
+<line x1="341.55" y1="85" x2="341.55" y2="410" stroke="#eee"/>
+<text x="341.55" y="432" text-anchor="middle" font-size="11">0.2</text>
+<line x1="463.67" y1="85" x2="463.67" y2="410" stroke="#eee"/>
+<text x="463.67" y="432" text-anchor="middle" font-size="11">0.28</text>
+<line x1="593.11" y1="85" x2="593.11" y2="410" stroke="#eee"/>
+<text x="593.11" y="432" text-anchor="middle" font-size="11">0.4</text>
+<line x1="721.64" y1="85" x2="721.64" y2="410" stroke="#eee"/>
+<text x="721.64" y="432" text-anchor="middle" font-size="11">0.57</text>
+<line x1="844.66" y1="85" x2="844.66" y2="410" stroke="#eee"/>
+<text x="844.66" y="432" text-anchor="middle" font-size="11">0.8</text>
+<line x1="970.00" y1="85" x2="970.00" y2="410" stroke="#eee"/>
+<text x="970.00" y="432" text-anchor="middle" font-size="11">1.13</text>
+<polyline points="90.00,373.09 212.11,354.10 341.55,333.96 463.67,314.96 593.11,294.82 721.64,274.83 844.66,255.69 970.00,236.19" fill="none" stroke="#2369A7" stroke-width="2.3"/>
+<circle cx="90.00" cy="373.09" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="212.11" cy="354.10" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="341.55" cy="333.96" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="463.67" cy="314.96" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="593.11" cy="294.82" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="721.64" cy="274.83" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="844.66" cy="255.69" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<circle cx="970.00" cy="236.19" r="3.2" fill="white" stroke="#2369A7" stroke-width="1.6"/>
+<polyline points="90.00,352.38 212.11,333.39 341.55,313.25 463.67,294.25 593.11,274.11 721.64,254.12 844.66,234.98 970.00,215.48" fill="none" stroke="#D97904" stroke-width="2.3"/>
+<circle cx="90.00" cy="352.38" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="212.11" cy="333.39" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="341.55" cy="313.25" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="463.67" cy="294.25" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="593.11" cy="274.11" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="721.64" cy="254.12" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="844.66" cy="234.98" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<circle cx="970.00" cy="215.48" r="3.2" fill="white" stroke="#D97904" stroke-width="1.6"/>
+<polyline points="90.00,231.38 212.11,212.38 341.55,192.25 463.67,173.25 593.11,153.11 721.64,133.12 844.66,113.98 970.00,94.48" fill="none" stroke="#8B3FA6" stroke-width="2.3"/>
+<circle cx="90.00" cy="231.38" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="212.11" cy="212.38" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="341.55" cy="192.25" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="463.67" cy="173.25" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="593.11" cy="153.11" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="721.64" cy="133.12" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="844.66" cy="113.98" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<circle cx="970.00" cy="94.48" r="3.2" fill="white" stroke="#8B3FA6" stroke-width="1.6"/>
+<line x1="350" y1="75" x2="375" y2="75" stroke="#2369A7" stroke-width="2.3"/>
+<text x="381" y="79" font-size="12">Q_hh</text>
+<line x1="480" y1="75" x2="505" y2="75" stroke="#D97904" stroke-width="2.3"/>
+<text x="511" y="79" font-size="12">Q_vv</text>
+<line x1="610" y1="75" x2="635" y2="75" stroke="#8B3FA6" stroke-width="2.3"/>
+<text x="641" y="79" font-size="12">Q_hv</text>
+<line x1="90" y1="410" x2="970" y2="410" stroke="#333"/>
+<line x1="90" y1="85" x2="90" y2="410" stroke="#333"/>
+<text x="530.0" y="465" text-anchor="middle" font-size="13">Normalized radius rho (log scale)</text>
+<text x="24" y="247.5" text-anchor="middle" font-size="13" transform="rotate(-90 24 247.5)">Mean detector RMSE (um, log scale)</text>
+</svg>

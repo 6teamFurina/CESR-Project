@@ -27,6 +27,8 @@ The error-analysis code is colocated with its results:
 - `render_response_rho_sweep_svg.py`: dependency-free SVG rendering;
 - `response_rho_sweep_600/`: committed sweep results and figures;
 - `vertical_parity/`: signed-direction experiment, analysis, and report.
+- `mixed_terms/`: four-sign `H_hh`/`H_vv`/`H_hv` decomposition of the
+  all-corrector quadratic residual.
 
 From `CESR Project`, a short sweep can be run with:
 
@@ -161,10 +163,10 @@ quadratic X residual is dominated by the vertical-corrector block. Combining
 the smaller horizontal contribution with the vertical contribution changes
 the total RMSE only slightly.
 
-This interpretation is consistent with the measured coefficients, but it is
-not yet a tensor-level proof. A follow-up Hessian block decomposition into
-`H_hh`, `H_hv`, and `H_vv` would be required to attribute the effect to
-specific second-order terms or lattice elements.
+The later four-sign block decomposition confirms that the mixed term is
+negligible in X: its mean squared-norm share is only `0.0146%` over
+`0.1 <= rho <= 1.13`. The large X response is therefore a pure-block effect,
+dominated by the vertical block over this direction distribution.
 
 ### Y orbit: simultaneous H/V variation reveals a large mixed contribution
 
@@ -178,10 +180,11 @@ At `rho = 1.13`, the Y mean RMSE values are
 
 The all-corrector value is about 49 times vertical-only and 145 times
 horizontal-only. Neither single-plane experiment reproduces the all-corrector
-Y error. The data therefore strongly suggest that mixed horizontal-vertical
-quadratic terms, present only when both corrector families vary together,
-dominate the all-corrector Y residual. A Hessian block calculation is again
-needed to confirm the attribution directly.
+Y error. The four-sign follow-up now confirms the attribution directly. Across
+100 fixed H/V direction pairs, the mean mixed squared-norm share is `99.963%`;
+at `rho=1.13`, the mixed-to-combined-pure ratio has P10/median/P90 values
+`38.5 / 64.7 / 129`. The signed vector reconstruction leaves only `0.953%` of
+the exact Y residual RMS at that radius.
 
 The comparison also explains why one should not infer the all-corrector error
 by taking the larger of the two single-plane curves: the mixed term can be much
@@ -320,9 +323,9 @@ transferable CESR acceptance limits.
 2. **Resolve the incomplete high-rho references.** Rerun all-corrector and
    vertical-only samples from `rho = 18.1` with a more robust continuation or
    exact solver before making population claims about the high-rho transition.
-3. **Decompose the second-order response.** Compute or estimate Hessian blocks
-   `H_hh`, `H_hv`, and `H_vv` to test the proposed explanation for the nearly
-   identical all/vertical X curves and the large all-corrector Y residual.
+3. **Localize the confirmed mixed block.** Use corrector-pair or lattice-local
+   attribution, and optionally an explicit AD Hessian contraction, to identify
+   which elements generate the large vertical `H_hv` block.
 4. **Densify transition regions rather than the entire scan.** Add radii around
    `rho = 0.2-2.5` for vertical-only Y and around `rho = 25-55` for the
    high-rho all/vertical transitions.
@@ -351,3 +354,21 @@ does not yet attribute the cubic coefficient to sextupole composition,
 octupoles, wigglers, or another nonlinear element. See
 [`vertical_parity/`](vertical_parity/) for the runnable experiment, analysis
 code, numerical result, and direction dependence.
+
+## Mixed horizontal--vertical follow-up
+
+The all-corrector four-sign experiment was completed on 2026-08-04 with 100
+fixed H/V direction pairs and 8 radii over `0.1 <= rho <= 1.13`. All 6,401
+nonlinear states converged without fallback. The vertical `Q_hv` term follows
+`rho^2`, its mean squared-norm share is `99.963%`, and the full signed
+reconstruction leaves less than 1% of the exact vertical residual RMS at the
+largest radius. The horizontal mixed share is only `0.0146%`.
+
+This confirms that the all-corrector vertical quadratic excess is generated
+overwhelmingly by the H/V cross block in this model. It does not yet localize
+that block to individual corrector pairs or nonlinear lattice elements. For
+the combined 198-dimensional X+Y vector, the pooled mixed share is `47.04%`,
+so the vertical-channel conclusion must not be described as dominance over all
+outputs. See
+[`mixed_terms/`](mixed_terms/) for the runnable experiment, direction-level
+data, report, and figure.
