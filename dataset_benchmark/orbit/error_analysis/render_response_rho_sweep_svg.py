@@ -157,7 +157,7 @@ def main() -> int:
         else "First-order orbit-response error versus corrector input scale"
     )
     y_label = (
-        "Detector-orbit RMSE / rho squared [micrometre]"
+        "Detector-orbit RMSE / ρ² [micrometre]"
         if args.normalize_rho_squared
         else "Detector-orbit response residual, RMSE [micrometre]"
     )
@@ -215,7 +215,7 @@ def main() -> int:
         return top + plot_height * (1.0 - fraction)
 
     subtitle = (
-        f"CESR RF-on closed orbit; {trial_note}; rho = 1 corresponds to "
+        f"CESR RF-on closed orbit; {trial_note}; ρ = 1 corresponds to "
         f"{args.base_kick_urad:g} microrad active-corrector RMS"
     )
     parts = [
@@ -264,7 +264,7 @@ def main() -> int:
         parts.extend((
             f'<rect x="{left}" y="{top}" width="{plot_width}" height="{plot_height}" fill="none" stroke="#333333" stroke-width="1.15"/>',
             text(left, top - 17, f"({chr(97 + panel)})  {title}", font_size="15", font_weight="600"),
-            text((left + right) / 2, bottom_y + 52, "Normalized active-corrector input radius, rho", text_anchor="middle", font_size="13.5"),
+            text((left + right) / 2, bottom_y + 52, "Normalized active-corrector input radius, ρ", text_anchor="middle", font_size="13.5"),
         ))
 
         reference_rows = sorted(

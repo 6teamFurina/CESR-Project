@@ -4,7 +4,7 @@
 <rect width="100%" height="100%" fill="white"/>
 <g font-family="Arial, Helvetica, sans-serif" fill="#202020" stroke-linecap="round" stroke-linejoin="round">
 <text x="630.00" y="30.00" text-anchor="middle" font-size="20" font-weight="600">Quadratic-normalized orbit-response residual</text>
-<text x="630.00" y="54.00" text-anchor="middle" font-size="12.5" fill="#555555">CESR RF-on closed orbit; 600 random directions per input scale; rho = 1 corresponds to 5 microrad active-corrector RMS</text>
+<text x="630.00" y="54.00" text-anchor="middle" font-size="12.5" fill="#555555">CESR RF-on closed orbit; 600 random directions per input scale; ρ = 1 corresponds to 5 microrad active-corrector RMS</text>
 <line x1="70" y1="88" x2="104" y2="88" stroke="#0072B2" stroke-width="2.2"/>
 <circle cx="87.00" cy="88.00" r="3.5" fill="white" stroke="#0072B2" stroke-width="1.7"/>
 <text x="113.00" y="92.00" font-size="12.5">All correctors (119)</text>
@@ -65,7 +65,7 @@
 <text x="590.00" y="511.00" text-anchor="middle" font-size="12" fill="#4A4A4A">64</text>
 <rect x="94" y="128" width="496" height="360" fill="none" stroke="#333333" stroke-width="1.15"/>
 <text x="94.00" y="111.00" font-size="15" font-weight="600">(a)  Horizontal detector orbit</text>
-<text x="342.00" y="540.00" text-anchor="middle" font-size="13.5">Normalized active-corrector input radius, rho</text>
+<text x="342.00" y="540.00" text-anchor="middle" font-size="13.5">Normalized active-corrector input radius, ρ</text>
 <path d="M 94.00 346.47 L 119.83 346.47 L 147.21 346.47 L 173.04 346.47 L 200.42 346.47 L 227.60 346.47 L 253.62 346.47 L 280.13 346.47 L 306.83 346.47 L 333.34 346.47 L 360.04 346.47 L 386.72 346.47 L 413.25 346.47 L 439.84 346.47 L 466.46 346.47 L 493.05 346.47 L 519.66 346.47 L 546.26 346.47 L 572.87 346.47 L 590.00 346.47" fill="none" stroke="#6B6B6B" stroke-width="1.5" stroke-dasharray="7 5" opacity="0.8"/>
 <path d="M 94.00 346.47 L 119.83 346.47 L 147.21 346.47 L 173.04 346.47 L 200.42 346.47 L 227.60 346.48 L 253.62 346.48 L 280.13 346.48 L 306.83 346.48 L 333.34 346.48 L 360.04 346.48 L 386.72 346.48 L 413.25 346.48 L 439.84 346.48 L 466.46 346.47 L 493.05 346.51 L 519.66 346.30 L 546.26 345.59 L 572.87 301.37 L 590.00 285.99" fill="none" stroke="#0072B2" stroke-width="2.15"/>
 <path d="M 94.00 375.07 L 119.83 375.07 L 147.21 375.07 L 173.04 375.07 L 200.42 375.07 L 227.60 375.07 L 253.62 375.06 L 280.13 375.06 L 306.83 375.06 L 333.34 375.06 L 360.04 375.06 L 386.72 375.06 L 413.25 375.06 L 439.84 375.06 L 466.46 375.05 L 493.05 375.04 L 519.66 375.03 L 546.26 375.00 L 572.87 374.94 L 590.00 374.89" fill="none" stroke="#D55E00" stroke-width="2.15" stroke-dasharray="9 4"/>
@@ -298,7 +298,7 @@
 <text x="1212.00" y="511.00" text-anchor="middle" font-size="12" fill="#4A4A4A">64</text>
 <rect x="716" y="128" width="496" height="360" fill="none" stroke="#333333" stroke-width="1.15"/>
 <text x="716.00" y="111.00" font-size="15" font-weight="600">(b)  Vertical detector orbit</text>
-<text x="964.00" y="540.00" text-anchor="middle" font-size="13.5">Normalized active-corrector input radius, rho</text>
+<text x="964.00" y="540.00" text-anchor="middle" font-size="13.5">Normalized active-corrector input radius, ρ</text>
 <path d="M 716.00 347.81 L 741.83 347.81 L 769.21 347.81 L 795.04 347.81 L 822.42 347.81 L 849.60 347.81 L 875.62 347.81 L 902.13 347.81 L 928.83 347.81 L 955.34 347.81 L 982.04 347.81 L 1008.72 347.81 L 1035.25 347.81 L 1061.84 347.81 L 1088.46 347.81 L 1115.05 347.81 L 1141.66 347.81 L 1168.26 347.81 L 1194.87 347.81 L 1212.00 347.81" fill="none" stroke="#6B6B6B" stroke-width="1.5" stroke-dasharray="7 5" opacity="0.8"/>
 <path d="M 716.00 347.81 L 741.83 347.81 L 769.21 347.81 L 795.04 347.81 L 822.42 347.81 L 849.60 347.81 L 875.62 347.81 L 902.13 347.81 L 928.83 347.81 L 955.34 347.81 L 982.04 347.80 L 1008.72 347.78 L 1035.25 347.73 L 1061.84 347.62 L 1088.46 347.40 L 1115.05 347.00 L 1141.66 345.98 L 1168.26 338.51 L 1194.87 302.09 L 1212.00 271.04" fill="none" stroke="#0072B2" stroke-width="2.15"/>
 <path d="M 716.00 459.02 L 741.83 459.02 L 769.21 459.02 L 795.04 459.02 L 822.42 459.02 L 849.60 459.02 L 875.62 459.02 L 902.13 459.02 L 928.83 459.01 L 955.34 459.01 L 982.04 459.01 L 1008.72 459.01 L 1035.25 459.00 L 1061.84 458.99 L 1088.46 458.97 L 1115.05 458.93 L 1141.66 458.87 L 1168.26 458.76 L 1194.87 458.54 L 1212.00 458.31" fill="none" stroke="#D55E00" stroke-width="2.15" stroke-dasharray="9 4"/>
@@ -493,7 +493,7 @@
 <line x1="1189.87" y1="288.67" x2="1199.87" y2="278.67" stroke="#009E73" stroke-width="2"/>
 <line x1="1207.00" y1="255.93" x2="1217.00" y2="265.93" stroke="#009E73" stroke-width="2"/>
 <line x1="1207.00" y1="265.93" x2="1217.00" y2="255.93" stroke="#009E73" stroke-width="2"/>
-<text x="24" y="308.00" transform="rotate(-90 24 308.00)" text-anchor="middle" font-size="13.5">Detector-orbit RMSE / rho squared [micrometre]</text>
+<text x="24" y="308.00" transform="rotate(-90 24 308.00)" text-anchor="middle" font-size="13.5">Detector-orbit RMSE / ρ² [micrometre]</text>
 <text x="630.00" y="591.00" text-anchor="middle" font-size="11.5" fill="#555555">Markers and lines: mean over trials; one-sided whiskers: maximum over trials.</text>
 </g>
 </svg>

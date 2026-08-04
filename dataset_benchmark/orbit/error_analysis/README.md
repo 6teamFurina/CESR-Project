@@ -55,8 +55,8 @@ They are not yet a machine-validated CESR error budget.
 - `response_rho_sweep_600/combined/rho_sweep_trial_errors.csv`: all trial-level
   residual metrics.
 - `response_rho_sweep_600/combined/rho_sweep_summary.csv`: mean and observed
-  maximum over 600 random directions at each positive `rho`.
-- `response_rho_sweep_600/combined/rho_sweep_scaling.csv`: `E/rho^2` and local
+  maximum over 600 random directions at each positive `ρ`.
+- `response_rho_sweep_600/combined/rho_sweep_scaling.csv`: `E/ρ²` and local
   log-log slopes.
 - `response_rho_sweep_600/combined/rho_sweep_metadata.json`: combined run
   metadata and convergence counts.
@@ -64,9 +64,9 @@ They are not yet a machine-validated CESR error budget.
   and metadata.
 - `response_rho_sweep_600/figures/`: publication-style PNG and SVG figures.
 
-![Mean and maximum orbit-response residual](response_rho_sweep_600/figures/scibmad_orbit_response_error.png)
+![Mean and maximum orbit-response residual](response_rho_sweep_600/figures/scibmad_orbit_response_error.svg)
 
-![Quadratic-normalized orbit-response residual](response_rho_sweep_600/figures/scibmad_orbit_response_error_rho2_normalized.png)
+![Quadratic-normalized orbit-response residual](response_rho_sweep_600/figures/scibmad_orbit_response_error_rho2_normalized.svg)
 
 ## Experimental definition
 
@@ -74,10 +74,10 @@ For each scenario, a Gaussian random direction is normalized to exact unit RMS
 over the active correctors. The applied perturbation is
 
 ```text
-delta_k = rho * (5 microrad) * normalized_direction.
+delta_k = ρ * (5 microrad) * normalized_direction.
 ```
 
-Consequently, `rho = 1` means an active-corrector RMS kick of `5 microrad`.
+Consequently, `ρ = 1` means an active-corrector RMS kick of `5 microrad`.
 This is an RMS over the active subset, not the maximum kick of one corrector and
 not an RMS over all 119 columns for the single-plane scenarios.
 
@@ -92,7 +92,7 @@ are reused across radii. Including one shared nominal state, the run evaluates
 For plane `u` in `{x, y}`, the plotted mean error is
 
 ```text
-E_s,u(rho) = mean over trials of the detector RMSE in plane u,
+E_s,u(ρ) = mean over trials of the detector RMSE in plane u,
 ```
 
 where each trial RMSE is taken over the 99 detectors in that plane. The
@@ -100,9 +100,9 @@ one-sided whisker is the largest trial RMSE among the 600 directions. It is an
 **observed maximum**, not a standard deviation, confidence interval, or formal
 probabilistic upper bound.
 
-All 600 trials converge through `rho = 12.8` for all three scenarios.
-Horizontal-only remains complete through `rho = 64`. All-corrector and
-vertical-only results are incomplete from `rho = 18.1` onward; their high-rho
+All 600 trials converge through `ρ = 12.8` for all three scenarios.
+Horizontal-only remains complete through `ρ = 64`. All-corrector and
+vertical-only results are incomplete from `ρ = 18.1` onward; their high-ρ
 means use only converged trials and may therefore be selection-biased.
 
 ## Why a quadratic error is expected
@@ -124,21 +124,21 @@ higher term can become visible much earlier.
 Two diagnostics are used:
 
 ```text
-Q(rho) = E(rho) / rho^2
-p_i = log(E_i / E_(i-1)) / log(rho_i / rho_(i-1)).
+Q(ρ) = E(ρ) / ρ²
+p_i = log(E_i / E_(i-1)) / log(ρ_i / ρ_(i-1)).
 ```
 
 Pure quadratic scaling gives constant `Q` and local slope `p = 2`. In this
 README, "near-quadratic" is used operationally when `|p - 2| <= 0.05` and `Q`
-changes by no more than 10% from its smallest-rho value. "Higher-order
+changes by no more than 10% from its smallest-ρ value. "Higher-order
 dominated" is reserved for a sustained large departure, approximately
-`p >= 2.5` together with `Q/Q(rho=0.1) >= 2`. These are analysis criteria, not
+`p >= 2.5` together with `Q/Q(ρ=0.1) >= 2`. These are analysis criteria, not
 machine-protection limits.
 
 ## Difference among the three corrector scenarios
 
-The low-rho quadratic coefficients below are evaluated at `rho = 0.1`. Units
-are micrometres of mean detector RMSE per `rho^2`.
+The low-ρ quadratic coefficients below are evaluated at `ρ = 0.1`. Units
+are micrometres of mean detector RMSE per `ρ²`.
 
 | Active correctors | X-orbit coefficient | Y-orbit coefficient |
 |---|---:|---:|
@@ -148,8 +148,8 @@ are micrometres of mean detector RMSE per `rho^2`.
 
 ### X orbit: all correctors and vertical-only are nearly the same
 
-Across the complete common range `0.1 <= rho <= 12.8`, the all-corrector X
-mean RMSE is only 2.14-2.25% above the vertical-only value. At `rho = 1.13`,
+Across the complete common range `0.1 <= ρ <= 12.8`, the all-corrector X
+mean RMSE is only 2.14-2.25% above the vertical-only value. At `ρ = 1.13`,
 
 | Scenario | X mean RMSE |
 |---|---:|
@@ -165,12 +165,12 @@ the total RMSE only slightly.
 
 The later four-sign block decomposition confirms that the mixed term is
 negligible in X: its mean squared-norm share is only `0.0146%` over
-`0.1 <= rho <= 1.13`. The large X response is therefore a pure-block effect,
+`0.1 <= ρ <= 1.13`. The large X response is therefore a pure-block effect,
 dominated by the vertical block over this direction distribution.
 
 ### Y orbit: simultaneous H/V variation reveals a large mixed contribution
 
-At `rho = 1.13`, the Y mean RMSE values are
+At `ρ = 1.13`, the Y mean RMSE values are
 
 | Scenario | Y mean RMSE |
 |---|---:|
@@ -182,7 +182,7 @@ The all-corrector value is about 49 times vertical-only and 145 times
 horizontal-only. Neither single-plane experiment reproduces the all-corrector
 Y error. The four-sign follow-up now confirms the attribution directly. Across
 100 fixed H/V direction pairs, the mean mixed squared-norm share is `99.963%`;
-at `rho=1.13`, the mixed-to-combined-pure ratio has P10/median/P90 values
+at `ρ=1.13`, the mixed-to-combined-pure ratio has P10/median/P90 values
 `38.5 / 64.7 / 129`. The signed vector reconstruction leaves only `0.953%` of
 the exact Y residual RMS at that radius.
 
@@ -194,14 +194,14 @@ larger than either isolated term.
 
 | Scenario and output | Observed regime | Interpretation |
 |---|---|---|
-| All -> X | Near-quadratic through the last complete point, `rho = 12.8` (`64 microrad` RMS). A mild departure appears near `rho = 36.2`; strong growth occurs at `rho >= 51.2`, but these points are incomplete. | Quadratic residual is established over the validated range; the high-rho transition is only provisional. |
-| All -> Y | Near-quadratic through `rho = 12.8`. Local slope reaches about 2.13 at `rho = 25.6` and 2.97 at `rho = 36.2`, both incomplete. | Higher-order effects probably emerge beyond the complete range, but their population mean is not yet validated. |
-| Horizontal only -> X | Near-quadratic through `rho = 64` (`320 microrad` RMS); final slope is 2.011 and `Q` changes by about 1%. | No higher-order-dominated transition is observed in the scanned range. |
-| Horizontal only -> Y | Near-quadratic through `rho = 64`; final slope is 2.047 and `Q` changes by about 3%. | The cross-plane residual is small and remains predominantly quadratic in the scanned range. |
-| Vertical only -> X | Scaling remains close to quadratic through `rho = 36.2`, but exact-reference completeness ends after `rho = 12.8`. Strong growth appears at `rho >= 51.2`. | The complete range supports quadratic behavior; the apparent high-rho transition requires a more robust exact solve. |
-| Vertical only -> Y | Strictly near-quadratic only at the smallest radii (`rho <= 0.2`). Departure begins around `rho = 0.28-0.4`; higher-order terms are comparable or dominant by `rho = 2.26`, where `p = 2.66` and `Q/Q_0 = 2.25`. The slope approaches 3 from `rho = 6.4` to `12.8`. | The quadratic Y term is unusually small, allowing an approximately cubic contribution to dominate early. This transition occurs while all 600 references still converge and is therefore the clearest verified higher-order effect. |
+| All -> X | Near-quadratic through the last complete point, `ρ = 12.8` (`64 microrad` RMS). A mild departure appears near `ρ = 36.2`; strong growth occurs at `ρ >= 51.2`, but these points are incomplete. | Quadratic residual is established over the validated range; the high-ρ transition is only provisional. |
+| All -> Y | Near-quadratic through `ρ = 12.8`. Local slope reaches about 2.13 at `ρ = 25.6` and 2.97 at `ρ = 36.2`, both incomplete. | Higher-order effects probably emerge beyond the complete range, but their population mean is not yet validated. |
+| Horizontal only -> X | Near-quadratic through `ρ = 64` (`320 microrad` RMS); final slope is 2.011 and `Q` changes by about 1%. | No higher-order-dominated transition is observed in the scanned range. |
+| Horizontal only -> Y | Near-quadratic through `ρ = 64`; final slope is 2.047 and `Q` changes by about 3%. | The cross-plane residual is small and remains predominantly quadratic in the scanned range. |
+| Vertical only -> X | Scaling remains close to quadratic through `ρ = 36.2`, but exact-reference completeness ends after `ρ = 12.8`. Strong growth appears at `ρ >= 51.2`. | The complete range supports quadratic behavior; the apparent high-ρ transition requires a more robust exact solve. |
+| Vertical only -> Y | Strictly near-quadratic only at the smallest radii (`ρ <= 0.2`). Departure begins around `ρ = 0.28-0.4`; higher-order terms are comparable or dominant by `ρ = 2.26`, where `p = 2.66` and `Q/Q_0 = 2.25`. The slope approaches 3 from `ρ = 6.4` to `12.8`. | The quadratic Y term is unusually small, allowing an approximately cubic contribution to dominate early. This transition occurs while all 600 references still converge and is therefore the clearest verified higher-order effect. |
 
-At `rho = 12.8`, the complete-reference mean RMSE values further illustrate
+At `ρ = 12.8`, the complete-reference mean RMSE values further illustrate
 the anisotropy:
 
 | Scenario | X mean RMSE | Y mean RMSE |
@@ -221,18 +221,18 @@ orbit solver tolerance.
 In a verified quadratic regime, if
 
 ```text
-E(rho) = C2 * rho^2,
+E(ρ) = C2 * ρ²,
 ```
 
 then an output budget `epsilon` gives
 
 ```text
-rho_limit = sqrt(epsilon / C2)
-active-corrector RMS limit = 5 * rho_limit microrad.
+ρ_limit = sqrt(epsilon / C2)
+active-corrector RMS limit = 5 * ρ_limit microrad.
 ```
 
 The following table uses log-log interpolation of the measured mean curve. A
-cell reports `rho / active-corrector RMS kick`. Values are sensitivity examples,
+cell reports `ρ / active-corrector RMS kick`. Values are sensitivity examples,
 not proposed CESR specifications.
 
 | Scenario and output | 1 micrometre mean budget | 10 micrometre mean budget | 100 micrometre mean budget |
@@ -240,7 +240,7 @@ not proposed CESR specifications.
 | All -> X | 1.33 / 6.65 microrad | 4.21 / 21.0 microrad | 13.31 / 66.5 microrad [incomplete bracket] |
 | All -> Y | 1.37 / 6.86 microrad | 4.33 / 21.7 microrad | 13.56 / 67.8 microrad [incomplete bracket] |
 | Horizontal only -> X | 2.52 / 12.6 microrad | 7.98 / 39.9 microrad | 25.21 / 126 microrad |
-| Horizontal only -> Y | 16.50 / 82.5 microrad | 51.70 / 259 microrad | Not reached by `rho = 64` / `320 microrad` |
+| Horizontal only -> Y | 16.50 / 82.5 microrad | 51.70 / 259 microrad | Not reached by `ρ = 64` / `320 microrad` |
 | Vertical only -> X | 1.35 / 6.73 microrad | 4.25 / 21.3 microrad | 13.45 / 67.2 microrad [incomplete bracket] |
 | Vertical only -> Y | 5.43 / 27.2 microrad [higher-order] | 11.82 / 59.1 microrad [higher-order] | 25.21 / 126 microrad [higher-order and incomplete] |
 
@@ -255,7 +255,7 @@ cubic.
 If the requirement is that none of the 600 sampled directions exceed 1
 micrometre, the observed-maximum crossings are more conservative:
 
-| Scenario and output | `rho` at 1 micrometre observed maximum | Active-corrector RMS kick |
+| Scenario and output | `ρ` at 1 micrometre observed maximum | Active-corrector RMS kick |
 |---|---:|---:|
 | All -> X | 0.730 | 3.65 microrad |
 | All -> Y | 0.736 | 3.68 microrad |
@@ -320,15 +320,15 @@ transferable CESR acceptance limits.
 1. **Define the actual acceptance budget.** Repeat the crossing table using the
    CESR application requirement for mean error, a selected percentile, and/or
    worst-case error.
-2. **Resolve the incomplete high-rho references.** Rerun all-corrector and
-   vertical-only samples from `rho = 18.1` with a more robust continuation or
-   exact solver before making population claims about the high-rho transition.
+2. **Resolve the incomplete high-ρ references.** Rerun all-corrector and
+   vertical-only samples from `ρ = 18.1` with a more robust continuation or
+   exact solver before making population claims about the high-ρ transition.
 3. **Localize the confirmed mixed block.** Use corrector-pair or lattice-local
    attribution, and optionally an explicit AD Hessian contraction, to identify
    which elements generate the large vertical `H_hv` block.
 4. **Densify transition regions rather than the entire scan.** Add radii around
-   `rho = 0.2-2.5` for vertical-only Y and around `rho = 25-55` for the
-   high-rho all/vertical transitions.
+   `ρ = 0.2-2.5` for vertical-only Y and around `ρ = 25-55` for the
+   high-ρ all/vertical transitions.
 5. **Add uncertainty layers.** Combine response truncation error with BPM noise,
    calibration uncertainty, lattice/model discrepancy, and real CESR response
    measurements. Until this is done, the result validates a SciBmad
@@ -339,12 +339,12 @@ transferable CESR acceptance limits.
 A signed vertical-corrector experiment was completed on 2026-08-04 to test the
 order of the early `vertical-only -> y` transition directly. The same 100
 random directions were evaluated at both signs for 15 radii over
-`0.05 <= rho <= 6.4`; all 3,001 nonlinear states converged.
+`0.05 <= ρ <= 6.4`; all 3,001 nonlinear states converged.
 
 The paired decomposition shows that the vertical detector-orbit even component
 has slope 2, while the odd component after subtraction of the linear response
-has slope 3. Their mean RMSE values cross near `rho = 1.31`, or approximately
-`6.5 microrad` active-corrector RMS. At `rho = 6.4`, the mean odd/even ratio is
+has slope 3. Their mean RMSE values cross near `ρ = 1.31`, or approximately
+`6.5 microrad` active-corrector RMS. At `ρ = 6.4`, the mean odd/even ratio is
 `4.91`. The horizontal detector-orbit control remains overwhelmingly
 even/quadratic, with an odd/even ratio of only `3.05e-4` at the same radius.
 
@@ -358,17 +358,34 @@ code, numerical result, and direction dependence.
 ## Mixed horizontal--vertical follow-up
 
 The all-corrector four-sign experiment was completed on 2026-08-04 with 100
-fixed H/V direction pairs and 8 radii over `0.1 <= rho <= 1.13`. All 6,401
-nonlinear states converged without fallback. The vertical `Q_hv` term follows
-`rho^2`, its mean squared-norm share is `99.963%`, and the full signed
-reconstruction leaves less than 1% of the exact vertical residual RMS at the
-largest radius. The horizontal mixed share is only `0.0146%`.
+fixed H/V direction pairs and 8 radii over `0.1 <= ρ <= 1.13`. All 6,401
+nonlinear states converged without fallback. For each orbit component, the
+tabulated block share is
 
-This confirms that the all-corrector vertical quadratic excess is generated
-overwhelmingly by the H/V cross block in this model. It does not yet localize
-that block to individual corrector pairs or nonlinear lattice elements. For
-the combined 198-dimensional X+Y vector, the pooled mixed share is `47.04%`,
-so the vertical-channel conclusion must not be described as dominance over all
-outputs. See
+```text
+f_ab,u = ||Q_ab,u||² / (||Q_hh,u||² + ||Q_hv,u||² + ||Q_vv,u||²).
+```
+
+Each entry below is `median [P10, P90]` in percent across the same 100 fixed
+H/V direction pairs.
+
+| ρ | X `hh` | X `hv` | X `vv` | Y `hh` | Y `hv` | Y `vv` |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0.10 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.14 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.20 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.28 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.40 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.57 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.80 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 1.13 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+
+The shares are invariant at the displayed precision over the verified
+quadratic interval. The X and Y orbit components therefore remain physically
+separate in the interpretation: X is `vv`-dominated, whereas Y is
+`hv`-dominated.
+
+The result does not yet localize either dominant block to individual corrector
+pairs or nonlinear lattice elements. See
 [`mixed_terms/`](mixed_terms/) for the runnable experiment, direction-level
-data, report, and figure.
+data, report, and table.

@@ -6,7 +6,7 @@ reconstructions and remainders are computed as vectors before detector RMS.
 
 ## Mean decomposition
 
-| rho | H/V kick RMS (urad) | plane | Q_hh (um) | Q_vv (um) | Q_hv (um) | Q_hv slope | mixed energy share | full remainder / exact |
+| ρ | H/V kick RMS (µrad) | plane | Q_hh (µm) | Q_vv (µm) | Q_hv (µm) | Q_hv slope | mixed energy share | full remainder / exact |
 |---:|---:|:---:|---:|---:|---:|---:|---:|---:|
 | 0.1 | 0.5 | X | 0.00165635 | 0.00534217 | 5.05141e-05 | n/a | 0.0146% | 0.0283% |
 | 0.1 | 0.5 | Y | 3.69664e-05 | 7.69898e-05 | 0.00559752 | n/a | 99.9627% | 0.0844% |
@@ -27,22 +27,38 @@ reconstructions and remainders are computed as vectors before detector RMS.
 
 ## Direction-resolved result at the largest fitted radius
 
-At `rho = 1.13` (5.65 urad RMS in each family):
+At `ρ = 1.13` (5.65 µrad RMS in each family):
 
 | plane | mixed/pure P10 | median | P90 | mixed-energy share P10 | median | P90 | reconstruction improvement P10 | median | P90 |
 |:---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | X | 0.004129 | 0.009872 | 0.01781 | 0.002% | 0.010% | 0.032% | 58.561% | 92.888% | 98.074% |
 | Y | 38.52 | 64.73 | 129.2 | 99.933% | 99.976% | 99.994% | 99.957% | 99.996% | 99.999% |
-| X+Y | 0.659 | 1.075 | 1.581 | 30.280% | 53.620% | 71.429% | 99.955% | 99.995% | 99.998% |
+
+## Direction-resolved block squared-norm shares
+
+For each orbit plane, the three shares use the common denominator
+`||Q_hh||² + ||Q_hv||² + ||Q_vv||²` and therefore sum to one for
+every direction before percentiles are taken. Entries are
+`median [P10, P90]` in percent.
+
+| ρ | X hh | X hv | X vv | Y hh | Y hv | Y vv |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0.1 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.14 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.2 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.28 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.4 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.57 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 0.8 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
+| 1.13 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
 
 ## Compact checks
 
-- Mean Y `Q_hv/rho^2` changes by `0.0004233%` over the fitted interval.
+- Mean Y `Q_hv/ρ²` changes by `0.0004233%` over the fitted interval.
 - At the smallest radius, mean Y mixed energy share is `99.9627%`.
 - At the largest radius, mean Y mixed energy share is `99.9627%`.
 - At the largest radius, the full signed reconstruction leaves `0.953287%` of the exact Y residual RMS.
 - At the largest radius, adding `Q_hv` reduces the mean squared Y reconstruction error by `99.982%` relative to the pure-only reconstruction.
-- For the combined 198-dimensional X+Y vector at the largest radius, the pooled mixed squared-norm share is `47.0412%`; its direction-resolved P10/median/P90 shares are `30.28% / 53.62% / 71.43%`.
 
 The cross-term hypothesis is supported only if `Q_hv` remains quadratic,
 dominates the Y direction distribution, and the signed reconstruction closes

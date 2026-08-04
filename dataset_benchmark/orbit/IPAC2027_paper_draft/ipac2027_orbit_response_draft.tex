@@ -1,7 +1,7 @@
 % IPAC'27 / JACoW-style working draft.
 % Official JACoW class: v3.01 (2026-03-11).
-% Abstract, Introduction, and two source-attribution studies are intentionally
-% left as visible placeholders until the corresponding text/results are ready.
+% Abstract, Introduction, and the remaining multipole-attribution study are
+% intentionally left as visible placeholders until the result set is ready.
 \documentclass[letterpaper]{jacow}
 
 \usepackage[english]{babel}
@@ -26,8 +26,8 @@
 \maketitle
 
 \begin{abstract}
-  \draftplaceholder{Write after the mixed horizontal--vertical second-order
-  experiment and the sextupole/octupole attribution scan are complete.}
+  \draftplaceholder{Write after the remaining sextupole/octupole attribution
+  scan is complete and the result set is frozen.}
 \end{abstract}
 
 \section{Introduction}
@@ -148,19 +148,34 @@ For the full detector vector,
 \end{align}
 Each signed quadratic residual was reconstructed as
 $\bm Q_{hh}+\bm Q_{vv}+s_hs_v\bm Q_{hv}$ before taking detector rms norms.
+For orbit component $u\in\{x,y\}$, the tabulated block shares are calculated for
+each direction before taking percentiles,
+\begin{equation}
+ \begin{aligned}
+ f_{ab,u}&=\frac{\lVert\bm Q_{ab,u}\rVert^2}
+ {\lVert\bm Q_{hh,u}\rVert^2+\lVert\bm Q_{hv,u}\rVert^2+
+  \lVert\bm Q_{vv,u}\rVert^2},\\[-1mm]
+ ab&\in\{hh,hv,vv\}.
+ \end{aligned}
+ \label{eq:blockshare}
+\end{equation}
 
 The vertical $Q_{hv}/\rho^2$ coefficient changes by only 0.000423\% across the
 fit interval.  At $\rho=1.13$, the mean vertical rms components are
 \qty{0.00472}{\micro\metre}, \qty{0.00983}{\micro\metre}, and
 \qty{0.71475}{\micro\metre} for $Q_{hh}$, $Q_{vv}$, and $Q_{hv}$,
-respectively.  The mixed squared-norm share has 10th, 50th, and 90th
-percentiles of 99.933\%, 99.976\%, and 99.994\% across directions.  The signed
+respectively.  Table~\ref{tab:mixedshares} shows the distinct physical result
+for the two orbit components.  For $x$, the $vv$ share has 10th, 50th, and 90th
+percentiles of 61.72\%, 90.83\%, and 98.15\%.  For $y$, the corresponding
+$hv$ percentiles are 99.930\%, 99.977\%, and 99.991\%.  The signed
 reconstruction leaves 0.953\% of the exact vertical residual rms, while adding
 $Q_{hv}$ reduces the mean squared reconstruction error by 99.982\% relative to
 the pure-block reconstruction.  By contrast, the horizontal mixed share is
 only 0.0146\%.  Thus the all-corrector vertical quadratic excess is a mixed
 horizontal--vertical response, rather than the sum of the isolated pure-plane
 terms.
+
+\input{figures/mixed_term_component_share_table.tex}
 
 \section{Vertical-Corrector Signed Parity}
 
@@ -271,10 +286,12 @@ calculations on a shared 1000-sample input set.  The orbit-radius sweep then
 identifies a channel-specific failure of a purely quadratic residual model.
 Signed-direction measurements show that the vertical-only vertical residual
 is an odd cubic response overtaking a small even component, rather than a
-generic numerical loss of convergence.  A four-sign reconstruction further
-shows that the all-corrector vertical quadratic residual is overwhelmingly a
-mixed horizontal--vertical term.  The remaining causal test is a
-sextupole/octupole attribution of the cubic coefficient.
+generic numerical loss of convergence.  A direction-resolved four-sign
+reconstruction further separates the all-corrector quadratic source by orbit
+component: the horizontal orbit is dominated by the pure vertical block
+$Q_{vv}$, whereas the vertical orbit is dominated by the mixed block $Q_{hv}$.
+The remaining causal test is a sextupole/octupole attribution of the cubic
+coefficient.
 
 \begin{thebibliography}{9}
 

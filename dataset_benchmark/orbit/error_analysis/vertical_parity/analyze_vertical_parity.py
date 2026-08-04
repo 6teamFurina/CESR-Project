@@ -107,7 +107,7 @@ def write_analysis(path: Path, rows: list[dict[str, float]]) -> None:
         "`even` contains even Taylor orders; `odd_nl` is the odd part after subtracting",
         "the nominal first-order detector response.",
         "",
-        "| rho | kick RMS (urad) | X even (um) | X odd-nl (um) | X p_even | X p_odd | Y even (um) | Y odd-nl (um) | Y p_even | Y p_odd | Y odd/even |",
+        "| ρ | kick RMS (µrad) | X even (µm) | X odd-nl (µm) | X p_even | X p_odd | Y even (µm) | Y odd-nl (µm) | Y p_even | Y p_odd | Y odd/even |",
         "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for index, rho in enumerate(rhos):
@@ -127,10 +127,10 @@ def write_analysis(path: Path, rows: list[dict[str, float]]) -> None:
             "",
             "## Compact checks",
             "",
-            f"- Smallest-rho X even/rho^2: `{1e6*x_even[0]/rhos[0]**2:.8g} um`.",
-            f"- Smallest-rho Y even/rho^2: `{1e6*y_even[0]/rhos[0]**2:.8g} um`.",
-            f"- Largest-rho X odd/even ratio: `{x_odd[-1]/x_even[-1]:.8g}`.",
-            f"- Largest-rho Y odd/even ratio: `{y_odd[-1]/y_even[-1]:.8g}`.",
+            f"- Smallest-ρ X even/ρ²: `{1e6*x_even[0]/rhos[0]**2:.8g} µm`.",
+            f"- Smallest-ρ Y even/ρ²: `{1e6*y_even[0]/rhos[0]**2:.8g} µm`.",
+            f"- Largest-ρ X odd/even ratio: `{x_odd[-1]/x_even[-1]:.8g}`.",
+            f"- Largest-ρ Y odd/even ratio: `{y_odd[-1]/y_even[-1]:.8g}`.",
             f"- Final Y even local slope: `{y_even_slopes[-1]:.8g}`.",
             f"- Final Y odd-nonlinear local slope: `{y_odd_slopes[-1]:.8g}`.",
             "",
@@ -187,7 +187,7 @@ def render(path: Path, rows: list[dict[str, float]]) -> None:
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020">',
         '<text x="580" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical-corrector signed-parity decomposition</text>',
-        '<text x="580" y="56" text-anchor="middle" font-size="13" fill="#555">100 paired random directions; rho = 1 is 5 microrad active-corrector RMS</text>',
+        '<text x="580" y="56" text-anchor="middle" font-size="13" fill="#555">100 paired random directions; ρ = 1 is 5 µrad active-corrector RMS</text>',
         '<line x1="95" y1="88" x2="129" y2="88" stroke="#D55E00" stroke-width="2.4"/>',
         '<rect x="109" y="85" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>',
         '<text x="138" y="93" font-size="13">Even component</text>',
@@ -195,9 +195,9 @@ def render(path: Path, rows: list[dict[str, float]]) -> None:
         '<polygon points="332,84.2 328.4,91 335.6,91" fill="white" stroke="#009E73" stroke-width="1.5"/>',
         '<text x="358" y="93" font-size="13">Odd nonlinear component</text>',
         '<line x1="610" y1="88" x2="644" y2="88" stroke="#D55E00" stroke-width="1.8" stroke-dasharray="7 5"/>',
-        '<text x="653" y="93" font-size="13">Quadratic guide (rho^2)</text>',
+        '<text x="653" y="93" font-size="13">Quadratic guide (ρ²)</text>',
         '<line x1="865" y1="88" x2="899" y2="88" stroke="#009E73" stroke-width="1.8" stroke-dasharray="7 5"/>',
-        '<text x="908" y="93" font-size="13">Cubic guide (rho^3)</text>',
+        '<text x="908" y="93" font-size="13">Cubic guide (ρ³)</text>',
     ]
 
     for panel, plane in enumerate(("x", "y")):
@@ -230,7 +230,7 @@ def render(path: Path, rows: list[dict[str, float]]) -> None:
         ):
             for rho, value in zip(rhos, values):
                 parts.append(marker(shape, xp(rho, left), yp(value), color))
-        parts.append(f'<text x="{(left+right)/2:.2f}" y="{bottom+48}" text-anchor="middle" font-size="13">Normalized vertical-corrector radius, rho</text>')
+        parts.append(f'<text x="{(left+right)/2:.2f}" y="{bottom+48}" text-anchor="middle" font-size="13">Normalized active-corrector input radius, ρ</text>')
 
     parts.extend(
         [
@@ -271,7 +271,7 @@ def render_linear_growth(path: Path, rows: list[dict[str, float]]) -> None:
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="linear-title linear-desc">',
         '<title id="linear-title">Vertical detector even and odd nonlinear growth on a linear scale</title>',
-        '<desc id="linear-desc">The odd cubic component overtakes the even quadratic component near rho 1.31 and grows to 4.91 times the even component at rho 6.4.</desc>',
+        '<desc id="linear-desc">The odd cubic component overtakes the even quadratic component near ρ = 1.31 and grows to 4.91 times the even component at ρ = 6.4.</desc>',
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020">',
         '<text x="520" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical detector: cubic growth versus quadratic growth</text>',
@@ -297,7 +297,7 @@ def render_linear_growth(path: Path, rows: list[dict[str, float]]) -> None:
 
     cross_x = xp(crossover)
     parts.append(f'<line x1="{cross_x:.2f}" y1="{top}" x2="{cross_x:.2f}" y2="{bottom}" stroke="#666" stroke-width="1.4" stroke-dasharray="5 5"/>')
-    parts.append(f'<text x="{cross_x+8:.2f}" y="{top+18}" font-size="12" fill="#555">Mean crossover: rho = {crossover:.2f}</text>')
+    parts.append(f'<text x="{cross_x+8:.2f}" y="{top+18}" font-size="12" fill="#555">Mean crossover: ρ = {crossover:.2f}</text>')
     parts.append(polyline(even, "#D55E00"))
     parts.append(polyline(odd, "#009E73"))
 
@@ -315,7 +315,7 @@ def render_linear_growth(path: Path, rows: list[dict[str, float]]) -> None:
     parts.extend(
         [
             f'<rect x="{left}" y="{top}" width="{plot_width}" height="{plot_height}" fill="none" stroke="#555"/>',
-            f'<text x="{(left+right)/2:.2f}" y="{bottom+50}" text-anchor="middle" font-size="13">Normalized vertical-corrector radius, rho</text>',
+            f'<text x="{(left+right)/2:.2f}" y="{bottom+50}" text-anchor="middle" font-size="13">Normalized active-corrector input radius, ρ</text>',
             '<text x="22" y="294" text-anchor="middle" font-size="13" transform="rotate(-90 22 294)">Mean detector RMSE [micrometre]</text>',
             '</g>',
             '</svg>',
@@ -373,17 +373,17 @@ def render_crossover_loglog(path: Path, rows: list[dict[str, float]]) -> None:
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="cross-title cross-desc">',
         '<title id="cross-title">Vertical even and odd response near their crossover</title>',
-        '<desc id="cross-desc">A focused log-log plot showing the quadratic even and cubic odd nonlinear mean responses crossing near rho 1.31.</desc>',
+        '<desc id="cross-desc">A focused log-log plot showing the quadratic even and cubic odd nonlinear mean responses crossing near ρ = 1.31.</desc>',
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020">',
         '<text x="480" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical response near the even–odd crossover</text>',
         '<text x="480" y="56" text-anchor="middle" font-size="13" fill="#555">Focused log–log view; mean across the same 100 corrector directions</text>',
         '<line x1="246" y1="82" x2="282" y2="82" stroke="#D55E00" stroke-width="2.6"/>',
         '<rect x="261" y="79" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>',
-        '<text x="292" y="87" font-size="13">Even component (rho²)</text>',
+        '<text x="292" y="87" font-size="13">Even component (ρ²)</text>',
         '<line x1="510" y1="82" x2="546" y2="82" stroke="#009E73" stroke-width="2.6"/>',
         '<polygon points="528,78.2 524.4,85 531.6,85" fill="white" stroke="#009E73" stroke-width="1.5"/>',
-        '<text x="556" y="87" font-size="13">Odd nonlinear component (rho³)</text>',
+        '<text x="556" y="87" font-size="13">Odd nonlinear component (ρ³)</text>',
     ]
     for power in range(int(math.log10(y_lo)), int(math.log10(y_hi)) + 1):
         value = 10.0**power
@@ -399,7 +399,7 @@ def render_crossover_loglog(path: Path, rows: list[dict[str, float]]) -> None:
     parts.extend(
         [
             f'<line x1="{cross_x:.2f}" y1="{top}" x2="{cross_x:.2f}" y2="{bottom}" stroke="#666" stroke-width="1.5" stroke-dasharray="6 5"/>',
-            f'<text x="{cross_x+9:.2f}" y="{top+20}" font-size="12" fill="#555">Crossover: rho = {crossover:.2f}</text>',
+        f'<text x="{cross_x+9:.2f}" y="{top+20}" font-size="12" fill="#555">Crossover: ρ = {crossover:.2f}</text>',
             f'<polyline points="{points(even)}" fill="none" stroke="#D55E00" stroke-width="2.6"/>',
             f'<polyline points="{points(odd)}" fill="none" stroke="#009E73" stroke-width="2.6"/>',
         ]
@@ -414,7 +414,7 @@ def render_crossover_loglog(path: Path, rows: list[dict[str, float]]) -> None:
     parts.extend(
         [
             f'<rect x="{left}" y="{top}" width="{plot_width}" height="{plot_height}" fill="none" stroke="#555"/>',
-            f'<text x="{(left+right)/2:.2f}" y="{bottom+52}" text-anchor="middle" font-size="13">Normalized vertical-corrector radius, rho (log scale)</text>',
+            f'<text x="{(left+right)/2:.2f}" y="{bottom+52}" text-anchor="middle" font-size="13">Normalized active-corrector input radius, ρ</text>',
             '<text x="25" y="302" text-anchor="middle" font-size="13" transform="rotate(-90 25 302)">Mean detector RMSE [micrometre] (log scale)</text>',
             '</g>',
             '</svg>',
@@ -454,7 +454,7 @@ def render_direction_percentiles(
         y_ticks = [(index / 10, f"{10 * index}%") for index in range(11)]
         reference, reference_label = 0.5, "Equal odd/even squared-RMSE share (50%)"
         title = "Direction dependence of odd squared-error share"
-        subtitle = "P10–P90 across the same 100 directions; original scan plus 3 high-rho points"
+        subtitle = "P10–P90 across the same 100 directions; original scan plus 3 high-ρ points"
         y_label = "Odd share  f = E_odd^2 / (E_odd^2 + E_even^2)"
         desc = "The median and tenth-to-ninetieth percentile band of the bounded odd squared-error share."
     else:
@@ -475,7 +475,7 @@ def render_direction_percentiles(
         ]
         reference, reference_label = 1.0, "Equal odd/even RMSE (r = 1)"
         title = "Direction dependence of odd/even RMSE ratio"
-        subtitle = "P10–P90 across the same 100 directions; original scan plus 3 high-rho points"
+        subtitle = "P10–P90 across the same 100 directions; original scan plus 3 high-ρ points"
         y_label = "Odd/even ratio  r = E_odd / E_even"
         desc = "The median and tenth-to-ninetieth percentile band of the unbounded odd-to-even RMSE ratio."
 
@@ -535,7 +535,7 @@ def render_direction_percentiles(
     parts.extend(
         [
             f'<rect x="{left}" y="{top}" width="{plot_width}" height="{plot_height}" fill="none" stroke="#555"/>',
-            f'<text x="{(left+right)/2:.2f}" y="{bottom+52}" text-anchor="middle" font-size="13">Normalized vertical-corrector radius, rho (log scale)</text>',
+            f'<text x="{(left+right)/2:.2f}" y="{bottom+52}" text-anchor="middle" font-size="13">Normalized active-corrector input radius, ρ</text>',
             f'<text x="24" y="320" text-anchor="middle" font-size="13" transform="rotate(-90 24 320)">{escape(y_label)}</text>',
             '</g>',
             '</svg>',

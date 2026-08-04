@@ -4,7 +4,7 @@ The same random vertical-corrector direction was evaluated at both signs.
 `even` contains even Taylor orders; `odd_nl` is the odd part after subtracting
 the nominal first-order detector response.
 
-| rho | kick RMS (urad) | X even (um) | X odd-nl (um) | X p_even | X p_odd | Y even (um) | Y odd-nl (um) | Y p_even | Y p_odd | Y odd/even |
+| ρ | kick RMS (µrad) | X even (µm) | X odd-nl (µm) | X p_even | X p_odd | Y even (µm) | Y odd-nl (µm) | Y p_even | Y p_odd | Y odd/even |
 |---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
 | 0.05 | 0.25 | 0.00126374 | 9.56812e-09 | n/a | n/a | 1.66291e-05 | 6.37408e-07 | n/a | n/a | 0.03833 |
 | 0.075 | 0.375 | 0.00284342 | 1.57015e-08 | 2.000 | 1.222 | 3.74143e-05 | 2.14716e-06 | 2.000 | 2.995 | 0.05739 |
@@ -36,9 +36,9 @@ the nominal first-order detector response.
 
 ## Compact checks
 
-- Smallest-rho X even/rho^2: `0.50549768 um`.
-- Smallest-rho Y even/rho^2: `0.0066516346 um`.
-- Largest-rho X odd/even ratio: `0.00047997179`.
-- Largest-rho Y odd/even ratio: `7.7451823`.
+- Smallest-ρ X even/ρ²: `0.50549768 µm`.
+- Smallest-ρ Y even/ρ²: `0.0066516346 µm`.
+- Largest-ρ X odd/even ratio: `0.00047997179`.
+- Largest-ρ Y odd/even ratio: `7.7451823`.
 - Final Y even local slope: `2.0010901`.
 - Final Y odd-nonlinear local slope: `3.0139168`.

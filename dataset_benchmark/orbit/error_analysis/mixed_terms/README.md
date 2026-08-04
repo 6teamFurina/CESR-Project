@@ -18,7 +18,7 @@ python dataset_benchmark/orbit/error_analysis/mixed_terms/analyze_mixed_terms.py
 ```
 
 The default production experiment uses 100 direction pairs and 8 radii from
-`rho=0.1` to `rho=1.13`, where `rho=1` is 5 microrad RMS in each corrector
+`ρ=0.1` to `ρ=1.13`, where `ρ=1` is 5 microrad RMS in each corrector
 family. The simultaneous all-corrector vector also has exactly this global RMS.
 
 The main quantitative tests are:
@@ -28,6 +28,13 @@ The main quantitative tests are:
 - vector-level reconstruction of all four joint signs;
 - error reduction when `Q_hv` is added to a pure-block reconstruction;
 - closed-orbit convergence and closure norms relative to the measured signal.
+
+For each orbit component, the reported `hh`, `hv`, and `vv` squared-norm
+shares use a common three-block denominator and are summarized as the median
+with a P10--P90 interval across the 100 fixed directions. The full
+ρ-resolved table is maintained in
+[`results/MIXED_TERM_RESULTS.md`](results/MIXED_TERM_RESULTS.md), together
+with the underlying direction-level diagnostics.
 
 The results characterize this RF-on SciBmad lattice and are not a
 machine-validated CESR error budget.
