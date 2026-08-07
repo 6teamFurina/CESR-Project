@@ -339,9 +339,9 @@ def render_top_exposure_compact_svg(
 
 
 def render_ring_exposure_svg(path: Path, element_rows: list[dict[str, object]]) -> None:
-    width, height = 1220, 445
+    width, height = 1220, 235
     left, right = 125, 1095
-    ring_top, ring_bottom = 145, 350
+    ring_top, ring_bottom = 45, 150
     chart_width = right - left
     s_max = max(float(row["s_m"]) for row in element_rows)
     max_abs_excess = max(abs(float(row["mean_excess_v_minus_h"])) for row in element_rows)
@@ -353,8 +353,6 @@ def render_ring_exposure_svg(path: Path, element_rows: list[dict[str, object]]) 
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
         SVG_STYLE,
-        '<text x="40" y="38" class="title">Exposures and Strengths across the Ring</text>',
-        '<text x="40" y="62" class="sub">All 76 active normal sextupoles; exposure excess on the left axis and K2L on the right axis</text>',
     ]
     zero_y = (ring_top + ring_bottom) / 2
     half_height = (ring_bottom - ring_top) * 0.45
@@ -414,7 +412,7 @@ def render_ring_exposure_svg(path: Path, element_rows: list[dict[str, object]]) 
     for row in top_ten:
         name = str(row["element_name"])
         x, y = exposure_points[name]
-        label_y = y - 8 - 28 * label_lanes[name]
+        label_y = y - 4 - 15 * label_lanes[name]
         escaped_name = html.escape(name.removeprefix("sex_").upper())
         parts.append(
             f'<line x1="{x:.1f}" y1="{y - 3:.1f}" x2="{x:.1f}" y2="{label_y + 3:.1f}" stroke="#555" stroke-width="1"/>'
