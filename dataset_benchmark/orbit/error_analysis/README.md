@@ -27,8 +27,8 @@ The error-analysis code is colocated with its results:
 - `render_response_rho_sweep_svg.py`: dependency-free SVG rendering;
 - `response_rho_sweep_600/`: committed sweep results and figures;
 - `vertical_parity/`: signed-direction experiment, analysis, and report.
-- `mixed_terms/`: four-sign `H_hh`/`H_vv`/`H_hv` decomposition of the
-  all-corrector quadratic residual.
+- `mixed_terms/`: GTPSA `H_hh`/`H_vv`/`H_hv` direction contractions for the
+  all-corrector quadratic residual, with an independent four-sign validation.
 
 From `CESR Project`, a short sweep can be run with:
 
@@ -163,10 +163,11 @@ quadratic X residual is dominated by the vertical-corrector block. Combining
 the smaller horizontal contribution with the vertical contribution changes
 the total RMSE only slightly.
 
-The later four-sign block decomposition confirms that the mixed term is
-negligible in X: its mean squared-norm share is only `0.0146%` over
-`0.1 <= ρ <= 1.13`. The large X response is therefore a pure-block effect,
-dominated by the vertical block over this direction distribution.
+The GTPSA block decomposition confirms that the mixed term is negligible in
+X: its median squared-norm share is `0.0088% [0.0017%, 0.0313%]`. The
+four-sign finite-difference calculation agrees within the quoted precision.
+The large X response is therefore a pure-block effect, dominated by the
+vertical block over this direction distribution.
 
 ### Y orbit: simultaneous H/V variation reveals a large mixed contribution
 
@@ -180,11 +181,11 @@ At `ρ = 1.13`, the Y mean RMSE values are
 
 The all-corrector value is about 49 times vertical-only and 145 times
 horizontal-only. Neither single-plane experiment reproduces the all-corrector
-Y error. The four-sign follow-up now confirms the attribution directly. Across
-100 fixed H/V direction pairs, the mean mixed squared-norm share is `99.963%`;
-at `ρ=1.13`, the mixed-to-combined-pure ratio has P10/median/P90 values
-`38.5 / 64.7 / 129`. The signed vector reconstruction leaves only `0.953%` of
-the exact Y residual RMS at that radius.
+Y error. The GTPSA direction contraction attributes the response directly:
+across 100 fixed H/V direction pairs, the mixed squared-norm share is
+`99.977% [99.930%, 99.991%]`. The independent four-sign reconstruction leaves
+only `0.953%` of the exact Y residual RMS at `ρ=1.13` and agrees with the six
+GTPSA block RMS values to mean relative differences of `1.22e-6`--`1.91e-5`.
 
 The comparison also explains why one should not infer the all-corrector error
 by taking the larger of the two single-plane curves: the mixed term can be much
@@ -355,12 +356,14 @@ octupoles, wigglers, or another nonlinear element. See
 [`vertical_parity/`](vertical_parity/) for the runnable experiment, analysis
 code, numerical result, and direction dependence.
 
-## Mixed horizontal--vertical follow-up
+## GTPSA horizontal--vertical quadratic blocks
 
-The all-corrector four-sign experiment was completed on 2026-08-04 with 100
-fixed H/V direction pairs and 8 radii over `0.1 <= ρ <= 1.13`. All 6,401
-nonlinear states converged without fallback. For each orbit component, the
-tabulated block share is
+The adopted all-corrector quadratic-block results use two second-order GTPSA
+corrector parameters for each of 100 fixed H/V direction pairs, with implicit
+differentiation of the RF-on closed-orbit fixed point. The four-sign experiment
+on the same directions and 8 radii over `0.1 <= ρ <= 1.13` is retained as an
+independent validation; all 6,401 nonlinear states converged without fallback.
+For each orbit component, the tabulated GTPSA block share is
 
 ```text
 f_ab,u = ||Q_ab,u||² / (||Q_hh,u||² + ||Q_hv,u||² + ||Q_vv,u||²).
@@ -380,12 +383,38 @@ H/V direction pairs.
 | 0.80 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
 | 1.13 | 9.14 [1.83, 38.26] | 0.0088 [0.0017, 0.0313] | 90.83 [61.72, 98.15] | 0.0040 [0.0007, 0.0231] | 99.977 [99.930, 99.991] | 0.0163 [0.0044, 0.0651] |
 
-The shares are invariant at the displayed precision over the verified
-quadratic interval. The X and Y orbit components therefore remain physically
+The GTPSA shares are exactly independent of `rho` at second order and are
+invariant at the displayed precision. The X and Y orbit components therefore remain physically
 separate in the interpretation: X is `vv`-dominated, whereas Y is
 `hv`-dominated.
 
+At `rho = 1.13`, the six GTPSA block RMS values agree with the four-sign
+finite-difference values with mean relative differences between `1.22e-6` and
+`1.91e-5`. The maximum first- and second-order GTPSA fixed-point residuals are
+`4.34e-19` and `8.47e-22`. The GTPSA `median [P10, P90]` values are therefore
+used as the final paper/report results; finite differences remain the
+validation dataset.
+
 The result does not yet localize either dominant block to individual corrector
 pairs or nonlinear lattice elements. See
-[`mixed_terms/`](mixed_terms/) for the runnable experiment, direction-level
-data, report, and table.
+[`mixed_terms/`](mixed_terms/) for the runnable GTPSA calculation, the
+four-sign validation, direction-level data, report, and table.
+
+The first causal test of the X `vv`/`hh` imbalance is now in
+[`quadratic_x_attribution/`](quadratic_x_attribution/). Across the same 100
+directions, the median detector-vector ratio is `3.153`, while the median
+normal-sextupole source-exposure ratio is `2.600`; their direction-level log
+correlation is `0.872`. Equalizing `sum |K2L|u^2` exposure reduces the median
+X `vv` share from `90.83%` to `61.32%`. Unequal internal orbit exposure is
+therefore the main first-stage explanation, while the residual requires a
+signed propagated-vector reconstruction and lattice ablations.
+
+## Higher-order response method convention
+
+For future corrector-response derivatives and analogous response
+coefficients, use GTPSA parameterization and implicit closed-orbit
+differentiation by default. Report direction distributions as
+`median [P10, P90]`. Use signed finite differences for independent validation,
+higher-order contamination tests, or observables that cannot yet propagate
+GTPSA types. Direct nonlinear solutions remain the reference for establishing
+the amplitude range of a truncated expansion.

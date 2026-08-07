@@ -1,4 +1,9 @@
-# All-corrector horizontal--vertical mixed-term experiment
+# Four-sign validation of the GTPSA mixed-term response
+
+The GTPSA direction-contracted values in
+[`../gtpsa_results/GTPSA_RESULTS.md`](../gtpsa_results/GTPSA_RESULTS.md) are
+the adopted final results. This report preserves the independent four-sign
+finite-difference validation and its exact nonlinear reconstruction checks.
 
 The four-sign finite difference directly separates the pure horizontal
 `Q_hh`, pure vertical `Q_vv`, and mixed `Q_hv` response vectors. All

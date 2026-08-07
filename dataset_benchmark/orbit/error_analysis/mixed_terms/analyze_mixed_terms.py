@@ -115,7 +115,7 @@ def write_component_share_tex(path: Path, rows: list[dict[str, float]]) -> None:
     lines = [
         r"\begin{table*}[!t]",
         r"  \centering",
-        r"  \caption{Direction-resolved quadratic-block squared-norm shares. Each entry is median [P10, P90] in percent across the same 100 fixed H/V direction pairs. The values are invariant at the displayed precision over the verified quadratic interval.}",
+        r"  \caption{Four-sign finite-difference validation of the GTPSA direction-resolved quadratic-block shares. Each entry is median [P10, P90] in percent across the same 100 fixed H/V direction pairs.}",
         r"  \resizebox{\textwidth}{!}{%",
         r"  \begin{tabular}{@{}crrrrrr@{}}",
         r"    \toprule",
@@ -144,7 +144,11 @@ def write_report(path: Path, summary, percentiles, component_shares) -> None:
         for plane in ("x", "y")
     }
     lines = [
-        "# All-corrector horizontal--vertical mixed-term experiment", "",
+        "# Four-sign validation of the GTPSA mixed-term response", "",
+        "The GTPSA direction-contracted values in",
+        "`../gtpsa_results/GTPSA_RESULTS.md` are the adopted final results.",
+        "This report preserves the independent finite-difference validation and",
+        "its exact nonlinear reconstruction checks.", "",
         "The four-sign finite difference directly separates the pure horizontal",
         "`Q_hh`, pure vertical `Q_vv`, and mixed `Q_hv` response vectors. All",
         "reconstructions and remainders are computed as vectors before detector RMS.", "",

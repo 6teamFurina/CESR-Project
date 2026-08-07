@@ -10,3 +10,6 @@ PROJECT_MEMORY.md
 # Generated Tao control-response artifacts.
 *.npy
 *.init
+
+# Local manuscript workspace and generated paper artifacts.
+dataset_benchmark/orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/

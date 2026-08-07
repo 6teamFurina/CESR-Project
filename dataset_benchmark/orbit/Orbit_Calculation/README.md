@@ -1,9 +1,17 @@
-# CESR matched dataset benchmark
+# CESR closed-orbit calculation benchmarks
 
-This benchmark tests a specific digital-twin workload: map 119 CESR horizontal
+This directory tests a specific digital-twin workload: map 119 CESR horizontal
 and vertical corrector commands to horizontal and vertical closed orbit at 99
-`DET_*` markers. Bmad and SciBmad consume the same deterministic input CSV and
-produce the same labeled `1000 x 198` observable table.
+`DET_*` markers. It now contains two complementary matched benchmarks:
+
+1. the nonlinear-rho orbit benchmark, designed around the amplitude and input
+   channels used by the orbit-response error study; and
+2. the original general 1000-sample calculation benchmark, which provides
+   broader interface and performance context shared with the orbit/optics
+   calculation work.
+
+In both cases Bmad and SciBmad consume the same deterministic corrector inputs
+and produce the same 198 labeled detector coordinates per state.
 
 It is not designed to prove that one physics engine is universally faster.
 The bounded claim is whether the present CESR interfaces can generate this
@@ -48,6 +56,52 @@ inputs/cesr_corrector_samples_1000.csv
 The response-radius sweep, signed-parity experiment, analysis code, figures,
 and detailed nonlinear-order results are maintained separately under
 [`../error_analysis/`](../error_analysis/).
+
+## Nonlinear-rho orbit benchmark
+
+The orbit-error-specific benchmark is maintained under
+[`nonlinear_rho_benchmark/`](nonlinear_rho_benchmark/). It reuses 600 fixed
+Gaussian unit-RMS directions at every radius for each of the `all`,
+`horizontal`, and `vertical` input scenarios. The tested radii are
+`1.13`, `3.2`, `4.53`, `6.4`, and `9.05`, with a base kick of `5e-6 rad`.
+This produces 9,000 nonzero states plus one shared zero-input baseline.
+
+SciBmad uses the maintained first-order response initial guess, one frozen
+nominal `6 x 6` Jacobian/LU factorization, exact nonlinear one-turn residuals,
+explicit closure checks, and full-AD fallback. Bmad uses one persistent Tao
+process in the local `Ubuntu-Bmad` WSL environment. The formal result recorded
+2026-08-06 is:
+
+| Metric | SciBmad | Bmad/Tao |
+|---|---:|---:|
+| Converged nonzero states | 9000/9000 | 9000/9000 |
+| Physics time | 28.204 s | 102.725 s |
+| Physics throughput | 319.104 states/s | 87.613 states/s |
+| SciBmad physics-only speedup | **3.642x** | 1x |
+| Initial-guess + batch-model setup + physics | 30.907 s | -- |
+| SciBmad speedup including all runtime setup | **3.324x** | 1x |
+
+The SciBmad calculation required at most five frozen-Newton iterations, every
+explicit one-turn closure norm was below approximately `1e-10`, and no lane
+used the full-AD fallback. After subtracting each engine's own zero-input
+orbit, the principal-plane response RMSE is approximately `0.05%` for
+horizontal response and `0.24--0.28%` for vertical response. The raw
+zero-input horizontal orbits differ by `3.105 micrometers` RMS, so the archived
+comparison retains both absolute-orbit and baseline-subtracted metrics rather
+than assigning that offset to either nonlinear solver.
+
+This is the primary calculation benchmark for the orbit-response-error paper:
+its inputs occupy the same amplitude coordinate and directional subspaces as
+the order analysis below. The original 1000-sample result remains useful as a
+more general orbit/optics calculation benchmark, but it is not the principal
+performance result for the orbit-error argument.
+
+The full per-cell results, shared input CSV, engine outputs, diagnostics, and
+reproduction scripts are linked from
+[`nonlinear_rho_benchmark/README.md`](nonlinear_rho_benchmark/README.md). The
+summary tables are available directly as
+[`RESULTS.md`](nonlinear_rho_benchmark/results/comparison/RESULTS.md) and
+[`comparison_summary.csv`](nonlinear_rho_benchmark/results/comparison/comparison_summary.csv).
 
 ## SciBmad run
 
@@ -166,9 +220,10 @@ The first implementation supports RF-on only. The existing SciBmad RF-off
 coasting-orbit adapter is a scalar ForwardDiff workaround and must be extended
 or replaced before an equivalent batched RF-off benchmark is claimed.
 
-## Current results
+## General 1000-sample results
 
-All rows used the same 1000 samples and compared all 198 detector coordinates
+The older general benchmark remains here for the broader calculation and
+orbit/optics context. All rows used the same 1000 samples and compared all 198 detector coordinates
 per sample. `Maximum output residual` is the largest absolute detector value
 difference from the Bmad table over all 198,000 comparisons. `Maximum closure
 residual` is the final six-dimensional one-turn closure norm; `--` means that
@@ -223,6 +278,7 @@ Detailed comparisons remain in `results/formal_1000/`.
 dataset_benchmark/orbit/Orbit_Calculation/
 |-- archive/                 # original transferred Bmad result package
 |-- inputs/                  # shared deterministic 1000-sample input
+|-- nonlinear_rho_benchmark/ # orbit-error-specific 3 x 5 x 600 comparison
 |-- results/
 |   |-- preliminary_10/      # Bmad, CPU, threaded CPU, and CUDA checks
 |   `-- formal_1000/         # formal Bmad/SciBmad outputs and report

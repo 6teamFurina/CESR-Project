@@ -91,11 +91,13 @@ detector_names(ring) = [
 function prepare_batch_model(
     names::Vector{String},
     values::Matrix{Float64},
+    ;
+    model_factory=load_cesr_model,
 )
     n_samples, n_controls = size(values)
     n_controls == length(names) || error("Control matrix width does not match labels")
 
-    model = load_cesr_model(zero_value=BatchParam(0.0), rf_on=true)
+    model = model_factory(zero_value=BatchParam(0.0), rf_on=true)
     for (column, name) in enumerate(names)
         model.controls[name] = BatchParam(view(values, :, column))
     end
@@ -294,6 +296,7 @@ function apply_full_newton_fallback(
     reltol::Float64,
     abstol::Float64,
     maxiter::Int,
+    model_factory=load_cesr_model,
 )
     fallback_indices = findall(
         .!result.converged .|
@@ -311,6 +314,8 @@ function apply_full_newton_fallback(
         fallback_model = prepare_batch_model(
             names,
             Matrix(values[solve_indices, :]),
+            ;
+            model_factory,
         )
         fallback_result = solve_and_track(
             fallback_model,
@@ -370,6 +375,7 @@ function prepare_initial_guess(
     reltol::Float64,
     abstol::Float64,
     maxiter::Int,
+    model_factory=load_cesr_model,
 )
     n_samples, n_controls = size(values)
     n_controls == length(names) || error("Control matrix width does not match labels")
@@ -393,7 +399,7 @@ function prepare_initial_guess(
 
     mode in ("nominal-z0", "response-linear") ||
         error("Unsupported initial-guess mode: $mode")
-    setup_seconds = @elapsed nominal_model = load_cesr_model(
+    setup_seconds = @elapsed nominal_model = model_factory(
         zero_value=0.0,
         rf_on=true,
     )
@@ -435,7 +441,7 @@ function prepare_initial_guess(
                 descriptor = Descriptor(6, 1, n_controls, 1)
                 variables = vars(descriptor)
                 parameters = params(descriptor)
-                response_model = load_cesr_model(
+                response_model = model_factory(
                     zero_value=zero(parameters[1]),
                     rf_on=true,
                 )
@@ -504,6 +510,7 @@ function simulate_batch(
     reltol::Float64,
     abstol::Float64,
     maxiter::Int,
+    model_factory=load_cesr_model,
 )
     guess = prepare_initial_guess(
         names,
@@ -514,8 +521,13 @@ function simulate_batch(
         reltol,
         abstol,
         maxiter,
+        model_factory,
     )
-    model_setup_seconds = @elapsed model = prepare_batch_model(names, values)
+    model_setup_seconds = @elapsed model = prepare_batch_model(
+        names,
+        values;
+        model_factory,
+    )
     result = if jacobian_mode == "full"
         solve_and_track(
             model,
@@ -546,6 +558,7 @@ function simulate_batch(
             reltol,
             abstol,
             maxiter,
+            model_factory,
         )
     end
     return merge(result, guess, (; model_setup_seconds))

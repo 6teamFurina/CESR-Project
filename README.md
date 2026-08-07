@@ -318,6 +318,17 @@ Jacobian and SciBmad's native `BatchSolve.newton!` solves the 4D closed-orbit
 equation. The reported 119 control derivatives are calculated simultaneously
 with GTPSA and do not use control finite differences.
 
+For second- and higher-order corrector-response coefficients, the project
+default is likewise GTPSA parameterization, combined with implicit
+differentiation of the closed-orbit fixed-point equation when the orbit itself
+depends on the controls. Direction ensembles are reported as
+`median [P10, P90]`. Signed finite differences are retained as independent
+validation and higher-order-contamination checks, while direct nonlinear
+solutions define the amplitude range in which a truncated response expansion
+is valid. The adopted quadratic mixed-block calculation and its four-sign
+validation are documented in
+`dataset_benchmark/orbit/error_analysis/mixed_terms/`.
+
 Each RF-mode output directory contains:
 
 - `scibmad_control_response_<mode>.csv`: the labeled SciBmad `198 x 119`
