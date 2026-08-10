@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import csv
 import math
+import tomllib
 from pathlib import Path
 
 
@@ -32,53 +33,85 @@ def esc(text: str) -> str:
 
 
 def render_svg(path: Path, elements: list[dict[str, str]]) -> None:
-    width, height = 1120, 560
-    left, right, top, bottom = 84, 28, 70, 92
-    chart_w, chart_h = width - left - right, height - top - bottom
+    """Render the compact, paper-width signed-contribution panel.
+
+    Axis titles are added by LaTeX in the manuscript so their mathematical
+    notation uses the paper font.  The SVG retains ticks, bars, and direct
+    element labels only.
+    """
+    width, height = 1220, 370
+    left, right = 125, 1095
+    chart_top, chart_bottom = 95, 290
+    chart_w, chart_h = right - left, chart_bottom - chart_top
     circumference = max(f(row, "s_m") for row in elements)
     values = [100 * f(row, "eta_total") for row in elements]
-    limit = 1.05 * max(abs(value) for value in values) if any(values) else 1.0
-    zero_y = top + chart_h / 2
+    y_min = min(-1.0, 1.12 * min(values))
+    y_max = max(1.0, 1.12 * max(values))
 
     def x_pos(s_m: float) -> float:
         return left + chart_w * s_m / circumference
 
     def y_pos(value: float) -> float:
-        return zero_y - chart_h * value / (2 * limit)
+        return chart_bottom - chart_h * (value - y_min) / (y_max - y_min)
+
+    zero_y = y_pos(0.0)
 
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
         '<rect width="100%" height="100%" fill="white"/>',
-        '<style>text{font-family:Arial,sans-serif;fill:#222}.title{font-size:21px;font-weight:600}.sub{font-size:13px;fill:#555}.tick{font-size:12px}.label{font-size:11px}</style>',
-        f'<text x="{width/2}" y="29" text-anchor="middle" class="title">Thick-element normal-sextupole sourcing of horizontal quadratic detector error</text>',
-        f'<text x="{width/2}" y="51" text-anchor="middle" class="sub">Signed ensemble projection; complete-element Hessian sources and periodic six-dimensional propagation</text>',
+        '<style>text{font-family:"Times New Roman",Times,serif;fill:#202124}.tick{font-size:14px;fill:#555}.direct-label{font-size:18px;font-weight:700;fill:#333}</style>',
     ]
-    for tick in range(-4, 5):
-        value = limit * tick / 4
+    tick_step = (y_max - y_min) / 5
+    for value in (y_min + index * tick_step for index in range(6)):
         y = y_pos(value)
-        parts.append(f'<line x1="{left}" y1="{y:.2f}" x2="{width-right}" y2="{y:.2f}" stroke="#e5e7eb"/>')
-        parts.append(f'<text x="{left-9}" y="{y+4:.2f}" text-anchor="end" class="tick">{value:.2g}</text>')
-    parts.append(f'<line x1="{left}" y1="{zero_y:.2f}" x2="{width-right}" y2="{zero_y:.2f}" stroke="#555" stroke-width="1.2"/>')
+        parts.append(f'<line x1="{left}" y1="{y:.2f}" x2="{right}" y2="{y:.2f}" stroke="#e5e7eb"/>')
+        parts.append(f'<text x="{left-10}" y="{y+4:.2f}" text-anchor="end" class="tick">{value:.1f}</text>')
+    parts.append(f'<line x1="{left}" y1="{zero_y:.2f}" x2="{right}" y2="{zero_y:.2f}" stroke="#555" stroke-width="1.2"/>')
     bar_w = max(3.0, 0.58 * chart_w / len(elements))
     for row, value in zip(elements, values):
         x, y = x_pos(f(row, "s_m")) - bar_w / 2, y_pos(value)
         color = "#d95f02" if value >= 0 else "#1f78b4"
         parts.append(f'<rect x="{x:.2f}" y="{min(y, zero_y):.2f}" width="{bar_w:.2f}" height="{abs(zero_y-y):.2f}" fill="{color}" opacity="0.88"/>')
+
     ranked = sorted(elements, key=lambda row: abs(f(row, "eta_total")), reverse=True)[:10]
-    for rank, row in enumerate(ranked, 1):
+    rank_by_name = {row["element_name"]: rank for rank, row in enumerate(ranked, 1)}
+    label_x_by_name: dict[str, float] = {}
+    previous_label_x = -math.inf
+    for row in sorted(ranked, key=lambda item: f(item, "s_m")):
+        x = x_pos(f(row, "s_m"))
+        if f(row, "eta_total") < 0:
+            label_x_by_name[row["element_name"]] = x + 4
+            continue
+        label_x = max(x + 4, previous_label_x + 42)
+        label_x_by_name[row["element_name"]] = label_x
+        previous_label_x = label_x
+
+    for row in ranked:
+        rank = rank_by_name[row["element_name"]]
         value = 100 * f(row, "eta_total")
         x, y = x_pos(f(row, "s_m")), y_pos(value)
-        label_y = top + 15 + 16 * ((rank - 1) % 5)
-        label_x = left + 12 + (rank > 5) * chart_w / 2
-        parts.append(f'<line x1="{x:.2f}" y1="{y:.2f}" x2="{label_x+92:.2f}" y2="{label_y-4:.2f}" stroke="#999" stroke-width="0.7"/>')
-        parts.append(f'<text x="{label_x:.2f}" y="{label_y:.2f}" class="label">{rank}. {esc(row["element_name"])} ({value:+.2f}%)</text>')
-    for tick in range(9):
-        s_m = circumference * tick / 8
+        label_x = label_x_by_name[row["element_name"]]
+        display_name = row["element_name"].upper().removeprefix("SEX_")
+        label = f"{rank}. {display_name}"
+        if value < 0:
+            # Place negative labels below the full bar so the angled text does
+            # not overlap the blue contribution block.
+            label_y = min(chart_bottom + 35, y + 22)
+            rotation = 65
+            line_y1, line_y2 = y + 2, label_y - 3
+        else:
+            label_y = y - 10
+            rotation = -65
+            line_y1, line_y2 = y - 2, label_y + 3
+        parts.append(f'<line x1="{x:.2f}" y1="{line_y1:.2f}" x2="{label_x:.2f}" y2="{line_y2:.2f}" stroke="#777" stroke-width="0.9"/>')
+        parts.append(f'<text x="{label_x:.2f}" y="{label_y:.2f}" class="direct-label" transform="rotate({rotation} {label_x:.2f} {label_y:.2f})">{esc(label)}</text>')
+
+    for tick in range(5):
+        s_m = circumference * tick / 4
         x = x_pos(s_m)
-        parts.append(f'<text x="{x:.2f}" y="{top+chart_h+22}" text-anchor="middle" class="tick">{s_m:.0f}</text>')
+        parts.append(f'<line x1="{x:.2f}" y1="{chart_bottom}" x2="{x:.2f}" y2="{chart_bottom+5}" stroke="#777" stroke-width="1"/>')
+        parts.append(f'<text x="{x:.2f}" y="{chart_bottom+22}" text-anchor="middle" class="tick">{s_m:.0f}</text>')
     parts.extend([
-        f'<text x="{left+chart_w/2}" y="{height-31}" text-anchor="middle" class="tick">Ring position s [m]</text>',
-        f'<text x="22" y="{top+chart_h/2}" text-anchor="middle" class="tick" transform="rotate(-90 22 {top+chart_h/2})">signed projection eta_j [%]</text>',
         '</svg>',
     ])
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
@@ -92,12 +125,13 @@ def write_report(
     summary: dict[str, str],
     comparison: dict[str, float | bool] | None,
     family_percentiles: list[dict[str, float | str]],
+    output_plane: str,
 ) -> None:
     ranked = sorted(elements, key=lambda row: abs(f(row, "eta_total")), reverse=True)
     closures = [f(row, "sextupole_total_relative_closure") for row in directions]
     projections = [f(row, "sextupole_total_signed_projection") for row in directions]
     lines = [
-        "# Thick-element Hessian sourcing result", "",
+        f"# Detector-{output_plane} thick-element Hessian sourcing result", "",
         "## Closure", "",
         f'- Directions: `{summary["trials"]}`; lattice elements: `{summary["elements"]}`; active normal sextupoles: `{summary["active_normal_sextupoles"]}`; detectors: `{summary["detectors"]}`.',
         f'- All-element total relative closure: `{f(summary,"total_all_element_relative_closure"):.6g}`.',
@@ -108,6 +142,13 @@ def write_report(
         f'- Direction-level signed projection P10 / median / P90: `{percentile(projections,0.1):.6g} / {percentile(projections,0.5):.6g} / {percentile(projections,0.9):.6g}`.',
         f'- Family partition maximum absolute reconstruction difference: `{f(summary,"family_partition_check_max"):.6g} m`.',
     ]
+    if "hh_target_squared_norm_share" in summary:
+        lines.append(
+            f'- HH / HV / VV target squared-norm shares: '
+            f'`{100*f(summary,"hh_target_squared_norm_share"):.6f}% / '
+            f'{100*f(summary,"hv_target_squared_norm_share"):.6f}% / '
+            f'{100*f(summary,"vv_target_squared_norm_share"):.6f}%`.'
+        )
     if comparison is not None:
         lines.extend([
             "", "## Comparison with the midpoint thin-kick reconstruction", "",
@@ -152,13 +193,16 @@ def write_report(
         lines.append(f'| {rank} | `{row["element_name"]}` | {f(row,"s_m"):.3f} | {f(row,"k2l_m2"):.5g} | {100*f(row,"eta_total"):+.4f}% | {100*f(row,"magnitude_total"):.4f}% |')
     lines.extend(["", "## Interpretation boundary", "",
         "The all-element closure validates the chain-rule source decomposition. The sextupole-only residual is retained explicitly and measures sources assigned to other complete lattice elements under this element-boundary convention.", "",
-        "![Thick-element sextupole sourcing](thick_sextupole_signed_contributions.svg)", ""])
+        f"![Detector-{output_plane} thick-element sextupole sourcing](thick_sextupole_signed_contributions.svg)", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("output_dir", nargs="?", type=Path, default=Path(__file__).resolve().parent / "results")
+    parser.add_argument(
+        "output_dir", nargs="?", type=Path,
+        default=Path(__file__).resolve().parent / "horizontal_results",
+    )
     args = parser.parse_args()
     elements = rows(args.output_dir / "thick_sextupole_contribution_summary.csv")
     families = rows(args.output_dir / "family_contribution_summary.csv")
@@ -167,10 +211,14 @@ def main() -> int:
     summaries = rows(args.output_dir / "reconstruction_summary.csv")
     if len(summaries) != 1:
         raise RuntimeError("Expected exactly one reconstruction summary row")
+    metadata_path = args.output_dir / "metadata.toml"
+    with metadata_path.open("rb") as stream:
+        metadata = tomllib.load(stream)
+    output_plane = str(metadata.get("output_plane", "x"))
     error_analysis = Path(__file__).resolve().parent.parent
     thin_dir = error_analysis / "sextupole_detector_contributions" / "results"
     comparison = None
-    if (thin_dir / "sextupole_contribution_summary.csv").is_file() and (
+    if output_plane == "x" and (thin_dir / "sextupole_contribution_summary.csv").is_file() and (
         thin_dir / "reconstruction_summary.csv"
     ).is_file():
         thin_elements = rows(thin_dir / "sextupole_contribution_summary.csv")
@@ -228,7 +276,7 @@ def main() -> int:
     render_svg(args.output_dir / "thick_sextupole_signed_contributions.svg", elements)
     write_report(
         args.output_dir / "RESULTS.md", elements, families, directions,
-        summaries[0], comparison, family_percentiles,
+        summaries[0], comparison, family_percentiles, output_plane,
     )
     return 0
 

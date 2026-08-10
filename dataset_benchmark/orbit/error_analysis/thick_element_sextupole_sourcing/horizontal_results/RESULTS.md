@@ -1,4 +1,4 @@
-# Thick-element Hessian sourcing result
+# Detector-x thick-element Hessian sourcing result
 
 ## Closure
 
@@ -79,4 +79,4 @@ Signed projections add to one; magnitude ratios do not add because family vector
 
 The all-element closure validates the chain-rule source decomposition. The sextupole-only residual is retained explicitly and measures sources assigned to other complete lattice elements under this element-boundary convention.
 
-![Thick-element sextupole sourcing](thick_sextupole_signed_contributions.svg)
+![Detector-x thick-element sextupole sourcing](thick_sextupole_signed_contributions.svg)

@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-"""Attribute detector Q_x to exact local Hessian sources of thick elements."""
+"""Attribute detector Q_x or Q_y to exact local Hessian sources of thick elements."""
 
 const THICK_SOURCE_HERE = @__DIR__
 const QUADRATIC_ATTRIBUTION_HERE = normpath(joinpath(
@@ -18,7 +18,8 @@ function parse_thick_source_args(args)
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
-        "output-dir" => joinpath(THICK_SOURCE_HERE, "results"),
+        "output-plane" => "x",
+        "output-dir" => joinpath(THICK_SOURCE_HERE, "horizontal_results"),
     )
     for argument in args
         startswith(argument, "--") || error("Arguments must have --name=value form: $argument")
@@ -108,8 +109,8 @@ function build_linear_lattice_data(closed_orbit, detectors)
     )
 end
 
-"""Periodic x-detector response to a six-dimensional source at element exit."""
-function build_element_source_response(linear, element_indices)
+"""Periodic detector response to a six-dimensional source at element exit."""
+function build_element_source_response(linear, element_indices, output_coordinate)
     fixed_point = I - linear.one_turn_map
     responses = Matrix{Float64}[]
     for element_index in element_indices
@@ -123,15 +124,15 @@ function build_element_source_response(linear, element_indices)
             if linear.detector_element_indices[detector] >= element_index
                 total += detector_map / exit_map
             end
-            response[detector, :] .= view(total, 1, :)
+            response[detector, :] .= view(total, output_coordinate, :)
         end
         push!(responses, response)
     end
     return responses
 end
 
-"""Reconstruct detector x from arbitrary local six-dimensional sources."""
-function reconstruct_sources(linear, sources, mask=nothing)
+"""Reconstruct one detector coordinate from arbitrary local six-dimensional sources."""
+function reconstruct_sources(linear, sources, output_coordinate, mask=nothing)
     size(sources) == (6, length(linear.local_maps)) || error("Source matrix size mismatch")
     isnothing(mask) || length(mask) == length(linear.local_maps) || error("Source mask size mismatch")
     end_source = zeros(6)
@@ -153,7 +154,7 @@ function reconstruct_sources(linear, sources, mask=nothing)
             state += view(sources, :, element_index)
         end
         detector = get(detector_by_element, element_index, 0)
-        iszero(detector) || (detector_values[detector] = state[1])
+        iszero(detector) || (detector_values[detector] = state[output_coordinate])
     end
     closure = norm(state - initial, Inf)
     return detector_values, closure
@@ -168,6 +169,7 @@ end
 """Exact local Hessian sources and detector targets for one direction pair."""
 function direction_thick_sources(
     names, detectors, closed_orbit, h_direction, v_direction, base_kick, linear,
+    output_coordinate,
 )
     setup = direction_parameterized_model(names, h_direction, v_direction, base_kick)
     input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:6]
@@ -211,9 +213,9 @@ function direction_thick_sources(
         if haskey(detector_lookup, name)
             detector = detector_lookup[name]
             found[detector] && error("Detector $name occurs more than once")
-            targets[:hh][detector] = 0.5 * exit_derivatives.second[1, 1, 1]
-            targets[:hv][detector] = exit_derivatives.second[1, 1, 2]
-            targets[:vv][detector] = 0.5 * exit_derivatives.second[1, 2, 2]
+            targets[:hh][detector] = 0.5 * exit_derivatives.second[output_coordinate, 1, 1]
+            targets[:hv][detector] = exit_derivatives.second[output_coordinate, 1, 2]
+            targets[:vv][detector] = 0.5 * exit_derivatives.second[output_coordinate, 2, 2]
             found[detector] = true
         end
         entrance = exit_derivatives
@@ -236,6 +238,9 @@ function main_thick_element_sourcing(args=ARGS)
     seed = parse(Int, options["seed"])
     base_kick = parse(Float64, options["base-kick-rad"])
     base_kick > 0 || error("--base-kick-rad must be positive")
+    output_plane = lowercase(options["output-plane"])
+    output_coordinate = output_plane == "x" ? 1 : output_plane == "y" ? 3 :
+        error("--output-plane must be x or y")
     output_dir = abspath(options["output-dir"])
 
     reference = read_samples(joinpath(
@@ -252,7 +257,9 @@ function main_thick_element_sourcing(args=ARGS)
     println("Building baseline thick-element linear maps...")
     linear = build_linear_lattice_data(closed_orbit, detectors)
     println("Building periodic six-dimensional response for $(length(sextupole_indices)) sextupoles...")
-    sextupole_response = build_element_source_response(linear, sextupole_indices)
+    sextupole_response = build_element_source_response(
+        linear, sextupole_indices, output_coordinate,
+    )
     element_families = [
         source_family(linear.element_types[index], index, inventory)
         for index in eachindex(linear.element_types)
@@ -297,7 +304,7 @@ function main_thick_element_sourcing(args=ARGS)
                 names, detectors, closed_orbit,
                 view(samples.horizontal_directions, trial, :),
                 view(samples.vertical_directions, trial, :),
-                base_kick, linear,
+                base_kick, linear, output_coordinate,
             )
             if trial <= min(trials, 3)
                 independent = direction_gtpsa_q(
@@ -309,7 +316,7 @@ function main_thick_element_sourcing(args=ARGS)
                 for block in blocks
                     independent_target_check_max = max(
                         independent_target_check_max,
-                        maximum(abs, result.targets[block] - independent.q[Symbol("x_$(block)")]),
+                        maximum(abs, result.targets[block] - independent.q[Symbol("$(output_plane)_$(block)")]),
                     )
                 end
             end
@@ -323,7 +330,7 @@ function main_thick_element_sourcing(args=ARGS)
             for block in blocks
                 target = result.targets[block]
                 all_vector, periodic_closure = reconstruct_sources(
-                    linear, result.sources[block],
+                    linear, result.sources[block], output_coordinate,
                 )
                 periodic_source_closure_max = max(periodic_source_closure_max, periodic_closure)
                 contribution = zeros(length(detectors), n_sources)
@@ -337,7 +344,9 @@ function main_thick_element_sourcing(args=ARGS)
                     magnitude_sq[block][source] += sum(abs2, view(contribution, :, source))
                 end
                 sext_vector = vec(sum(contribution; dims=2))
-                sext_check, _ = reconstruct_sources(linear, sext_sources)
+                sext_check, _ = reconstruct_sources(
+                    linear, sext_sources, output_coordinate,
+                )
                 sext_response_check_max = max(
                     sext_response_check_max, maximum(abs, sext_vector - sext_check),
                 )
@@ -349,7 +358,8 @@ function main_thick_element_sourcing(args=ARGS)
                 sext_residual_sq[block] += sum(abs2, target - sext_vector)
                 for family in family_names
                     family_vector, _ = reconstruct_sources(
-                        linear, result.sources[block], family_masks[family],
+                        linear, result.sources[block], output_coordinate,
+                        family_masks[family],
                     )
                     family_reconstruction[(family, block)] = family_vector
                     family_numerator[(family, block)] += dot(family_vector, target)
@@ -436,7 +446,9 @@ function main_thick_element_sourcing(args=ARGS)
             magnitude_total=sqrt(family_total_magnitude_sq[family] / total_denominator)))
     end
 
-    summary = (; trials, elements=length(linear.local_maps),
+    block_squared_norm_sum = sum(values(denominator))
+    summary = (; trials, output_plane, output_coordinate,
+        elements=length(linear.local_maps),
         active_normal_sextupoles=n_sources, detectors=length(detectors),
         first_fixed_point_closure_max=first_closure_max,
         second_fixed_point_closure_max=second_closure_max,
@@ -444,6 +456,9 @@ function main_thick_element_sourcing(args=ARGS)
         sextupole_response_check_max=sext_response_check_max,
         independent_target_check_max,
         family_partition_check_max,
+        hh_target_squared_norm_share=denominator[:hh] / block_squared_norm_sum,
+        hv_target_squared_norm_share=denominator[:hv] / block_squared_norm_sum,
+        vv_target_squared_norm_share=denominator[:vv] / block_squared_norm_sum,
         hh_all_element_relative_closure=sqrt(all_residual_sq[:hh] / denominator[:hh]),
         hv_all_element_relative_closure=sqrt(all_residual_sq[:hv] / denominator[:hv]),
         vv_all_element_relative_closure=sqrt(all_residual_sq[:vv] / denominator[:vv]),
@@ -468,10 +483,12 @@ function main_thick_element_sourcing(args=ARGS)
     metadata_path = joinpath(output_dir, "metadata.toml")
     open(metadata_path, "w") do io
         TOML.print(io, Dict(
-            "format" => "cesr-thick-element-hessian-sourcing-v1",
+            "format" => "cesr-thick-element-hessian-sourcing-v2",
             "date" => string(Dates.today()), "trials" => trials, "seed" => seed,
             "base_kick_rad" => base_kick,
-            "target" => "Q_x = Q_hh,x + Q_hv,x + Q_vv,x at 99 detectors",
+            "output_plane" => output_plane,
+            "output_coordinate" => output_coordinate,
+            "target" => "Q_$(output_plane) = Q_hh,$(output_plane) + Q_hv,$(output_plane) + Q_vv,$(output_plane) at 99 detectors",
             "local_source" => "exact complete-element Hessian source g_j = S_exit - A_j*S_entrance",
             "source_coordinates" => "six-dimensional canonical state at element exit",
             "projection" => "ensemble dot(C_j,Q)/ensemble norm(Q)^2",

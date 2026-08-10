@@ -222,11 +222,11 @@ def closure_check(direction_path: Path, trial_totals: dict[int, list[float]]) ->
 
 
 SVG_STYLE = (
-    '<style>text{font-family:Arial,Helvetica,sans-serif;fill:#202124}'
+    '<style>text{font-family:"Times New Roman",Times,serif;fill:#202124}'
     '.title{font-size:28px;font-weight:700}.sub{font-size:16px;fill:#555}'
-    '.axis{stroke:#777;stroke-width:1}.grid{stroke:#ddd;stroke-width:1}'
+    '.axis{stroke:#555;stroke-width:1.2}.grid{stroke:#e5e7eb;stroke-width:1}'
     '.label{font-size:15px}.small{font-size:14px;fill:#555}'
-    '.direct-label{font-size:19px;font-weight:700;fill:#333}</style>'
+    '.direct-label{font-size:18px;font-weight:700;fill:#333}</style>'
 )
 
 
@@ -370,12 +370,6 @@ def render_ring_exposure_svg(path: Path, element_rows: list[dict[str, object]]) 
         parts.append(
             f'<text x="{right + 10}" y="{y + 4:.1f}" text-anchor="start" class="small">{k2l_tick:.2f}</text>'
         )
-    parts.extend([
-        f'<line x1="{left}" y1="{ring_top}" x2="{left}" y2="{ring_bottom}" class="axis"/>',
-        f'<line x1="{right}" y1="{ring_top}" x2="{right}" y2="{ring_bottom}" class="axis"/>',
-        f'<text x="28" y="{zero_y:.1f}" text-anchor="middle" class="small" transform="rotate(-90 28 {zero_y:.1f})">mean exposure excess &lt;Ev - Eh&gt;</text>',
-        f'<text x="1192" y="{zero_y:.1f}" text-anchor="middle" class="small" transform="rotate(90 1192 {zero_y:.1f})">K2L [m^-2]</text>',
-    ])
     top_ten = sorted(
         element_rows,
         key=lambda row: float(row["mean_excess_v_minus_h"]),
@@ -425,13 +419,7 @@ def render_ring_exposure_svg(path: Path, element_rows: list[dict[str, object]]) 
         x = left + chart_width * tick / 4
         parts.append(f'<line x1="{x:.1f}" y1="{ring_bottom}" x2="{x:.1f}" y2="{ring_bottom + 5}" class="axis"/>')
         parts.append(f'<text x="{x:.1f}" y="{ring_bottom + 20}" text-anchor="middle" class="small">{s_value:.0f}</text>')
-    parts.extend([
-        f'<text x="{(left + right) / 2:.1f}" y="{ring_bottom + 40}" text-anchor="middle" class="small">longitudinal position s [m]</text>',
-        f'<line x1="{left}" y1="{ring_bottom + 61}" x2="{left + 18}" y2="{ring_bottom + 61}" stroke="#e8792e" stroke-width="5"/><text x="{left + 25}" y="{ring_bottom + 65}" class="small">Ev - Eh &gt; 0</text>',
-        f'<line x1="{left + 145}" y1="{ring_bottom + 61}" x2="{left + 163}" y2="{ring_bottom + 61}" stroke="#3b82c4" stroke-width="5"/><text x="{left + 170}" y="{ring_bottom + 65}" class="small">Ev - Eh &lt; 0</text>',
-        f'<line x1="{left + 300}" y1="{ring_bottom + 61}" x2="{left + 318}" y2="{ring_bottom + 61}" stroke="#8b5fbf" stroke-width="1"/><circle cx="{left + 309}" cy="{ring_bottom + 61}" r="3.2" fill="#8b5fbf"/><text x="{left + 326}" y="{ring_bottom + 65}" class="small">K2L (right axis)</text>',
-        '</svg>',
-    ])
+    parts.append('</svg>')
     path.write_text("\n".join(parts), encoding="utf-8")
 
 
