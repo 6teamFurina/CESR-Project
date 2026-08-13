@@ -108,8 +108,8 @@
 <text x="909.35" y="199.52" class="direct-label" transform="rotate(-65 909.35 199.52)">8. 25E</text>
 <line x1="1040.16" y1="223.37" x2="1044.16" y2="218.37" stroke="#777" stroke-width="0.9"/>
 <text x="1044.16" y="215.37" class="direct-label" transform="rotate(-65 1044.16 215.37)">9. 13E</text>
-<line x1="883.11" y1="288.48" x2="887.11" y2="305.48" stroke="#777" stroke-width="0.9"/>
-<text x="887.11" y="308.48" class="direct-label" transform="rotate(65 887.11 308.48)">10. 27E</text>
+<line x1="883.11" y1="288.48" x2="948.11" y2="305.48" stroke="#777" stroke-width="0.9"/>
+<text x="948.11" y="308.48" class="direct-label" transform="rotate(65 948.11 308.48)">10. 27E</text>
 <line x1="125.00" y1="290" x2="125.00" y2="295" stroke="#777" stroke-width="1"/>
 <text x="125.00" y="312" text-anchor="middle" class="tick">0</text>
 <line x1="367.50" y1="290" x2="367.50" y2="295" stroke="#777" stroke-width="1"/>

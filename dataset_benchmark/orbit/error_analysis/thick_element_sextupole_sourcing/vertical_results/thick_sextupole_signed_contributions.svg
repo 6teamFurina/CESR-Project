@@ -106,10 +106,10 @@
 <text x="486.18" y="188.99" class="direct-label" transform="rotate(-65 486.18 188.99)">7. 33W</text>
 <line x1="837.19" y1="199.25" x2="860.95" y2="194.25" stroke="#777" stroke-width="0.9"/>
 <text x="860.95" y="191.25" class="direct-label" transform="rotate(-65 860.95 191.25)">8. 31E</text>
-<line x1="826.23" y1="287.46" x2="830.23" y2="304.46" stroke="#777" stroke-width="0.9"/>
-<text x="830.23" y="307.46" class="direct-label" transform="rotate(65 830.23 307.46)">9. 32E</text>
-<line x1="807.00" y1="285.01" x2="811.00" y2="302.01" stroke="#777" stroke-width="0.9"/>
-<text x="811.00" y="305.01" class="direct-label" transform="rotate(65 811.00 305.01)">10. 34E</text>
+<line x1="826.23" y1="287.46" x2="891.23" y2="304.46" stroke="#777" stroke-width="0.9"/>
+<text x="891.23" y="307.46" class="direct-label" transform="rotate(65 891.23 307.46)">9. 32E</text>
+<line x1="807.00" y1="285.01" x2="742.00" y2="302.01" stroke="#777" stroke-width="0.9"/>
+<text x="742.00" y="305.01" class="direct-label" transform="rotate(65 742.00 305.01)">10. 34E</text>
 <line x1="125.00" y1="290" x2="125.00" y2="295" stroke="#777" stroke-width="1"/>
 <text x="125.00" y="312" text-anchor="middle" class="tick">0</text>
 <line x1="367.50" y1="290" x2="367.50" y2="295" stroke="#777" stroke-width="1"/>

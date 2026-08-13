@@ -77,10 +77,21 @@ def render_svg(path: Path, elements: list[dict[str, str]]) -> None:
     rank_by_name = {row["element_name"]: rank for rank, row in enumerate(ranked, 1)}
     label_x_by_name: dict[str, float] = {}
     previous_label_x = -math.inf
+    tick_positions = [left + chart_w * index / 4 for index in range(5)]
+    negative_label_positions: list[float] = []
     for row in sorted(ranked, key=lambda item: f(item, "s_m")):
         x = x_pos(f(row, "s_m"))
         if f(row, "eta_total") < 0:
-            label_x_by_name[row["element_name"]] = x + 4
+            # Choose the side that maximizes clearance from longitudinal tick
+            # labels and from negative annotations already placed nearby.
+            candidates = (max(left, x - 65), min(right, x + 65))
+            obstacles = tick_positions + negative_label_positions
+            label_x = max(
+                candidates,
+                key=lambda candidate: min(abs(candidate - item) for item in obstacles),
+            )
+            label_x_by_name[row["element_name"]] = label_x
+            negative_label_positions.append(label_x)
             continue
         label_x = max(x + 4, previous_label_x + 42)
         label_x_by_name[row["element_name"]] = label_x
