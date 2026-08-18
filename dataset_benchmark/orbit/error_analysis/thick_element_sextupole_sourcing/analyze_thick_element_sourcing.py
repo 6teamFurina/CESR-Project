@@ -128,6 +128,7 @@ def render_svg(path: Path, elements: list[dict[str, str]]) -> None:
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
+<<<<<<< HEAD
 def render_paired_svg(
     path: Path,
     horizontal: list[dict[str, str]],
@@ -296,6 +297,8 @@ def render_paired_svg(
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
+=======
+>>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
 def write_report(
     path: Path,
     elements: list[dict[str, str]],
@@ -382,6 +385,7 @@ def main() -> int:
         "output_dir", nargs="?", type=Path,
         default=Path(__file__).resolve().parent / "horizontal_results",
     )
+<<<<<<< HEAD
     parser.add_argument(
         "--paired-with", type=Path,
         help="Result directory for the vertical panel of a paired figure.",
@@ -390,6 +394,8 @@ def main() -> int:
         "--paired-output", type=Path,
         help="Destination SVG for the paired horizontal/vertical figure.",
     )
+=======
+>>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
     args = parser.parse_args()
     elements = rows(args.output_dir / "thick_sextupole_contribution_summary.csv")
     families = rows(args.output_dir / "family_contribution_summary.csv")
@@ -461,6 +467,7 @@ def main() -> int:
         writer.writeheader()
         writer.writerows(sorted(family_percentiles, key=lambda row: str(row["family"])))
     render_svg(args.output_dir / "thick_sextupole_signed_contributions.svg", elements)
+<<<<<<< HEAD
     if args.paired_with is not None:
         paired_output = args.paired_output or (
             Path(__file__).resolve().parent
@@ -472,6 +479,8 @@ def main() -> int:
             elements,
             rows(args.paired_with / "thick_sextupole_contribution_summary.csv"),
         )
+=======
+>>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
     write_report(
         args.output_dir / "RESULTS.md", elements, families, directions,
         summaries[0], comparison, family_percentiles, output_plane,

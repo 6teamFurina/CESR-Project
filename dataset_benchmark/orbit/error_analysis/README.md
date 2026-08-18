@@ -29,9 +29,12 @@ The error-analysis code is colocated with its results:
 - `vertical_parity/`: signed-direction experiment, analysis, and report.
 - `mixed_terms/`: GTPSA `H_hh`/`H_vv`/`H_hv` direction contractions for the
   all-corrector quadratic residual, with an independent four-sign validation.
+<<<<<<< HEAD
 - `sextupole_beta_phase_correlation/`: correlation of the maintained
   per-sextupole quadratic contribution magnitudes with nominal and
   direction-matched beta/phase transport predictors.
+=======
+>>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
 
 From `CESR Project`, a short sweep can be run with:
 
