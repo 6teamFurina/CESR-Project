@@ -1,0 +1,13 @@
+corrector_count = 119
+date = "2026-08-13"
+descriptor = "Descriptor(6, 2, 119, 1)"
+design_amplitude_m = 0.001
+detector_count = 99
+format = "cesr-targeted-sextupole-local-bump-knobs-v1"
+interpretation_boundary = "model-based protocol knob; machine use requires hardware limits and operator validation"
+knobs_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\targeted_bump_k2_inversion\\results\\bump_knobs\\local_bump_knobs.csv"
+method = "corrector-space constrained least squares using one RF-on first-order GTPSA Twiss"
+parameterized_twiss_seconds = 327.7859147
+ridge_fraction = 1.0e-6
+summary_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\targeted_bump_k2_inversion\\results\\bump_knobs\\local_bump_knob_summary.csv"
+targets = ["SEX_08W"]

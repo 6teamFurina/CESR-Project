@@ -1,0 +1,19 @@
+format = "cesr-extended-optics-jacobian-timeout-v1"
+engine = "SciBmad/GTPSA"
+case = "correctors_quads_sextupoles"
+parameter_count = 301
+GTPSA_descriptor = "Descriptor(6, 2, 301, 1)"
+status = "timed_out_during_first_parameterized_twiss"
+wall_time_limit_seconds = 3600.0
+observed_wall_time_seconds = 3600.7
+parameterized_model_setup_seconds = 1.3390732
+implicit_response_warmup_seconds = 62.3388901
+twiss_warmup_completed = false
+stable_physics_time_available = false
+process_was_terminated_after_timeout = true
+note = "The setup and implicit closed-orbit-response warmup completed. The first parameterized Twiss calculation did not return before the one-hour process limit, so no SciBmad Jacobian matrix or stable timing is reported for this case."
+
+[family_counts]
+corrector = 119
+quadrupole = 106
+sextupole = 76

@@ -1,0 +1,5 @@
+case = "correctors_quads_sextupoles"
+parameter_count = 301
+response_warmup_seconds = 62.3388901
+setup_seconds = 1.3390732
+status = "response_warmup_complete"

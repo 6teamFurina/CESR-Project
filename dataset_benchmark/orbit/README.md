@@ -8,8 +8,13 @@ packages with shared references:
   and benchmark results.
 - [`error_analysis/`](error_analysis/): response-radius sweeps, signed-parity
   experiments, scaling analysis, figures, and their results.
-- [`IPAC2027_paper_draft/`](IPAC2027_paper_draft/): the JACoW-style LaTeX
-  working draft, its current three-figure set, and a compiled three-page PDF.
+- [`high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/`](high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/):
+  the calculation and second-order physical-attribution paper, named after its
+  title rather than a conference year.
+- [`hessian_svd_nonlinear_closed_orbit_correction/`](hessian_svd_nonlinear_closed_orbit_correction/):
+  the companion correction-paper scaffold.  It currently contains the
+  transferred higher-order parity/cubic validity analysis and placeholders for
+  the Hessian-SVD method and correction experiments.
 - [`reference/`](reference/): the shared Bmad-compatible lattice and validated
   closed-orbit response cache used by both work packages.
 

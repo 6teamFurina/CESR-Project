@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="560" viewBox="0 0 900 560">
+<rect width="100%" height="100%" fill="white"/>
+<g font-family="Arial, Helvetica, sans-serif" fill="#202020">
+<text x="450" y="31" text-anchor="middle" font-size="21" font-weight="600">Vertical cubic response under global sextupole scaling</text>
+<text x="450" y="55" text-anchor="middle" font-size="13" fill="#555">Concatenated detector vectors across 100 fixed directions</text>
+<line x1="90" y1="470.00" x2="830" y2="470.00" stroke="#E2E5E7"/>
+<text x="80" y="474.00" text-anchor="end" font-size="11">0.00</text>
+<line x1="90" y1="394.00" x2="830" y2="394.00" stroke="#E2E5E7"/>
+<text x="80" y="398.00" text-anchor="end" font-size="11">0.26</text>
+<line x1="90" y1="318.00" x2="830" y2="318.00" stroke="#E2E5E7"/>
+<text x="80" y="322.00" text-anchor="end" font-size="11">0.53</text>
+<line x1="90" y1="242.00" x2="830" y2="242.00" stroke="#E2E5E7"/>
+<text x="80" y="246.00" text-anchor="end" font-size="11">0.79</text>
+<line x1="90" y1="166.00" x2="830" y2="166.00" stroke="#E2E5E7"/>
+<text x="80" y="170.00" text-anchor="end" font-size="11">1.05</text>
+<line x1="90" y1="90.00" x2="830" y2="90.00" stroke="#E2E5E7"/>
+<text x="80" y="94.00" text-anchor="end" font-size="11">1.31</text>
+<line x1="90.00" y1="90" x2="90.00" y2="470" stroke="#ECEEEF"/>
+<text x="90.00" y="491" text-anchor="middle" font-size="11">0</text>
+<line x1="275.00" y1="90" x2="275.00" y2="470" stroke="#ECEEEF"/>
+<text x="275.00" y="491" text-anchor="middle" font-size="11">0.25</text>
+<line x1="460.00" y1="90" x2="460.00" y2="470" stroke="#ECEEEF"/>
+<text x="460.00" y="491" text-anchor="middle" font-size="11">0.5</text>
+<line x1="645.00" y1="90" x2="645.00" y2="470" stroke="#ECEEEF"/>
+<text x="645.00" y="491" text-anchor="middle" font-size="11">0.75</text>
+<line x1="830.00" y1="90" x2="830.00" y2="470" stroke="#ECEEEF"/>
+<text x="830.00" y="491" text-anchor="middle" font-size="11">1</text>
+<polyline points="90.00,470.00 275.00,451.93 460.00,397.73 645.00,307.39 830.00,180.91" fill="none" stroke="#777" stroke-width="2" stroke-dasharray="7 5"/>
+<polyline points="90.00,124.55 275.00,150.53 460.00,169.38 645.00,180.31 830.00,180.91" fill="none" stroke="#0072B2" stroke-width="2.8"/>
+<circle cx="90.00" cy="124.55" r="4" fill="white" stroke="#0072B2" stroke-width="2"/>
+<circle cx="275.00" cy="150.53" r="4" fill="white" stroke="#0072B2" stroke-width="2"/>
+<circle cx="460.00" cy="169.38" r="4" fill="white" stroke="#0072B2" stroke-width="2"/>
+<circle cx="645.00" cy="180.31" r="4" fill="white" stroke="#0072B2" stroke-width="2"/>
+<circle cx="830.00" cy="180.91" r="4" fill="white" stroke="#0072B2" stroke-width="2"/>
+<rect x="90" y="90" width="740" height="380" fill="none" stroke="#555"/>
+<line x1="250" y1="76" x2="286" y2="76" stroke="#0072B2" stroke-width="2.8"/><text x="296" y="81" font-size="12">Measured C3 norm</text>
+<line x1="490" y1="76" x2="526" y2="76" stroke="#777" stroke-width="2" stroke-dasharray="7 5"/><text x="536" y="81" font-size="12">Pure lambda2 squared</text>
+<text x="460.0" y="522" text-anchor="middle" font-size="13">Global sextupole multiplier, lambda2</text>
+<text x="24" y="280" text-anchor="middle" font-size="13" transform="rotate(-90 24 280)">C3 vector norm / nominal norm</text>
+</g></svg>

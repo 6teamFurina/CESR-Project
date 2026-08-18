@@ -1,0 +1,16 @@
+candidate_count_per_target = 15
+candidate_target_batch_size = 4
+date = "2026-08-16"
+descriptor = "Descriptor(6, 3, 12, 2)"
+detector_count = 111
+engine = "SciBmad/GTPSA direct launch-trajectory mixed derivatives at fixed quadrupole conditions"
+format = "cesr-scibmad-quadrupole-affinity-candidates-v2"
+julia_version = "1.12.6"
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+nuisance_policy = "Nominal 150-column nuisance dictionary is reused in candidate +/- blocks"
+observation_count = 1110
+phase_reference = "DET_X4A"
+quadrupole_condition_count = 47
+quadrupole_fraction = 0.001
+stage_seconds = 0.372999906539917
+target_count = 76

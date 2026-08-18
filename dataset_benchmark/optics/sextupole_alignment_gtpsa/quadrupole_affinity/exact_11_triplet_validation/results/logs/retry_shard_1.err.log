@@ -1,0 +1,2 @@
+┌ Warning: Straight multipoles are being used in a curved reference system. Maxwell's equations in free space are not satisfied.
+└ @ BeamTrackingBeamlinesExt C:\Users\JoeyN\.julia\packages\BeamTracking\Fzh4e\ext\BeamTrackingBeamlinesExt\yoshida_bl.jl:374

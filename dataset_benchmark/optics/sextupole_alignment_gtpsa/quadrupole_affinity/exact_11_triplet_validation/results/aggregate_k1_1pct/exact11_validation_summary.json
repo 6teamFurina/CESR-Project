@@ -1,0 +1,73 @@
+{
+  "format": "cesr-repaired-lattice-exact-11-validation-summary-v1",
+  "target_count": 76,
+  "response_selection_matches_exact_information_count": 23,
+  "response_selection_matches_exact_error_count": 12,
+  "response_selection_matches_exact_precision_count": 22,
+  "exact_information_matches_exact_precision_count": 68,
+  "response_triplet_exact_information_rank": {
+    "minimum": 1.0,
+    "median": 3.0,
+    "maximum": 10.0
+  },
+  "response_triplet_position_error_um": {
+    "minimum": 1.0582107644297407,
+    "median": 5.9130133385831805,
+    "maximum": 20.27596248762054
+  },
+  "response_triplet_exact_precision_rank": {
+    "minimum": 1.0,
+    "median": 3.0,
+    "maximum": 10.0
+  },
+  "response_triplet_predicted_worst_axis_sigma_um": {
+    "minimum": 3169.9666114282186,
+    "median": 4681.414449310478,
+    "maximum": 6304.215841703287
+  },
+  "predicted_worst_axis_sigma_penalty_um": {
+    "minimum": 0.0,
+    "median": 0.0875171350983237,
+    "maximum": 3.4493315311447077
+  },
+  "position_error_penalty_um": {
+    "minimum": 0.0,
+    "median": 0.00021077366165611622,
+    "maximum": 0.005224384116304215
+  },
+  "exact_information_logdet_gap": {
+    "minimum": 0.0,
+    "median": 9.26818850732758e-05,
+    "maximum": 0.005183280483693764
+  },
+  "response_triplet_matched_nominal_information_gain_logdet": {
+    "minimum": 0.00029427434919959694,
+    "median": 0.0017647428896054862,
+    "maximum": 0.01250293107855871
+  },
+  "response_triplet_matched_nominal_precision_improvement": {
+    "minimum": 1.0000573151915377,
+    "median": 1.0004480664151705,
+    "maximum": 1.0023337380696955
+  },
+  "exact_information_triplet_matched_nominal_information_gain_logdet": {
+    "minimum": 0.00037751689736431615,
+    "median": 0.0020178696200234825,
+    "maximum": 0.01250293107855871
+  },
+  "exact_precision_triplet_matched_nominal_precision_improvement": {
+    "minimum": 1.000111491344998,
+    "median": 1.0005052421342977,
+    "maximum": 1.0023561646745935
+  },
+  "max_abs_realized_bump_error_um": {
+    "minimum": 0.5180398551733311,
+    "median": 3.1940907217319765,
+    "maximum": 13.703855740113427
+  },
+  "limitations": [
+    "One nominal target-offset realization per sextupole; other-sextupole and calibration nuisance are not yet included.",
+    "Closed-orbit K2 slopes only; direct phase/coupling observable ablation is deferred.",
+    "Exact information and precision propagate a provisional independent 5 um raw BPM-plane noise model through K2-slope and bump-polynomial fits; use recovery penalty and later nuisance tests before replacing a response-level triplet."
+  ]
+}

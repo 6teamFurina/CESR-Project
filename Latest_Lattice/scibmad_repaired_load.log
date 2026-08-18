@@ -1,0 +1,10 @@
+repaired_export_loaded=true
+cesr_type=Beamline
+cesr_elements=1177
+cesr_length=768.4378690000005
+pc_ref=5.999999978240006e9
+species_ref=Species(positron, charge=1.0e, mass=510998.95069 eV/c², spin=0.5ħ)
+wiggler_segments=3
+wiggler name=id_s1a!s1 L=0.8845999999987089 phase=-37.69911184307752 steps=90
+wiggler name=id_s1a!s2 L=0.2929999999998927 phase=-9.37755402028542 steps=30
+wiggler name=id_s1a!s3 L=1.1774000000013984 phase=0.0032016230416829217 steps=120

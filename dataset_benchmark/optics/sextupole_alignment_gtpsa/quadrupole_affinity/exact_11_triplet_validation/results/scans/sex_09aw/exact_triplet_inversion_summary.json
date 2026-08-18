@@ -1,0 +1,41 @@
+{
+  "format": "cesr-repaired-lattice-exact-11-triplet-inversion-v1",
+  "target_sextupole": "SEX_09AW",
+  "candidate_quadrupoles": [
+    "Q43E",
+    "QX4D",
+    "Q18W",
+    "QX5A",
+    "QX4A"
+  ],
+  "truth_offset_um": [
+    350.0,
+    -250.0
+  ],
+  "triplet_count": 10,
+  "bpm_noise_m": 5e-06,
+  "slope_noise_per_readback": 0.000158113883008419,
+  "best_information_triplet": [
+    "Q43E",
+    "QX4D",
+    "Q18W"
+  ],
+  "best_information_position_error_um": 1.6233915458146015,
+  "best_error_triplet": [
+    "QX4D",
+    "Q18W",
+    "QX4A"
+  ],
+  "minimum_position_error_um": 1.6233324183204965,
+  "best_precision_triplet": [
+    "Q43E",
+    "QX4D",
+    "Q18W"
+  ],
+  "best_precision_worst_axis_sigma_um": 1603.880588947572,
+  "limitations": [
+    "Nominal target-offset scenario only; other-sextupole and calibration nuisances are not yet included.",
+    "Closed orbit is the only observable group in this pilot; direct phase/coupling ablation is deferred.",
+    "The inverse is a central-finite-difference local linear model evaluated against an exact finite-offset scan."
+  ]
+}

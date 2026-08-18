@@ -1,0 +1,483 @@
+#!/usr/bin/env python3
+"""Summarize and render thick-element sextupole sourcing results."""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import math
+import tomllib
+from pathlib import Path
+
+
+def rows(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="", encoding="utf-8") as stream:
+        return list(csv.DictReader(stream))
+
+
+def f(row: dict[str, str], key: str) -> float:
+    return float(row[key])
+
+
+def percentile(values: list[float], probability: float) -> float:
+    ordered = sorted(values)
+    position = probability * (len(ordered) - 1)
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    fraction = position - lower
+    return ordered[lower] * (1 - fraction) + ordered[upper] * fraction
+
+
+def esc(text: str) -> str:
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def render_svg(path: Path, elements: list[dict[str, str]]) -> None:
+    """Render the compact, paper-width signed-contribution panel.
+
+    Axis titles are added by LaTeX in the manuscript so their mathematical
+    notation uses the paper font.  The SVG retains ticks, bars, and direct
+    element labels only.
+    """
+    width, height = 1220, 370
+    left, right = 125, 1095
+    chart_top, chart_bottom = 95, 290
+    chart_w, chart_h = right - left, chart_bottom - chart_top
+    circumference = max(f(row, "s_m") for row in elements)
+    values = [100 * f(row, "eta_total") for row in elements]
+    y_min = min(-1.0, 1.12 * min(values))
+    y_max = max(1.0, 1.12 * max(values))
+
+    def x_pos(s_m: float) -> float:
+        return left + chart_w * s_m / circumference
+
+    def y_pos(value: float) -> float:
+        return chart_bottom - chart_h * (value - y_min) / (y_max - y_min)
+
+    zero_y = y_pos(0.0)
+
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="white"/>',
+        '<style>text{font-family:"Times New Roman",Times,serif;fill:#202124}.tick{font-size:14px;fill:#555}.direct-label{font-size:18px;font-weight:700;fill:#333}</style>',
+    ]
+    tick_step = (y_max - y_min) / 5
+    for value in (y_min + index * tick_step for index in range(6)):
+        y = y_pos(value)
+        parts.append(f'<line x1="{left}" y1="{y:.2f}" x2="{right}" y2="{y:.2f}" stroke="#e5e7eb"/>')
+        parts.append(f'<text x="{left-10}" y="{y+4:.2f}" text-anchor="end" class="tick">{value:.1f}</text>')
+    parts.append(f'<line x1="{left}" y1="{zero_y:.2f}" x2="{right}" y2="{zero_y:.2f}" stroke="#555" stroke-width="1.2"/>')
+    bar_w = max(3.0, 0.58 * chart_w / len(elements))
+    for row, value in zip(elements, values):
+        x, y = x_pos(f(row, "s_m")) - bar_w / 2, y_pos(value)
+        color = "#d95f02" if value >= 0 else "#1f78b4"
+        parts.append(f'<rect x="{x:.2f}" y="{min(y, zero_y):.2f}" width="{bar_w:.2f}" height="{abs(zero_y-y):.2f}" fill="{color}" opacity="0.88"/>')
+
+    ranked = sorted(elements, key=lambda row: abs(f(row, "eta_total")), reverse=True)[:10]
+    rank_by_name = {row["element_name"]: rank for rank, row in enumerate(ranked, 1)}
+    label_x_by_name: dict[str, float] = {}
+    previous_label_x = -math.inf
+    tick_positions = [left + chart_w * index / 4 for index in range(5)]
+    negative_label_positions: list[float] = []
+    for row in sorted(ranked, key=lambda item: f(item, "s_m")):
+        x = x_pos(f(row, "s_m"))
+        if f(row, "eta_total") < 0:
+            # Choose the side that maximizes clearance from longitudinal tick
+            # labels and from negative annotations already placed nearby.
+            candidates = (max(left, x - 65), min(right, x + 65))
+            obstacles = tick_positions + negative_label_positions
+            label_x = max(
+                candidates,
+                key=lambda candidate: min(abs(candidate - item) for item in obstacles),
+            )
+            label_x_by_name[row["element_name"]] = label_x
+            negative_label_positions.append(label_x)
+            continue
+        label_x = max(x + 4, previous_label_x + 42)
+        label_x_by_name[row["element_name"]] = label_x
+        previous_label_x = label_x
+
+    for row in ranked:
+        rank = rank_by_name[row["element_name"]]
+        value = 100 * f(row, "eta_total")
+        x, y = x_pos(f(row, "s_m")), y_pos(value)
+        label_x = label_x_by_name[row["element_name"]]
+        display_name = row["element_name"].upper().removeprefix("SEX_")
+        label = f"{rank}. {display_name}"
+        if value < 0:
+            # Place negative labels below the full bar so the angled text does
+            # not overlap the blue contribution block.
+            label_y = min(chart_bottom + 35, y + 22)
+            rotation = 65
+            line_y1, line_y2 = y + 2, label_y - 3
+        else:
+            label_y = y - 10
+            rotation = -65
+            line_y1, line_y2 = y - 2, label_y + 3
+        parts.append(f'<line x1="{x:.2f}" y1="{line_y1:.2f}" x2="{label_x:.2f}" y2="{line_y2:.2f}" stroke="#777" stroke-width="0.9"/>')
+        parts.append(f'<text x="{label_x:.2f}" y="{label_y:.2f}" class="direct-label" transform="rotate({rotation} {label_x:.2f} {label_y:.2f})">{esc(label)}</text>')
+
+    for tick in range(5):
+        s_m = circumference * tick / 4
+        x = x_pos(s_m)
+        parts.append(f'<line x1="{x:.2f}" y1="{chart_bottom}" x2="{x:.2f}" y2="{chart_bottom+5}" stroke="#777" stroke-width="1"/>')
+        parts.append(f'<text x="{x:.2f}" y="{chart_bottom+22}" text-anchor="middle" class="tick">{s_m:.0f}</text>')
+    parts.extend([
+        '</svg>',
+    ])
+    path.write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+def render_paired_svg(
+    path: Path,
+    horizontal: list[dict[str, str]],
+    vertical: list[dict[str, str]],
+) -> None:
+    """Render compact side-by-side panels with shared scales and grid lines."""
+    width, height = 1800, 520
+    outer_left, outer_right, gap = 70, 1760, 90
+    chart_top, chart_bottom = 140, 420
+    panel_w = (outer_right - outer_left - gap) / 2
+    panel_lefts = (outer_left, outer_left + panel_w + gap)
+    circumference = max(
+        max(f(row, "s_m") for row in horizontal),
+        max(f(row, "s_m") for row in vertical),
+    )
+    all_values = [
+        100 * f(row, "eta_total")
+        for row in horizontal + vertical
+    ]
+    y_min = min(-1.0, 1.12 * min(all_values))
+    y_max = max(1.0, 1.12 * max(all_values))
+    chart_h = chart_bottom - chart_top
+
+    def x_pos(s_m: float, left: float) -> float:
+        return left + panel_w * s_m / circumference
+
+    def y_pos(value: float) -> float:
+        return chart_bottom - chart_h * (value - y_min) / (y_max - y_min)
+
+    zero_y = y_pos(0.0)
+    parts = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">',
+        '<rect width="100%" height="100%" fill="white"/>',
+        '<style>text{font-family:"Times New Roman",Times,serif;fill:#202124}.tick{font-size:18px;fill:#555}.direct-label{font-size:22px;font-weight:700;fill:#222}.panel-label{font-size:24px;font-weight:700;fill:#222}</style>',
+    ]
+
+    tick_step = (y_max - y_min) / 5
+    for index in range(6):
+        value = y_min + index * tick_step
+        y = y_pos(value)
+        for left in panel_lefts:
+            parts.append(
+                f'<line x1="{left:.2f}" y1="{y:.2f}" '
+                f'x2="{left+panel_w:.2f}" y2="{y:.2f}" stroke="#e5e7eb"/>'
+            )
+        parts.append(
+            f'<text x="{outer_left-12}" y="{y+5:.2f}" '
+            f'text-anchor="end" class="tick">{value:.1f}</text>'
+        )
+
+    for left in panel_lefts:
+        parts.append(
+            f'<line x1="{left:.2f}" y1="{zero_y:.2f}" '
+            f'x2="{left+panel_w:.2f}" y2="{zero_y:.2f}" '
+            'stroke="#374151" stroke-width="1.6"/>'
+        )
+
+    def render_panel(
+        elements: list[dict[str, str]], left: float, panel_label: str
+    ) -> None:
+        bar_w = max(4.0, 0.58 * panel_w / len(elements))
+        values = [100 * f(row, "eta_total") for row in elements]
+        for row, value in zip(elements, values):
+            x = x_pos(f(row, "s_m"), left) - bar_w / 2
+            y = y_pos(value)
+            color = "#d95f02" if value >= 0 else "#1f78b4"
+            parts.append(
+                f'<rect x="{x:.2f}" y="{min(y,zero_y):.2f}" '
+                f'width="{bar_w:.2f}" height="{abs(zero_y-y):.2f}" '
+                f'fill="{color}" opacity="0.9"/>'
+            )
+
+        ranked = sorted(
+            elements, key=lambda row: abs(f(row, "eta_total")), reverse=True
+        )[:10]
+        rank_by_name = {
+            row["element_name"]: rank for rank, row in enumerate(ranked, 1)
+        }
+        label_x_by_name: dict[str, float] = {}
+        previous_positive_x = -math.inf
+        tick_positions = [left + panel_w * index / 4 for index in range(5)]
+        negative_label_positions: list[float] = []
+        for row in sorted(ranked, key=lambda item: f(item, "s_m")):
+            x = x_pos(f(row, "s_m"), left)
+            if f(row, "eta_total") < 0:
+                if (
+                    panel_label == "(a) Horizontal"
+                    and row["element_name"].upper().endswith("27E")
+                ):
+                    label_x = max(left, x - 100)
+                    label_x_by_name[row["element_name"]] = label_x
+                    negative_label_positions.append(label_x)
+                    continue
+                candidates = (
+                    max(left, x - 46),
+                    min(left + panel_w, x + 46),
+                )
+                obstacles = tick_positions + negative_label_positions
+                label_x = max(
+                    candidates,
+                    key=lambda candidate: min(
+                        abs(candidate - item) for item in obstacles
+                    ),
+                )
+                label_x_by_name[row["element_name"]] = label_x
+                negative_label_positions.append(label_x)
+                continue
+            label_x = max(x + 3, previous_positive_x + 36)
+            label_x = min(left + panel_w - 4, label_x)
+            label_x_by_name[row["element_name"]] = label_x
+            previous_positive_x = label_x
+
+        for row in ranked:
+            rank = rank_by_name[row["element_name"]]
+            value = 100 * f(row, "eta_total")
+            x, y = x_pos(f(row, "s_m"), left), y_pos(value)
+            label_x = label_x_by_name[row["element_name"]]
+            display_name = row["element_name"].upper().removeprefix("SEX_")
+            label = f"{rank}. {display_name}"
+            if value < 0:
+                if (
+                    panel_label == "(a) Horizontal"
+                    and row["element_name"].upper().endswith("27E")
+                ):
+                    label_y = min(chart_bottom + 10, y + 10)
+                else:
+                    label_y = min(chart_bottom + 42, y + 29)
+                rotation = 65
+                line_y1, line_y2 = y + 2, label_y - 4
+            else:
+                label_y = y - 11
+                rotation = -65
+                line_y1, line_y2 = y - 2, label_y + 4
+            parts.append(
+                f'<line x1="{x:.2f}" y1="{line_y1:.2f}" '
+                f'x2="{label_x:.2f}" y2="{line_y2:.2f}" '
+                'stroke="#6b7280" stroke-width="1.0"/>'
+            )
+            parts.append(
+                f'<text x="{label_x:.2f}" y="{label_y:.2f}" '
+                f'class="direct-label" transform="rotate({rotation} '
+                f'{label_x:.2f} {label_y:.2f})">{esc(label)}</text>'
+            )
+
+        for tick in range(5):
+            s_m = circumference * tick / 4
+            x = x_pos(s_m, left)
+            parts.append(
+                f'<line x1="{x:.2f}" y1="{chart_bottom}" '
+                f'x2="{x:.2f}" y2="{chart_bottom+6}" '
+                'stroke="#6b7280" stroke-width="1.2"/>'
+            )
+            parts.append(
+                f'<text x="{x:.2f}" y="{chart_bottom+27}" '
+                f'text-anchor="middle" class="tick">{s_m:.0f}</text>'
+            )
+        parts.append(
+            f'<text x="{left+panel_w/2:.2f}" y="42" '
+            f'text-anchor="middle" class="panel-label">{panel_label}</text>'
+        )
+
+    render_panel(horizontal, panel_lefts[0], "(a) Horizontal")
+    render_panel(vertical, panel_lefts[1], "(b) Vertical")
+    parts.append("</svg>")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+def write_report(
+    path: Path,
+    elements: list[dict[str, str]],
+    families: list[dict[str, str]],
+    directions: list[dict[str, str]],
+    summary: dict[str, str],
+    comparison: dict[str, float | bool] | None,
+    family_percentiles: list[dict[str, float | str]],
+    output_plane: str,
+) -> None:
+    ranked = sorted(elements, key=lambda row: abs(f(row, "eta_total")), reverse=True)
+    closures = [f(row, "sextupole_total_relative_closure") for row in directions]
+    projections = [f(row, "sextupole_total_signed_projection") for row in directions]
+    lines = [
+        f"# Detector-{output_plane} thick-element Hessian sourcing result", "",
+        "## Closure", "",
+        f'- Directions: `{summary["trials"]}`; lattice elements: `{summary["elements"]}`; active normal sextupoles: `{summary["active_normal_sextupoles"]}`; detectors: `{summary["detectors"]}`.',
+        f'- All-element total relative closure: `{f(summary,"total_all_element_relative_closure"):.6g}`.',
+        f'- Sextupole-only HH / HV / VV relative closure: `{f(summary,"hh_sextupole_relative_closure"):.6g} / {f(summary,"hv_sextupole_relative_closure"):.6g} / {f(summary,"vv_sextupole_relative_closure"):.6g}`.',
+        f'- Sextupole-only total relative closure: `{f(summary,"total_sextupole_relative_closure"):.6g}`.',
+        f'- Sextupole-only total signed projection: `{f(summary,"total_sextupole_signed_projection"):.6g}`.',
+        f'- Direction-level sextupole closure P10 / median / P90: `{percentile(closures,0.1):.6g} / {percentile(closures,0.5):.6g} / {percentile(closures,0.9):.6g}`.',
+        f'- Direction-level signed projection P10 / median / P90: `{percentile(projections,0.1):.6g} / {percentile(projections,0.5):.6g} / {percentile(projections,0.9):.6g}`.',
+        f'- Family partition maximum absolute reconstruction difference: `{f(summary,"family_partition_check_max"):.6g} m`.',
+    ]
+    if "hh_target_squared_norm_share" in summary:
+        lines.append(
+            f'- HH / HV / VV target squared-norm shares: '
+            f'`{100*f(summary,"hh_target_squared_norm_share"):.6f}% / '
+            f'{100*f(summary,"hv_target_squared_norm_share"):.6f}% / '
+            f'{100*f(summary,"vv_target_squared_norm_share"):.6f}%`.'
+        )
+    if comparison is not None:
+        lines.extend([
+            "", "## Comparison with the midpoint thin-kick reconstruction", "",
+            f'- Thin / thick total relative closure: `{comparison["thin_closure"]:.6g} / {comparison["thick_closure"]:.6g}`.',
+            f'- Absolute closure improvement: `{comparison["closure_improvement"]:.6g}`.',
+            f'- Pearson correlation of the 76 signed `eta_total` values: `{comparison["eta_correlation"]:.12g}`.',
+            f'- Maximum absolute change in an element `eta_total`: `{comparison["max_eta_difference"]:.6g}`.',
+            f'- Top-15 absolute-projection ordering identical: `{comparison["top15_identical"]}`.',
+            "",
+            "The near-identical ranking and small closure change show that the remaining residual is not primarily caused by treating the sextupoles as thin midpoint sources.",
+        ])
+    lines.extend([
+        "", "## Complete-element source families", "",
+        "Signed projections add to one; magnitude ratios do not add because family vectors interfere.", "",
+        "| family | elements | eta HH | eta HV | eta VV | eta total | magnitude total |",
+        "|---|---:|---:|---:|---:|---:|---:|",
+    ])
+    for row in sorted(families, key=lambda item: abs(f(item, "eta_total")), reverse=True):
+        lines.append(
+            f'| `{row["family"]}` | {int(float(row["element_count"]))} | '
+            f'{100*f(row,"eta_hh"):+.3f}% | {100*f(row,"eta_hv"):+.3f}% | '
+            f'{100*f(row,"eta_vv"):+.3f}% | {100*f(row,"eta_total"):+.3f}% | '
+            f'{100*f(row,"magnitude_total"):.3f}% |'
+        )
+    lines.extend([
+        "", "### Direction-level family statistics", "",
+        "| family | eta P10 | eta median | eta P90 | magnitude median |",
+        "|---|---:|---:|---:|---:|",
+    ])
+    for row in sorted(family_percentiles, key=lambda item: abs(float(item["eta_median"])), reverse=True):
+        lines.append(
+            f'| `{row["family"]}` | {100*float(row["eta_p10"]):+.3f}% | '
+            f'{100*float(row["eta_median"]):+.3f}% | {100*float(row["eta_p90"]):+.3f}% | '
+            f'{100*float(row["magnitude_median"]):.3f}% |'
+        )
+    lines.extend([
+        "", "## Largest absolute signed projections", "",
+        "| rank | sextupole | s [m] | K2L [m^-2] | eta total | magnitude ratio |",
+        "|---:|---|---:|---:|---:|---:|",
+    ])
+    for rank, row in enumerate(ranked[:15], 1):
+        lines.append(f'| {rank} | `{row["element_name"]}` | {f(row,"s_m"):.3f} | {f(row,"k2l_m2"):.5g} | {100*f(row,"eta_total"):+.4f}% | {100*f(row,"magnitude_total"):.4f}% |')
+    lines.extend(["", "## Interpretation boundary", "",
+        "The all-element closure validates the chain-rule source decomposition. The sextupole-only residual is retained explicitly and measures sources assigned to other complete lattice elements under this element-boundary convention.", "",
+        f"![Detector-{output_plane} thick-element sextupole sourcing](thick_sextupole_signed_contributions.svg)", ""])
+    path.write_text("\n".join(lines), encoding="utf-8")
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "output_dir", nargs="?", type=Path,
+        default=Path(__file__).resolve().parent / "horizontal_results",
+    )
+    parser.add_argument(
+        "--paired-with", type=Path,
+        help="Result directory for the vertical panel of a paired figure.",
+    )
+    parser.add_argument(
+        "--paired-output", type=Path,
+        help="Destination SVG for the paired horizontal/vertical figure.",
+    )
+    args = parser.parse_args()
+    elements = rows(args.output_dir / "thick_sextupole_contribution_summary.csv")
+    families = rows(args.output_dir / "family_contribution_summary.csv")
+    directions = rows(args.output_dir / "direction_closure.csv")
+    family_directions = rows(args.output_dir / "family_direction_contributions.csv")
+    summaries = rows(args.output_dir / "reconstruction_summary.csv")
+    if len(summaries) != 1:
+        raise RuntimeError("Expected exactly one reconstruction summary row")
+    metadata_path = args.output_dir / "metadata.toml"
+    with metadata_path.open("rb") as stream:
+        metadata = tomllib.load(stream)
+    output_plane = str(metadata.get("output_plane", "x"))
+    error_analysis = Path(__file__).resolve().parent.parent
+    thin_dir = error_analysis / "sextupole_detector_contributions" / "results"
+    comparison = None
+    if output_plane == "x" and (thin_dir / "sextupole_contribution_summary.csv").is_file() and (
+        thin_dir / "reconstruction_summary.csv"
+    ).is_file():
+        thin_elements = rows(thin_dir / "sextupole_contribution_summary.csv")
+        thin_summary = rows(thin_dir / "reconstruction_summary.csv")[0]
+        thin_eta = {row["element_name"].lower(): f(row, "eta_total") for row in thin_elements}
+        thick_eta = {row["element_name"].lower(): f(row, "eta_total") for row in elements}
+        names = sorted(thin_eta.keys() & thick_eta.keys())
+        x = [thin_eta[name] for name in names]
+        y = [thick_eta[name] for name in names]
+        mean_x, mean_y = sum(x) / len(x), sum(y) / len(y)
+        correlation = sum((a - mean_x) * (b - mean_y) for a, b in zip(x, y)) / math.sqrt(
+            sum((a - mean_x) ** 2 for a in x) * sum((b - mean_y) ** 2 for b in y)
+        )
+        differences = [abs(thin_eta[name] - thick_eta[name]) for name in names]
+        top_thin = sorted(names, key=lambda name: abs(thin_eta[name]), reverse=True)[:15]
+        top_thick = sorted(names, key=lambda name: abs(thick_eta[name]), reverse=True)[:15]
+        thin_closure = f(thin_summary, "total_concatenated_relative_closure")
+        thick_closure = f(summaries[0], "total_sextupole_relative_closure")
+        comparison = {
+            "thin_closure": thin_closure,
+            "thick_closure": thick_closure,
+            "closure_improvement": thin_closure - thick_closure,
+            "eta_correlation": correlation,
+            "max_eta_difference": max(differences),
+            "top15_identical": top_thin == top_thick,
+        }
+    norm_by_trial = {int(float(row["trial"])): f(row, "q_total_norm_m") for row in directions}
+    family_samples: dict[str, dict[str, list[float]]] = {}
+    for row in family_directions:
+        family = row["family"]
+        trial = int(float(row["trial"]))
+        norm = norm_by_trial[trial]
+        sample = family_samples.setdefault(family, {"eta": [], "magnitude": []})
+        sample["eta"].append(f(row, "projection_numerator") / norm**2)
+        sample["magnitude"].append(f(row, "contribution_norm_m") / norm)
+    family_percentiles: list[dict[str, float | str]] = []
+    for family, sample in family_samples.items():
+        family_percentiles.append({
+            "family": family,
+            "eta_p10": percentile(sample["eta"], 0.1),
+            "eta_median": percentile(sample["eta"], 0.5),
+            "eta_p90": percentile(sample["eta"], 0.9),
+            "magnitude_p10": percentile(sample["magnitude"], 0.1),
+            "magnitude_median": percentile(sample["magnitude"], 0.5),
+            "magnitude_p90": percentile(sample["magnitude"], 0.9),
+        })
+    percentile_path = args.output_dir / "family_direction_percentiles.csv"
+    with percentile_path.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=[
+            "family", "eta_p10", "eta_median", "eta_p90",
+            "magnitude_p10", "magnitude_median", "magnitude_p90",
+        ])
+        writer.writeheader()
+        writer.writerows(sorted(family_percentiles, key=lambda row: str(row["family"])))
+    render_svg(args.output_dir / "thick_sextupole_signed_contributions.svg", elements)
+    if args.paired_with is not None:
+        paired_output = args.paired_output or (
+            Path(__file__).resolve().parent
+            / "paired_results"
+            / "thick_sextupole_signed_contributions_paired.svg"
+        )
+        render_paired_svg(
+            paired_output,
+            elements,
+            rows(args.paired_with / "thick_sextupole_contribution_summary.csv"),
+        )
+    write_report(
+        args.output_dir / "RESULTS.md", elements, families, directions,
+        summaries[0], comparison, family_percentiles, output_plane,
+    )
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

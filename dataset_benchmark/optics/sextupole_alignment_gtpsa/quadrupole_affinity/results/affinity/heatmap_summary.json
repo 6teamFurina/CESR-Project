@@ -1,0 +1,25 @@
+{
+  "retained_pairs": 1140,
+  "sextupoles": 76,
+  "quadrupoles_total": 106,
+  "quadrupoles_with_at_least_one_retained_pair": 32,
+  "blank_cells_are_not_evaluated": true,
+  "plots": [
+    {
+      "metric": "information_gain_logdet",
+      "minimum": 0.9630075726321863,
+      "median": 1.3681304408863628,
+      "maximum": 4.8462980895131835,
+      "svg": "/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/quadrupole_affinity/results/affinity/information_gain_heatmap.svg",
+      "png": "/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/quadrupole_affinity/results/affinity/information_gain_heatmap.png"
+    },
+    {
+      "metric": "precision_improvement_worst_axis",
+      "minimum": 1.1167313888532413,
+      "median": 1.6579783882668873,
+      "maximum": 2.3969757162882153,
+      "svg": "/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/quadrupole_affinity/results/affinity/precision_improvement_heatmap.svg",
+      "png": "/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/quadrupole_affinity/results/affinity/precision_improvement_heatmap.png"
+    }
+  ]
+}

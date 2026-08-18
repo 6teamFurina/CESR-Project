@@ -1,0 +1,92 @@
+{
+  "format": "cesr-paired-p0-p2-benchmark-v1",
+  "target": "SEX_08W",
+  "scan_dir": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\targeted_bump_k2_inversion\\results\\smoke_background",
+  "paired_input_semantics": "all methods consume the same exact scan and saved offset realization",
+  "results": [
+    {
+      "method": "P0_nominal_mixed_GTPSA",
+      "observable_view": "orbit_only",
+      "conditioning": "nominal",
+      "observable_count_per_bump": 198,
+      "true_x_offset_m": 0.00035,
+      "true_y_offset_m": -0.00025,
+      "estimated_x_offset_m": 0.00036092706738857154,
+      "estimated_y_offset_m": -0.0002234098792573047,
+      "error_x_m": 1.0927067388571542e-05,
+      "error_y_m": 2.6590120742695303e-05,
+      "absolute_error_2d_m": 2.8747788137968087e-05,
+      "fit_residual_rms": 5.215558307850433e-05
+    },
+    {
+      "method": "P1_nominal_bump_conditioned_mixed",
+      "observable_view": "orbit_only",
+      "conditioning": "nominal_unknown_background",
+      "observable_count_per_bump": 198,
+      "true_x_offset_m": 0.00035,
+      "true_y_offset_m": -0.00025,
+      "estimated_x_offset_m": 0.00035959819906434214,
+      "estimated_y_offset_m": -0.00022344279799484294,
+      "error_x_m": 9.598199064342144e-06,
+      "error_y_m": 2.6557202005157064e-05,
+      "absolute_error_2d_m": 2.8238456112568494e-05,
+      "fit_residual_rms": 0.0002225330066434183
+    },
+    {
+      "method": "P0_nominal_mixed_GTPSA",
+      "observable_view": "orbit_phase_coupling_tune",
+      "conditioning": "nominal",
+      "observable_count_per_bump": 794,
+      "true_x_offset_m": 0.00035,
+      "true_y_offset_m": -0.00025,
+      "estimated_x_offset_m": 0.00026460021617634894,
+      "estimated_y_offset_m": -0.00012388785415292736,
+      "error_x_m": -8.539978382365106e-05,
+      "error_y_m": 0.00012611214584707265,
+      "absolute_error_2d_m": 0.00015230691516566035,
+      "fit_residual_rms": 0.00048589654894602946
+    },
+    {
+      "method": "P1_nominal_bump_conditioned_mixed",
+      "observable_view": "orbit_phase_coupling_tune",
+      "conditioning": "nominal_unknown_background",
+      "observable_count_per_bump": 794,
+      "true_x_offset_m": 0.00035,
+      "true_y_offset_m": -0.00025,
+      "estimated_x_offset_m": 0.0002513751677903308,
+      "estimated_y_offset_m": -0.00012377466483288032,
+      "error_x_m": -9.862483220966919e-05,
+      "error_y_m": 0.0001262253351671197,
+      "absolute_error_2d_m": 0.0001601864312806709,
+      "fit_residual_rms": 0.0003007015078505265
+    },
+    {
+      "method": "P2a_two_local_dipole_kicks",
+      "observable_view": "orbit_only",
+      "conditioning": "nominal_unknown_background",
+      "observable_count_per_bump": 198,
+      "true_x_offset_m": 0.00035,
+      "true_y_offset_m": -0.00025,
+      "estimated_x_offset_m": 0.00035959871209910373,
+      "estimated_y_offset_m": -0.00022344219119014737,
+      "error_x_m": 9.598712099103735e-06,
+      "error_y_m": 2.655780880985264e-05,
+      "absolute_error_2d_m": 2.8239201170397274e-05,
+      "fit_residual_rms": 0.002156701074998597
+    },
+    {
+      "method": "P2b_four_local_kicks",
+      "observable_view": "orbit_phase_coupling_tune",
+      "conditioning": "nominal_unknown_background",
+      "observable_count_per_bump": 794,
+      "true_x_offset_m": 0.00035,
+      "true_y_offset_m": -0.00025,
+      "estimated_x_offset_m": 0.0002518296561836121,
+      "estimated_y_offset_m": -0.0001237029223205744,
+      "error_x_m": -9.817034381638792e-05,
+      "error_y_m": 0.0001262970776794256,
+      "absolute_error_2d_m": 0.00015996364660569187,
+      "fit_residual_rms": 0.002795502828685805
+    }
+  ]
+}

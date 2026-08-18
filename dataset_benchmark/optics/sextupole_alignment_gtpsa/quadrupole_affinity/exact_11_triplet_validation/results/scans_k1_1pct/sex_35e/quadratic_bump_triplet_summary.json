@@ -1,0 +1,43 @@
+{
+  "format": "cesr-repaired-lattice-exact-quadratic-bump-center-v1",
+  "target_sextupole": "SEX_35E",
+  "candidate_quadrupoles": [
+    "Q17W",
+    "Q47AE",
+    "Q47AW",
+    "Q10AW",
+    "QX6A"
+  ],
+  "truth_center_um": [
+    350.0,
+    -250.0
+  ],
+  "triplet_count": 10,
+  "coordinate_scale_m": 0.0005,
+  "assumed_independent_bpm_noise_m": 5e-06,
+  "best_information_triplet": [
+    "Q17W",
+    "Q47AE",
+    "Q47AW"
+  ],
+  "best_information_position_error_um": 3.7259271286093205,
+  "best_information_predicted_worst_axis_sigma_um": 4565.3472165134635,
+  "best_precision_triplet": [
+    "Q17W",
+    "Q47AE",
+    "Q47AW"
+  ],
+  "minimum_predicted_worst_axis_sigma_um": 4565.3472165134635,
+  "best_error_triplet": [
+    "Q17W",
+    "Q47AE",
+    "Q47AW"
+  ],
+  "minimum_position_error_um": 3.7259271286093205,
+  "limitations": [
+    "The direct quadratic center fit is noise-free and does not yet marginalize other-sextupole or calibration nuisance.",
+    "Only BPM closed-orbit K2 slopes are used; direct phase/coupling observables are deferred.",
+    "Reported precision assumes independent 5 um raw BPM-plane noise in every K2 state and propagates it through the slope and bump-polynomial fits.",
+    "Corrector-generated bumps are model-based and not machine-approved knobs."
+  ]
+}

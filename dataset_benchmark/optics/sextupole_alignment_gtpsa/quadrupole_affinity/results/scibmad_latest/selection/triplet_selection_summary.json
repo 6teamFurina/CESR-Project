@@ -1,0 +1,25 @@
+{
+  "target_count": 76,
+  "retained_candidate_count_per_target": 5,
+  "available_k1_condition_count": 11,
+  "triplet_count_per_target": 10,
+  "selected_triplet_size": 3,
+  "targets_changed_from_greedy_prefix": 0,
+  "information_vs_precision_triplet_disagreement_count": 32,
+  "selected_information_gain_logdet": {
+    "minimum": 2.2338910898027784,
+    "median": 3.1221579829594113,
+    "maximum": 3.7565038872806937
+  },
+  "selected_precision_improvement_worst_axis": {
+    "minimum": 1.807354863842747,
+    "median": 2.2039628867594816,
+    "maximum": 2.571491850996428
+  },
+  "information_gain_over_greedy_prefix": {
+    "minimum": 0.0,
+    "median": 0.0,
+    "maximum": 0.0
+  },
+  "selected_triplet_union_quadrupole_count": 25
+}

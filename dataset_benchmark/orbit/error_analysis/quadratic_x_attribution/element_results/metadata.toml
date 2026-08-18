@@ -1,0 +1,16 @@
+base_kick_rad = 5.0e-6
+date = "2026-08-06"
+direction_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\direction_attribution.csv"
+element_direction_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\element_exposure_directions.csv"
+format = "cesr-x-quadratic-internal-exposure-v2"
+gtpsa_direction_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\mixed_terms\\gtpsa_results\\gtpsa_direction_q.csv"
+internal_sampling = "average of entrance and exit TPSA maps for every element with nonzero normal Kn2"
+method = "one all-corrector first-order GTPSA response at sextupoles joined to adopted second-order GTPSA detector Q"
+normalization = "original result uses equal corrector RMS; equal-source-exposure shares are diagnostic only"
+rho = 1.13
+role = "causal diagnostic for the X-plane Q_vv versus Q_hh imbalance"
+seed = 20260804
+solve_seconds = 43.1013229
+source_exposure = "sum(abs(Kn2L) * first_order_orbit^2) over active normal sextupoles"
+summary_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\attribution_summary.csv"
+trials = 100

@@ -1,0 +1,29 @@
+{
+  "format": "cesr-repaired-lattice-k1-optics-screen-summary-v1",
+  "quadrupole_count": 113,
+  "allowed_count": 110,
+  "rejected_count": 3,
+  "rejected_quadrupoles": [
+    {
+      "quadrupole": "Q10E",
+      "max_abs_tune_shift": 0.011801043596731786,
+      "max_detector_beta_beating": 0.11018995609156157
+    },
+    {
+      "quadrupole": "Q10W",
+      "max_abs_tune_shift": 0.010390844020277568,
+      "max_detector_beta_beating": 0.09266290073494132
+    },
+    {
+      "quadrupole": "Q43E",
+      "max_abs_tune_shift": 0.011030645639932668,
+      "max_detector_beta_beating": 0.09878620526011428
+    }
+  ],
+  "original_five_candidate_safe_count_distribution": {
+    "3": 12,
+    "4": 48,
+    "5": 16
+  },
+  "all_targets_retain_at_least_three_original_candidates": true
+}

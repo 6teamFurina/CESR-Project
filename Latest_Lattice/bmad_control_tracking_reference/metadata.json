@@ -1,0 +1,33 @@
+{
+  "format": "latest-cesr-bmad-control-tracking-response-v1",
+  "tao_version": "20260814-0",
+  "lattice": "/mnt/d/Ring_Design_Development/CESR Project/Latest_Lattice/lat.bmad",
+  "branch": 0,
+  "tracking_element_count": 1177,
+  "control_count": 124,
+  "relationship_count": 347,
+  "response_row_count": 475,
+  "particle_start": {
+    "x": 0.001,
+    "px": 0.0002,
+    "y": -0.0008,
+    "py": 0.00015,
+    "z": 0.0005,
+    "pz": 0.0002
+  },
+  "steps": {
+    "HKICK": 1e-06,
+    "VKICK": 1e-06,
+    "K1": 1e-05,
+    "A1": 1e-05,
+    "COMMAND": 0.001
+  },
+  "baseline_end_orbit": [
+    -0.0017669716306059485,
+    -0.0001647109367121911,
+    0.00021055449894288134,
+    -0.0003282517120227283,
+    -0.0003718302629747091,
+    0.0002006786971975682
+  ]
+}

@@ -1,0 +1,35 @@
+GTPSA_descriptor = "Descriptor(6, 2, 225, 1)"
+baseline_closed_orbit_residual = 3.5752650839881994e-15
+baseline_closed_orbit_seconds = 53.7696648
+case = "correctors_quads"
+detector_count = 99
+detector_jacobian_shape = [1782, 225]
+detector_quantity_count = 18
+engine = "SciBmad/GTPSA"
+extraction_warmup_seconds = 0.3754403
+format = "cesr-extended-optics-jacobian-v1"
+implicit_response_allocated_bytes = 52798310910
+implicit_response_max_abs_residual = 7.105427357601002e-15
+implicit_response_seconds = 17.469455
+implicit_response_warmup_seconds = 47.9964334
+jacobian_extraction_seconds = 0.0968377
+julia_threads = 1
+julia_version = "1.12.6"
+method = "one first-order-parameter Twiss plus implicit periodic closed-orbit response"
+optics_only_seconds = 43.9295777
+parameter_count = 225
+parameterized_model_setup_allocated_bytes = 358280249
+parameterized_model_setup_seconds = 1.2476195
+parameterized_twiss_allocated_bytes = 106248963795
+parameterized_twiss_seconds = 43.83274
+parameters = ["COR:H01W", "COR:HB01", "COR:H02W", "COR:HB02", "COR:H03W", "COR:HB03", "COR:H04W", "COR:HB04", "COR:HB05", "COR:HB06", "COR:H08W", "COR:H10W", "COR:H12W", "COR:H14W", "COR:H16W", "COR:H18W", "COR:H20W", "COR:H22W", "COR:H24W", "COR:H26W", "COR:H28W", "COR:H30W", "COR:H32W", "COR:H34W", "COR:H36W", "COR:H38W", "COR:H40W", "COR:H42W", "COR:H44W", "COR:H46W", "COR:H47W", "COR:H49W", "COR:H49E", "COR:H47E", "COR:H46E", "COR:H44E", "COR:H42E", "COR:H40E", "COR:H38E", "COR:H36E", "COR:H34E", "COR:H32E", "COR:H30E", "COR:H28E", "COR:H26E", "COR:H24E", "COR:H22E", "COR:H20E", "COR:H18E", "COR:H16E", "COR:H14E", "COR:H12E", "COR:H10E", "COR:H08E", "COR:H04E", "COR:H03E", "COR:H02E", "COR:H01E", "COR:V01W", "COR:V02W", "COR:V04W", "COR:V05W", "COR:V06W", "COR:V07W", "COR:V08W", "COR:V09W", "COR:V10W", "COR:V11W", "COR:V13W", "COR:V15W", "COR:V16W", "COR:V17W", "COR:V19W", "COR:V21W", "COR:V23W", "COR:V25W", "COR:V27W", "COR:V29W", "COR:V31W", "COR:V33W", "COR:V35W", "COR:V37W", "COR:V39W", "COR:V41W", "COR:V43W", "COR:V45W", "COR:V47W", "COR:V48W", "COR:V49W", "COR:V49E", "COR:V48E", "COR:V47E", "COR:V45E", "COR:V43E", "COR:V41E", "COR:V39E", "COR:V37E", "COR:V35E", "COR:V34E", "COR:V33E", "COR:V31E", "COR:V29E", "COR:V27E", "COR:V25E", "COR:V23E", "COR:V21E", "COR:V19E", "COR:V17E", "COR:V15E", "COR:V13E", "COR:V11E", "COR:V09E", "COR:V08E", "COR:V07E", "COR:V06E", "COR:V05E", "COR:V04E", "COR:V02E", "COR:V01E", "K1:Q00E", "K1:Q00W", "K1:Q01E", "K1:Q01W", "K1:Q02E", "K1:Q02W", "K1:Q03E", "K1:Q03W", "K1:Q04E", "K1:Q04W", "K1:Q05E", "K1:Q05W", "K1:Q06E", "K1:Q06W", "K1:Q07E", "K1:Q07W", "K1:Q08E", "K1:Q08W", "K1:Q09E", "K1:Q09W", "K1:Q10E", "K1:Q10W", "K1:Q11E", "K1:Q11W", "K1:Q12E", "K1:Q12W", "K1:Q13E", "K1:Q13W", "K1:Q14E", "K1:Q14W", "K1:Q15E", "K1:Q15W", "K1:Q16E", "K1:Q16W", "K1:Q17E", "K1:Q17W", "K1:Q18E", "K1:Q18W", "K1:Q19E", "K1:Q19W", "K1:Q20E", "K1:Q20W", "K1:Q21E", "K1:Q21W", "K1:Q22E", "K1:Q22W", "K1:Q23E", "K1:Q23W", "K1:Q24E", "K1:Q24W", "K1:Q25E", "K1:Q25W", "K1:Q26E", "K1:Q26W", "K1:Q27E", "K1:Q27W", "K1:Q28E", "K1:Q28W", "K1:Q29E", "K1:Q29W", "K1:Q30E", "K1:Q30W", "K1:Q31E", "K1:Q31W", "K1:Q32E", "K1:Q32W", "K1:Q33E", "K1:Q33W", "K1:Q34E", "K1:Q34W", "K1:Q35E", "K1:Q35W", "K1:Q36E", "K1:Q36W", "K1:Q37E", "K1:Q37W", "K1:Q38E", "K1:Q38W", "K1:Q39E", "K1:Q39W", "K1:Q40E", "K1:Q40W", "K1:Q41E", "K1:Q41W", "K1:Q42E", "K1:Q42W", "K1:Q43AE", "K1:Q43AW", "K1:Q43E", "K1:Q43W", "K1:Q44E", "K1:Q44W", "K1:Q45E", "K1:Q45W", "K1:Q46E", "K1:Q46W", "K1:Q47AE", "K1:Q47AW", "K1:Q47E", "K1:Q47W", "K1:Q48E", "K1:Q48W", "K1:Q49AE", "K1:Q49AW", "K1:Q49E", "K1:Q49W"]
+phase_space_order = 2
+physics_seconds_with_separate_start_orbit_response = 61.3990327
+rf_mode = "off (4D coasting)"
+twiss_warmup_seconds = 779.4939794
+write_seconds = 0.1888748
+
+[family_counts]
+corrector = 119
+quadrupole = 106
+sextupole = 0

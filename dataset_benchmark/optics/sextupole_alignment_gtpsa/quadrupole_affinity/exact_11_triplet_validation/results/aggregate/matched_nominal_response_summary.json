@@ -1,0 +1,30 @@
+{
+  "format": "cesr-repaired-lattice-matched-nominal-triplet-gain-v1",
+  "target_count": 76,
+  "triplet_count": 760,
+  "comparison": "one nominal plus six K1-conditioned blocks versus seven repeated nominal blocks",
+  "matched_nominal_information_gain_logdet": {
+    "minimum": 2.0195527348221276e-05,
+    "median": 9.553209041435196e-05,
+    "p90": 0.00022842169997652214,
+    "maximum": 0.0006535361300450404
+  },
+  "matched_nominal_precision_improvement_worst_axis": {
+    "minimum": 1.0000060110263145,
+    "median": 1.000022605159306,
+    "p90": 1.0000525181515232,
+    "maximum": 1.0001514396500693
+  },
+  "best_triplet_matched_nominal_information_gain_logdet": {
+    "minimum": 4.6850110429375036e-05,
+    "median": 0.00013366144752424702,
+    "p90": 0.0003027566537703308,
+    "maximum": 0.0006535361300450404
+  },
+  "best_triplet_matched_nominal_precision_improvement_worst_axis": {
+    "minimum": 1.000011775139376,
+    "median": 1.0000294905802565,
+    "p90": 1.0000774008058038,
+    "maximum": 1.0001514396500693
+  }
+}

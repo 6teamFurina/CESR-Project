@@ -1,0 +1,32 @@
+[
+  {
+    "case": "smoke_exact",
+    "states": 15,
+    "observation_rows": 17850,
+    "estimate_rows": 8,
+    "truth_um": {
+      "x": 350.0,
+      "y": -250.0
+    },
+    "orbit_modes_estimate_um": {
+      "x": 352.111044155233,
+      "y": -257.33526749140754
+    },
+    "orbit_modes_error_2d_um": 7.632997877364011
+  },
+  {
+    "case": "smoke_background",
+    "states": 15,
+    "observation_rows": 17850,
+    "estimate_rows": 8,
+    "truth_um": {
+      "x": 350.0,
+      "y": -250.0
+    },
+    "orbit_modes_estimate_um": {
+      "x": 360.9270673885717,
+      "y": -223.4098792573047
+    },
+    "orbit_modes_error_2d_um": 28.74778813796815
+  }
+]

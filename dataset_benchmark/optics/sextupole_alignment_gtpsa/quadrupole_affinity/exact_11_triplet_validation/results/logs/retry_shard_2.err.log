@@ -1,0 +1,51 @@
+ERROR: LoadError: ReadOnlyMemoryError()
+Stacktrace:
+  [1] _methods_by_ftype
+    @ .\runtime_internals.jl:1415 [inlined]
+  [2] verify_call(sig::Any, expecteds::Core.SimpleVector, i::Int64, n::Int64, world::UInt64, fully_covers::Bool, matches::Vector{Any})
+    @ Base.StaticData .\staticdata.jl:463
+  [3] verify_method(codeinst::Core.CodeInstance, stack::Vector{Core.CodeInstance}, visiting::IdDict{Core.CodeInstance, Int64}, validation_world::UInt64)
+    @ Base.StaticData .\staticdata.jl:179
+  [4] verify_method_graph(codeinst::Core.CodeInstance, stack::Vector{Core.CodeInstance}, visiting::IdDict{Core.CodeInstance, Int64}, validation_world::UInt64)
+    @ Base.StaticData .\staticdata.jl:66
+  [5] _insert_backedges(edges::Vector{Any}, stack::Vector{Core.CodeInstance}, visiting::IdDict{Core.CodeInstance, Int64}, external::Bool)
+    @ Base.StaticData .\staticdata.jl:40
+  [6] insert_backedges
+    @ .\staticdata.jl:32 [inlined]
+  [7] _include_from_serialized(pkg::Base.PkgId, path::String, ocachepath::String, depmods::Vector{Any}; register::Bool)
+    @ Base .\loading.jl:1319
+  [8] _include_from_serialized
+    @ .\loading.jl:1276 [inlined]
+  [9] _require_search_from_serialized(pkg::Base.PkgId, sourcepath::String, build_id::UInt128, stalecheck::Bool; reasons::Dict{String, Int64}, DEPOT_PATH::Vector{String})
+    @ Base .\loading.jl:2117
+ [10] _require_search_from_serialized
+    @ .\loading.jl:2011 [inlined]
+ [11] __require_prelocked(pkg::Base.PkgId, env::String)
+    @ Base .\loading.jl:2629
+ [12] _require_prelocked(uuidkey::Base.PkgId, env::String)
+    @ Base .\loading.jl:2495
+ [13] macro expansion
+    @ .\loading.jl:2423 [inlined]
+ [14] macro expansion
+    @ .\lock.jl:376 [inlined]
+ [15] __require(into::Module, mod::Symbol)
+    @ Base .\loading.jl:2388
+ [16] require(into::Module, mod::Symbol)
+    @ Base .\loading.jl:2364
+ [17] include(mapexpr::Function, mod::Module, _path::String)
+    @ Base .\Base.jl:307
+ [18] top-level scope
+    @ D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\run_exact_11_scan.jl:5
+ [19] include(mapexpr::Function, mod::Module, _path::String)
+    @ Base .\Base.jl:307
+ [20] top-level scope
+    @ D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\run_exact_11_targets.jl:5
+ [21] include(mod::Module, _path::String)
+    @ Base .\Base.jl:306
+ [22] exec_options(opts::Base.JLOptions)
+    @ Base .\client.jl:317
+ [23] _start()
+    @ Base .\client.jl:550
+in expression starting at D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\common.jl:7
+in expression starting at D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\run_exact_11_scan.jl:5
+in expression starting at D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\run_exact_11_targets.jl:5
