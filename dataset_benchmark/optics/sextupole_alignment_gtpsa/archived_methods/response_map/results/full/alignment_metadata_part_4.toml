@@ -1,0 +1,12 @@
+format = "cesr-sextupole-alignment-gtpsa-part-v1"
+status = "complete"
+engine = "SciBmad/GTPSA"
+rf_mode = "on (six-dimensional periodic optics)"
+descriptor = "Descriptor(6, 3, 3, 2)"
+parameter_order = 2
+part_label = 4
+sextupole_count = 19
+coefficient_rows = 22629
+twiss_seconds = 557.9779307
+phase_reference = "DET_00W"
+hessian_semantics = "true second derivatives; diagonal Taylor coefficient is d2/2"

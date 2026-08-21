@@ -1,0 +1,162 @@
+{
+  "artifacts": {
+    "modes_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\response_map\\results\\full\\local_response_svd_modes.csv",
+    "scales_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\response_map\\results\\full\\local_response_svd_scales.csv",
+    "summary_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\response_map\\results\\full\\local_response_svd_summary.csv"
+  },
+  "format": "cesr-sextupole-local-response-svd-v1",
+  "interpretation_boundary": "Experimental alignment precision requires replacing observable_rms scaling with measured covariance whitening and adding nuisance-response columns.",
+  "matrix_convention": "R_j has shape 2 x 1191; rows are d2O/(dKn2 dx_offset) and d2O/(dKn2 dy_offset); columns are saved observables",
+  "observations_per_sextupole": 1191,
+  "projection": "For a consistently scaled n-vector y_j, compressed amplitudes are z_j = Q_j^T y_j and the local model is z_j = diag(sigma) P_j^T [dx_j,dy_j].",
+  "scalings": {
+    "observable_rms": "Each named observable is divided by its global RMS mixed response across all magnets, locations, and x/y rows. Structural only; not measurement-noise whitening.",
+    "raw": "No scaling; mixed physical units make cross-observable interpretation invalid."
+  },
+  "scheme_summaries": {
+    "observable_rms": {
+      "condition_number": {
+        "maximum": 3.2081898120520926,
+        "median": 1.3358986347006598,
+        "minimum": 1.04364253381451,
+        "p10": 1.094699168661329,
+        "p90": 2.0307995709457956
+      },
+      "effective_rank_counts": {
+        "2": 76
+      },
+      "largest_condition_numbers": [
+        {
+          "condition_number": 3.2081898120520926,
+          "sextupole": "SEX_39W",
+          "sigma_2_over_sigma_1": 0.31170225534765295
+        },
+        {
+          "condition_number": 2.9317867060170886,
+          "sextupole": "SEX_19W",
+          "sigma_2_over_sigma_1": 0.3410889332254757
+        },
+        {
+          "condition_number": 2.800421201119076,
+          "sextupole": "SEX_33E",
+          "sigma_2_over_sigma_1": 0.35708914059084756
+        },
+        {
+          "condition_number": 2.231029806918171,
+          "sextupole": "SEX_26W",
+          "sigma_2_over_sigma_1": 0.4482235050823226
+        },
+        {
+          "condition_number": 2.1883120230621844,
+          "sextupole": "SEX_44W",
+          "sigma_2_over_sigma_1": 0.45697322386442124
+        },
+        {
+          "condition_number": 2.179693146770102,
+          "sextupole": "SEX_19E",
+          "sigma_2_over_sigma_1": 0.4587801734761671
+        },
+        {
+          "condition_number": 2.077836922295871,
+          "sextupole": "SEX_34W",
+          "sigma_2_over_sigma_1": 0.4812697229843557
+        },
+        {
+          "condition_number": 2.031332699875698,
+          "sextupole": "SEX_40E",
+          "sigma_2_over_sigma_1": 0.49228764941419606
+        },
+        {
+          "condition_number": 2.0302664420158933,
+          "sextupole": "SEX_32W",
+          "sigma_2_over_sigma_1": 0.49254618965532393
+        },
+        {
+          "condition_number": 2.016244568367172,
+          "sextupole": "SEX_09E",
+          "sigma_2_over_sigma_1": 0.49597157789733637
+        }
+      ],
+      "sigma_2_over_sigma_1": {
+        "maximum": 0.9581824883516421,
+        "median": 0.7486206145374222,
+        "minimum": 0.31170225534765295,
+        "p10": 0.49241691953475997,
+        "p90": 0.913519444840238
+      }
+    },
+    "raw": {
+      "condition_number": {
+        "maximum": 3.3241885799245687,
+        "median": 1.454903303386447,
+        "minimum": 1.0611785535712208,
+        "p10": 1.1710168887487304,
+        "p90": 2.405374507434053
+      },
+      "effective_rank_counts": {
+        "2": 76
+      },
+      "largest_condition_numbers": [
+        {
+          "condition_number": 3.3241885799245687,
+          "sextupole": "SEX_26W",
+          "sigma_2_over_sigma_1": 0.30082529193415725
+        },
+        {
+          "condition_number": 3.094164655527391,
+          "sextupole": "SEX_18W",
+          "sigma_2_over_sigma_1": 0.3231890061873753
+        },
+        {
+          "condition_number": 2.9485546215446354,
+          "sextupole": "SEX_39W",
+          "sigma_2_over_sigma_1": 0.3391492199917728
+        },
+        {
+          "condition_number": 2.632239398023231,
+          "sextupole": "SEX_33E",
+          "sigma_2_over_sigma_1": 0.3799046548543357
+        },
+        {
+          "condition_number": 2.560113175082294,
+          "sextupole": "SEX_26E",
+          "sigma_2_over_sigma_1": 0.3906077316163397
+        },
+        {
+          "condition_number": 2.472421027865242,
+          "sextupole": "SEX_28W",
+          "sigma_2_over_sigma_1": 0.40446185691254544
+        },
+        {
+          "condition_number": 2.4286825973707535,
+          "sextupole": "SEX_22E",
+          "sigma_2_over_sigma_1": 0.41174585805596065
+        },
+        {
+          "condition_number": 2.41409313602152,
+          "sextupole": "SEX_30W",
+          "sigma_2_over_sigma_1": 0.4142342252992039
+        },
+        {
+          "condition_number": 2.3966558788465866,
+          "sextupole": "SEX_24E",
+          "sigma_2_over_sigma_1": 0.41724805335059595
+        },
+        {
+          "condition_number": 2.3354796609564055,
+          "sextupole": "SEX_19W",
+          "sigma_2_over_sigma_1": 0.4281775674254807
+        }
+      ],
+      "sigma_2_over_sigma_1": {
+        "maximum": 0.942348482858672,
+        "median": 0.6874058054313996,
+        "minimum": 0.30082529193415725,
+        "p10": 0.4157411393248999,
+        "p90": 0.8540117242568539
+      }
+    }
+  },
+  "sextupoles": 76,
+  "svd_convention": "R_j = P_j diag(sigma_1,sigma_2) Q_j^T"
+}

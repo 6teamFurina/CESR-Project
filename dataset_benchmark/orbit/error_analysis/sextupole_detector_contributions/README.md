@@ -1,49 +1,67 @@
-# Signed sextupole contributions to the detector quadratic error
+# Signed normal-sextupole contributions: latest CESR ring
 
-This experiment complements the unsigned normal-sextupole exposure analysis.
-It asks which active normal sextupoles reinforce or cancel the final
-99-detector horizontal second-order orbit-error vector.
+Status: `smoke validated 2026-08-20`; production is intentionally not run in
+this checkout. The validated latest-lattice smoke uses two matched directions.
 
-For each fixed horizontal/vertical corrector direction pair, the calculation
-combines the adopted GTPSA detector vectors `Q_hh,x`, `Q_hv,x`, and `Q_vv,x`
-with the first-order internal orbit at all 76 active normal sextupoles and the
-periodic detector response to local horizontal and vertical angular kicks.
-The thick element is approximated symmetrically by applying half of each local
-kick at the entrance and half at the exit, consistent with midpoint orbit
-sampling to leading order.
+The maintained calculation uses the validated SciBmad lattice
+[`Latest_Lattice/latest_cesr_scibmad_repaired.jl`](../../../../Latest_Lattice/latest_cesr_scibmad_repaired.jl)
+and discovers the control, detector, element, and active normal-`Kn2` registries
+at runtime. The target is the total second-order detector vector
+`Q = (Q_x, Q_y)` from the implicit two-parameter RF-on closed-orbit derivative.
+The source boundary is every complete element exit,
 
-For block `b`, sextupole `j`, direction `t`, and detector vector `C_b,j,t`, the
-ensemble signed projection is
+`g_j = S_exit,j - A_j S_entrance,j`,
 
-```text
-eta_b,j = sum_t dot(C_b,j,t, Q_b,t) / sum_t norm(Q_b,t)^2.
-```
+so the all-element reconstruction is a numerical closure reference. The
+reported normal-sextupole rows retain only active normal sextupole elements and
+their signed projected contribution
+`eta_j = <C_j,Q>/<Q,Q>`. A signed projection is not a positive error share;
+element vectors can interfere.
 
-The total target is `Q_x = Q_hh,x + Q_hv,x + Q_vv,x`. Positive projection
-reinforces the target and negative projection cancels it. These percentages
-are signed vector projections, not positive shares, and may be negative or
-exceed 100% when large vectors cancel.
+The latest runner does not include the old internal-exposure runner. Its
+linear maps initialize inactive latest-lattice controls as primitive `0.0` and
+parameterize only the selected steering controls, avoiding the known
+combined-multipole `sqrt(0)` domain at `SEX_14W`. The direction derivative uses
+`Descriptor(6,2,2,2)` and keeps the full six-dimensional source. The output
+contains no `hh`/`hv`/`vv` block shares or third-order terms.
 
-For `x = a*x_h + b*x_v` and `y = a*y_h + b*y_v`, the leading thin normal-
-sextupole source is
+Outputs are ring-scoped and kept separate from the historical old-ring files:
 
-```text
-Q_hh: dpx = -K2L/2 * (x_h^2 - y_h^2),  dpy = K2L*x_h*y_h
-Q_hv: dpx = -K2L   * (x_h*x_v - y_h*y_v),
-      dpy =  K2L   * (x_h*y_v + x_v*y_h)
-Q_vv: dpx = -K2L/2 * (x_v^2 - y_v^2),  dpy = K2L*x_v*y_v.
-```
+- `results/latest_cesr/` is the production destination;
+- `smoke/latest_cesr/` contains minimal endpoint checks;
+- `reconstruction_summary.csv` records all-element and normal-sextupole-only
+  vector closure, signed projection, and source-response closure;
+- `sextupole_direction_contributions.csv` contains per-direction signed
+  x/y/total contribution vectors summarized by norm and projection, plus the
+  local source-kick fields consumed by the beta/phase predictor;
+- `metadata.toml` records lattice path, SciBmad provenance, RF state, ordered
+  labels, active inventory, source boundary, units, seed, and input path.
 
-The script reports blockwise and total vector closure against the full GTPSA
-target. Unless that closure is quantitatively small, the result is a leading
-thin-kick normal-sextupole reconstruction rather than a complete element
-attribution.
-
-Run from the `CESR Project` root:
+Validated smoke (run from `CESR Project/`):
 
 ```powershell
-julia --project=. dataset_benchmark/orbit/error_analysis/sextupole_detector_contributions/run_sextupole_detector_contributions.jl
-python dataset_benchmark/orbit/error_analysis/sextupole_detector_contributions/analyze_sextupole_detector_contributions.py
+$env:JULIA_PKG_PRECOMPILE_AUTO='0'
+julia --project=. `
+  'dataset_benchmark/orbit/error_analysis/sextupole_detector_contributions/run_sextupole_detector_contributions.jl' `
+  --ring=latest --trials=2 `
+  --output-dir='dataset_benchmark/orbit/error_analysis/sextupole_detector_contributions/smoke/latest_cesr'
 ```
 
-Use `--trials=3 --output-dir=.../smoke` for a quick integration test.
+The 2026-08-20 smoke produced 76 active normal sextupoles, 144 detectors, and
+103 selected controls. The reconstruction summary all-element relative vector
+closure was `1.378e-14` (the largest per-direction closure was `1.393e-14`);
+all signed projections and source-response checks were finite. These are
+endpoint/integration checks, not production or paper statistics.
+
+Production command (not run here):
+
+```powershell
+$env:JULIA_PKG_PRECOMPILE_AUTO='0'
+julia --project=. `
+  'dataset_benchmark/orbit/error_analysis/sextupole_detector_contributions/run_sextupole_detector_contributions.jl' `
+  --ring=latest --trials=100 --seed=20260804 --base-kick-rad=5e-6 `
+  --output-dir='dataset_benchmark/orbit/error_analysis/sextupole_detector_contributions/results/latest_cesr'
+```
+
+The existing `results/` files without the `latest_cesr` component remain
+historical old-ring artifacts; see [`README_archived.md`](README_archived.md).

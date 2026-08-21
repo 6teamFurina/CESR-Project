@@ -1,0 +1,13 @@
+{
+  "validated_targets": 76,
+  "exact_states": 49476,
+  "converged_exact_states": 49362,
+  "direct_gtpsa_targets": 60,
+  "fallback_targets": 16,
+  "maintained_order4_protocol_states": 608,
+  "small_cube_cv_bound": 1.0,
+  "small_cube_cv_training_states_per_target_min": 129,
+  "small_cube_cv_training_states_per_target_max": 129,
+  "small_cube_cv_protocol_position_max_um": 0.00697187045963811,
+  "small_cube_cv_protocol_angle_max_urad": 0.003303440469196346
+}

@@ -1,0 +1,4 @@
+target,target_index,realization,method,jacobian_condition,scaled_residual_rms
+SEX_09AW,1,1,gtpsa_k2_offset_order1_predicted_local,inf,1.000000000001209
+SEX_09AW,1,1,gtpsa_k2_offset_order2_predicted_local,1.001743415324947,0.05832979870899765
+SEX_09AW,1,1,gtpsa_k2_offset_order3_predicted_local,1.0010512157180445,0.05928422948103369

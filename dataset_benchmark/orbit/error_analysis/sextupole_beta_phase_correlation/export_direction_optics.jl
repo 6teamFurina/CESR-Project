@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-"""Export RF-on Twiss data for the 100 maintained corrector-direction pairs."""
+"""Export RF-on Twiss data for the configured corrector-direction pairs."""
 
 using Beamlines
 using Dates
@@ -14,18 +14,21 @@ using TOML
 const HERE = @__DIR__
 const PROJECT_DIR = normpath(joinpath(HERE, "..", "..", "..", ".."))
 const ORBIT_CALCULATION_DIR = normpath(joinpath(HERE, "..", "..", "Orbit_Calculation"))
-include(joinpath(PROJECT_DIR, "cesr_model.jl"))
+const ERROR_ANALYSIS_DIR = normpath(joinpath(HERE, ".."))
+include(joinpath(ERROR_ANALYSIS_DIR, "ring_analysis_config.jl"))
+using .RingErrorAnalysisConfig
 
 constant_term(value) = Float64(GTPSA.scalar(value))
 
 function parse_options(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
-        "inputs" => joinpath(ORBIT_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
-        "nominal-metadata" => joinpath(HERE, "results", "nominal_optics_metadata.toml"),
-        "output-dir" => joinpath(HERE, "results"),
+        "inputs" => "",
+        "nominal-metadata" => "",
+        "output-dir" => "",
     )
     for argument in args
         startswith(argument, "--") || error("Arguments must have --name=value form: $argument")
@@ -34,6 +37,18 @@ function parse_options(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    isempty(options["inputs"]) &&
+        (options["inputs"] = default_ring_paths(; ring).inputs)
+    artifact = ring_artifact_id(ring)
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(HERE, "results", artifact))
+    isempty(options["nominal-metadata"]) &&
+        (options["nominal-metadata"] = joinpath(
+            options["output-dir"], "nominal_optics_metadata.toml",
+        ))
     return options
 end
 
@@ -41,7 +56,7 @@ function control_names(path)
     header = split(readline(path), ',')
     first(header) == "sample_id" || error("Input CSV must begin with sample_id")
     names = String.(header[2:end])
-    length(names) == 119 || error("Expected 119 controls, found $(length(names))")
+    length(names) > 0 || error("Input CSV contains no controls")
     return names
 end
 
@@ -55,11 +70,9 @@ function gaussian_unit_rms_directions(generator, trials, n_controls, active_indi
     return directions
 end
 
-function direction_controls(names, trials, seed, base_kick)
-    horizontal = findall(name -> startswith(name, "H"), names)
-    vertical = findall(name -> startswith(name, "V"), names)
-    length(horizontal) == 58 || error("Expected 58 horizontal correctors")
-    length(vertical) == 61 || error("Expected 61 vertical correctors")
+function direction_controls(names, trials, seed, base_kick; config=nothing, model=nothing)
+    horizontal = control_group_indices(names, "horizontal"; config, model)
+    vertical = control_group_indices(names, "vertical"; config, model)
     h = gaussian_unit_rms_directions(MersenneTwister(seed), trials, length(names), horizontal)
     v = gaussian_unit_rms_directions(MersenneTwister(seed + 1), trials, length(names), vertical)
     return base_kick .* (h + v)
@@ -72,7 +85,8 @@ function integrated_normal_sextupole_strength(element)
     return iszero(kn2) ? kn2l : kn2 * length_m
 end
 
-function point_inventory(ring)
+function point_inventory(ring; detector_names=nothing)
+    detector_set = isnothing(detector_names) ? nothing : Set(uppercase.(String.(detector_names)))
     s_m = 0.0
     specifications = NamedTuple[]
     target_indices = Int[]
@@ -89,7 +103,9 @@ function point_inventory(ring)
             ))
             push!(target_indices, reference_index)
         end
-        if startswith(uppercase(name), "DET_")
+        is_detector = isnothing(detector_set) ? startswith(uppercase(name), "DET_") :
+            uppercase(name) in detector_set
+        if is_detector
             push!(specifications, (;
                 point_type="detector", element_index=index, element_name=name,
                 s_m, k2l_m2=0.0, reference_index=index,
@@ -98,10 +114,10 @@ function point_inventory(ring)
         end
         s_m = exit_s_m
     end
-    count(row -> row.point_type == "sextupole_exit", specifications) == 76 ||
-        error("Expected 76 active normal sextupoles")
-    count(row -> row.point_type == "detector", specifications) == 99 ||
-        error("Expected 99 detectors")
+    count(row -> row.point_type == "sextupole_exit", specifications) > 0 ||
+        error("No active normal sextupoles found")
+    count(row -> row.point_type == "detector", specifications) > 0 ||
+        error("No detector markers found")
     return specifications, sort!(unique(target_indices))
 end
 
@@ -119,9 +135,10 @@ function write_rows(path, rows)
 end
 
 function solved_closed_orbit(ring, initial)
+    state_dimension = length(initial)
     solution = find_closed_orbit(
         ring;
-        v0=reshape(copy(initial), 1, 6),
+        v0=reshape(copy(initial), 1, state_dimension),
         coasting_beam=false,
         batch=Val{false}(),
         reltol=1e-12,
@@ -134,25 +151,35 @@ function solved_closed_orbit(ring, initial)
     return vec(Float64.(solution.v0[1, :]))
 end
 
-function main(args=ARGS)
+function main(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_options(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     trials = parse(Int, options["trials"])
     seed = parse(Int, options["seed"])
     base_kick = parse(Float64, options["base-kick-rad"])
     output_dir = abspath(options["output-dir"])
     names = control_names(options["inputs"])
-    values = direction_controls(names, trials, seed, base_kick)
+    validate_control_names(names, config)
+    model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    state_dimension = begin
+        nominal = find_closed_orbit(model.ring; warn=false)
+        ndims(nominal.v0) == 1 ? length(nominal.v0) : size(nominal.v0, 2)
+    end
+    values = direction_controls(names, trials, seed, base_kick; config, model)
     nominal_metadata = TOML.parsefile(options["nominal-metadata"])
     nominal_full_tunes = (
         Float64(nominal_metadata["full_tune_1_turn"]),
         Float64(nominal_metadata["full_tune_2_turn"]),
     )
 
-    model = load_cesr_model(zero_value=0.0, rf_on=true)
-    specifications, target_indices = point_inventory(model.ring)
+    specifications, target_indices = point_inventory(
+        model.ring;
+        detector_names=configured_detector_names(model, config),
+    )
     target_elements = [model.ring.line[index] for index in target_indices]
-    descriptor = Descriptor(6, 1)
-    nominal = solved_closed_orbit(model.ring, zeros(6))
+    descriptor = Descriptor(state_dimension, 1)
+    nominal = solved_closed_orbit(model.ring, zeros(state_dimension))
     point_rows = NamedTuple[]
     tune_rows = NamedTuple[]
     elapsed = @elapsed begin
@@ -166,8 +193,8 @@ function main(args=ARGS)
                 model.ring;
                 GTPSA_descriptor=descriptor,
                 at=target_elements,
-                v0=reshape(closed, 1, 6),
-                v0_and_coast=(reshape(closed, 1, 6), false),
+                v0=reshape(closed, 1, state_dimension),
+                v0_and_coast=(reshape(closed, 1, state_dimension), false),
                 spin=false,
                 RDTs=false,
                 normalizing_map=false,
@@ -205,6 +232,16 @@ function main(args=ARGS)
         "trials" => trials,
         "seed" => seed,
         "base_kick_rad" => base_kick,
+        "control_count" => length(names),
+        "control_names" => names,
+        "horizontal_control_count" => length(control_group_indices(names, "horizontal"; config, model)),
+        "vertical_control_count" => length(control_group_indices(names, "vertical"; config, model)),
+        "state_dimension" => state_dimension,
+        "sextupole_count" => count(row -> row.point_type == "sextupole_exit", specifications),
+        "detector_count" => count(row -> row.point_type == "detector", specifications),
+        "detector_names" => configured_detector_names(model, config),
+        "normal_sextupole_names" => [row.element_name for row in specifications if row.point_type == "sextupole_exit"],
+        "source_boundary" => "normal sextupole complete-element exit; detector marker entrance",
         "direction_state" => "simultaneous h+v direction at unit rho",
         "lattice_mode" => "RF-on CESR",
         "phase_units" => "turn",
@@ -212,6 +249,7 @@ function main(args=ARGS)
         "points_csv" => points_path,
         "tunes_csv" => tunes_path,
     )
+    merge!(metadata, ring_metadata(config; ring))
     open(joinpath(output_dir, "direction_optics_metadata.toml"), "w") do io
         TOML.print(io, metadata; sorted=true)
     end

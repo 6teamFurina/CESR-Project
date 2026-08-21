@@ -13,11 +13,16 @@ using LinearAlgebra
 using TOML
 
 struct ScaledCESRFactory
+    base_factory::Function
+    config
     lambda2::Float64
     wiggler_scale::Float64
 end
 
-ScaledCESRFactory(lambda2::Real) = ScaledCESRFactory(Float64(lambda2), 1.0)
+ScaledCESRFactory(lambda2::Real; base_factory=load_ring_model, config=nothing) =
+    ScaledCESRFactory(base_factory, config, Float64(lambda2), 1.0)
+ScaledCESRFactory(lambda2::Real, wiggler_scale::Real; base_factory=load_ring_model, config=nothing) =
+    ScaledCESRFactory(base_factory, config, Float64(lambda2), Float64(wiggler_scale))
 
 function scale_wigglers!(ring, scale::Float64)
     changed = String[]
@@ -28,7 +33,7 @@ function scale_wigglers!(ring, scale::Float64)
         ele.four_potential_params = (scale * params[1], params[2], params[3])
         push!(changed, String(ele.name))
     end
-    length(changed) == 2 || error("Expected two CESR wigglers, changed $(length(changed))")
+    isempty(changed) && return changed
     return changed
 end
 
@@ -44,13 +49,15 @@ function scale_order2_multipoles!(ring, lambda2::Float64)
             ele.Kn2 = lambda2 * kn2
             push!(scaled, (; name=String(ele.name), component="Kn2", nominal=kn2))
         elseif !iszero(kn2l)
-            push!(unsupported, "$(ele.name): Kn2L=$kn2l with Kn2=0")
+            ele.Kn2L = lambda2 * kn2l
+            push!(scaled, (; name=String(ele.name), component="Kn2L", nominal=kn2l))
         end
         if !iszero(ks2)
             ele.Ks2 = lambda2 * ks2
             push!(scaled, (; name=String(ele.name), component="Ks2", nominal=ks2))
         elseif !iszero(ks2l)
-            push!(unsupported, "$(ele.name): Ks2L=$ks2l with Ks2=0")
+            ele.Ks2L = lambda2 * ks2l
+            push!(scaled, (; name=String(ele.name), component="Ks2L", nominal=ks2l))
         end
     end
     isempty(unsupported) || error(
@@ -63,24 +70,31 @@ end
 function (factory::ScaledCESRFactory)(;
     zero_value=0.0,
     rf_on::Union{Nothing,Bool}=nothing,
-    rf_voltage::Real=CESR_RF_VOLTAGE,
+    rf_voltage::Union{Nothing,Real}=nothing,
+    config=nothing,
 )
-    ring = load_cesr()
+    model_kwargs = (; zero_value, rf_on)
+    !isnothing(rf_voltage) && (model_kwargs = merge(model_kwargs, (; rf_voltage)))
+    base = configured_model(factory.base_factory, factory.config; model_kwargs...)
+    ring = base.ring
     scale_order2_multipoles!(ring, factory.lambda2)
     scale_wigglers!(ring, factory.wiggler_scale)
-    isnothing(rf_on) || set_cesr_rf!(ring; on=rf_on, voltage=rf_voltage)
-    controls = attach_cesr_controls!(ring; zero_value)
-    return (; ring, controls)
+    if !isnothing(rf_on) && !isnothing(rf_voltage) && isdefined(Main, :set_cesr_rf!)
+        Main.set_cesr_rf!(ring; on=rf_on, voltage=rf_voltage)
+    end
+    return merge(base, (; ring))
 end
 
 function parse_cascade_args(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "lambdas" => "0,0.25,0.5,0.75,1",
         "rhos" => "0.4,0.57,0.8,1.13,1.6,2.26",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
-        "output-dir" => joinpath(CASCADE_HERE, "results"),
+        "output-dir" => "",
+        "inputs" => "",
         "reltol" => "1e-12",
         "abstol" => "1e-13",
         "maxiter" => "100",
@@ -92,6 +106,13 @@ function parse_cascade_args(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    isempty(options["inputs"]) &&
+        (options["inputs"] = default_ring_paths(; ring).inputs)
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(CASCADE_HERE, "results", ring_artifact_id(ring)))
     return options
 end
 
@@ -116,15 +137,17 @@ function nominal_and_detector_response(
     nominal_model = factory(zero_value=0.0, rf_on=true)
     nominal_solution = find_closed_orbit(
         nominal_model.ring;
-        v0=zeros(1, 6), coasting_beam=false, batch=Val{false}(),
+        coasting_beam=false, batch=Val{false}(),
         reltol, abstol, maxiter, warn=false,
     )
     nominal_solution.sol.retcode == SciBmad.BatchSolve.RETCODE_SUCCESS ||
         error("Nominal closed orbit did not converge for lambda2=$(factory.lambda2)")
     nominal_orbit = vec(copy(nominal_solution.v0))
+    state_dimension = length(nominal_orbit)
+    transverse = transverse_coordinate_indices(factory.config; state_dimension)
 
     n_controls = length(names)
-    descriptor = Descriptor(6, 1, n_controls, 1)
+    descriptor = Descriptor(state_dimension, 1, n_controls, 1)
     variables = vars(descriptor)
     parameters = params(descriptor)
     response_model = factory(zero_value=zero(parameters[1]), rf_on=true)
@@ -132,61 +155,67 @@ function nominal_and_detector_response(
         response_model.controls[name] = parameters[index]
     end
 
-    one_turn_input = [nominal_orbit[index] + copy(variables[index]) for index in 1:6]
-    one_turn_bunch = Bunch(v=reshape(one_turn_input, 1, 6))
+    one_turn_input = [nominal_orbit[index] + copy(variables[index]) for index in 1:state_dimension]
+    one_turn_bunch = Bunch(v=reshape(one_turn_input, 1, state_dimension))
     SciBmad.BTBL.check_bl_bunch!(one_turn_bunch, response_model.ring, false)
     track!(one_turn_bunch, response_model.ring)
     full_jacobian = Matrix(GTPSA.jacobian(vec(one_turn_bunch.coords.v); include_params=true))
-    A = full_jacobian[:, 1:6]
-    B = full_jacobian[:, 7:end]
+    A = full_jacobian[:, 1:state_dimension]
+    B = full_jacobian[:, state_dimension + 1:end]
     closed_response = (I - A) \ B
     response_closure_residual = maximum(abs, (I - A) * closed_response - B)
 
     fixed_point_map = [
         nominal_orbit[index] + sum(
             closed_response[index, column] * parameters[column] for column in 1:n_controls
-        ) for index in 1:6
+        ) for index in 1:state_dimension
     ]
-    detector_bunch = Bunch(v=reshape(fixed_point_map, 1, 6))
+    detector_bunch = Bunch(v=reshape(fixed_point_map, 1, state_dimension))
     SciBmad.BTBL.check_bl_bunch!(detector_bunch, response_model.ring, false)
-    detectors = detector_names(response_model.ring)
-    detector_response = Matrix{Float64}(undef, 198, n_controls)
+    detectors = configured_detector_names(response_model, factory.config)
+    layout = observable_layout(detectors; config=factory.config)
+    detector_response = Matrix{Float64}(undef, length(layout.labels), n_controls)
+    detector_lookup = Set(detectors)
     detector_index = 0
     for ele in response_model.ring.line
         track!(detector_bunch, ele)
-        startswith(uppercase(String(ele.name)), "DET_") || continue
+        uppercase(String(ele.name)) in detector_lookup || continue
         detector_index += 1
         jacobian = Matrix(GTPSA.jacobian(vec(detector_bunch.coords.v); include_params=true))
-        detector_response[detector_index, :] .= view(jacobian, 1, 7:size(jacobian, 2))
-        detector_response[99 + detector_index, :] .= view(jacobian, 3, 7:size(jacobian, 2))
+        detector_response[plane_indices(layout, :x)[detector_index], :] .=
+            view(jacobian, transverse.x, state_dimension + 1:size(jacobian, 2))
+        detector_response[plane_indices(layout, :y)[detector_index], :] .=
+            view(jacobian, transverse.y, state_dimension + 1:size(jacobian, 2))
     end
-    detector_index == 99 || error("Expected 99 detector responses, got $detector_index")
+    detector_index == length(detectors) || error("Detector response count mismatch: $detector_index vs $(length(detectors))")
     final_jacobian = Matrix(GTPSA.jacobian(vec(detector_bunch.coords.v); include_params=true))
     fixed_point_closure = maximum(
         abs,
-        view(final_jacobian, :, 7:size(final_jacobian, 2)) - closed_response,
+        view(final_jacobian, :, state_dimension + 1:size(final_jacobian, 2)) - closed_response,
     )
     return (;
         nominal_orbit,
         closed_response,
         detector_response,
         detectors,
+        layout,
         response_closure_residual,
         fixed_point_closure,
     )
 end
 
-function extract_variant(lambda2, result, detector_response, samples, rhos, base_kick)
+function extract_variant(lambda2, result, detector_response, samples, rhos, base_kick, layout)
     baseline = vec(result.observables[1, :])
     n_trials = size(samples.directions, 1)
     pair_rows = NamedTuple[]
-    c3_vectors = Matrix{Float64}(undef, n_trials, 99)
+    y_indices = plane_indices(layout, :y)
+    c3_vectors = Matrix{Float64}(undef, n_trials, length(y_indices))
     c5_vectors = similar(c3_vectors)
     coefficient_rows = NamedTuple[]
     basis = hcat(rhos .^ 3, rhos .^ 5)
 
     for trial in 1:n_trials
-        odd_y = Matrix{Float64}(undef, length(rhos), 99)
+        odd_y = Matrix{Float64}(undef, length(rhos), length(y_indices))
         for (rho_index, rho) in enumerate(rhos)
             plus_row = samples.plus_rows[rho_index, trial]
             minus_row = samples.minus_rows[rho_index, trial]
@@ -198,13 +227,13 @@ function extract_variant(lambda2, result, detector_response, samples, rhos, base
             minus_delta = vec(result.observables[minus_row, :]) .- baseline
             even = (plus_delta .+ minus_delta) ./ 2
             odd_nl = (plus_delta .- minus_delta) ./ 2 .- linear
-            odd_y[rho_index, :] .= view(odd_nl, 100:198)
+            odd_y[rho_index, :] .= view(odd_nl, y_indices)
             push!(pair_rows, (;
                 lambda2, rho, trial, active_rms_rad=rho * base_kick,
                 max_closure_norm=max(result.closure_norms[plus_row], result.closure_norms[minus_row]),
-                y_even_rmse_m=vector_rmse(view(even, 100:198)),
-                y_odd_nl_rmse_m=vector_rmse(view(odd_nl, 100:198)),
-                y_odd_over_rho3_rmse_m=vector_rmse(view(odd_nl, 100:198)) / rho^3,
+                y_even_rmse_m=vector_rmse(view(even, y_indices)),
+                y_odd_nl_rmse_m=vector_rmse(view(odd_nl, y_indices)),
+                y_odd_over_rho3_rmse_m=vector_rmse(view(odd_nl, y_indices)) / rho^3,
             ))
         end
         coefficients = basis \ odd_y
@@ -237,8 +266,10 @@ function write_vector_rows(path, variants, detectors)
     return path
 end
 
-function main_cascade(args=ARGS)
+function main_cascade(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_cascade_args(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     lambdas = parse_sorted_unique(options["lambdas"], "--lambdas")
     first(lambdas) == 0.0 || error("--lambdas must start at zero")
     last(lambdas) == 1.0 || error("--lambdas must end at one")
@@ -254,12 +285,13 @@ function main_cascade(args=ARGS)
     output_dir = abspath(options["output-dir"])
     mkpath(output_dir)
 
-    input_reference = read_samples(joinpath(
-        CASCADE_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv",
-    ))
+    input_path = abspath(options["inputs"])
+    input_reference = read_samples(input_path)
     names = input_reference.names
-    samples = generate_vertical_pairs(names, rhos, trials, seed, base_kick)
-    inventory = scale_order2_multipoles!(load_cesr(), 1.0)
+    validate_control_names(names, config)
+    base_model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    samples = generate_vertical_pairs(names, rhos, trials, seed, base_kick; config, model=base_model)
+    inventory = scale_order2_multipoles!(base_model.ring, 1.0)
     @printf(
         "Sextupole-cascade experiment: %d order-2 fields, %d lambdas, %d radii, %d directions\n",
         length(inventory), length(lambdas), length(rhos), trials,
@@ -273,7 +305,7 @@ function main_cascade(args=ARGS)
     maximum_fixed_point_closure = 0.0
     detectors = String[]
     for lambda2 in lambdas
-        factory = ScaledCESRFactory(lambda2)
+        factory = ScaledCESRFactory(lambda2; base_factory=model_factory, config)
         @printf("lambda2=%.6g: computing variant response...\n", lambda2)
         linear_timed = @timed nominal_and_detector_response(
             factory, names; reltol, abstol, maxiter,
@@ -291,21 +323,23 @@ function main_cascade(args=ARGS)
             output_dir, "closed_orbit_response_lambda_$(lambda_token(lambda2)).csv",
         )
         @printf("lambda2=%.6g: solving %d nonlinear states...\n", lambda2, size(samples.values, 1))
-        solve_timed = @timed simulate_batch(
+        solve_timed = @timed configured_simulate_batch(
+            simulate_batch,
             names, samples.values;
+            config,
+            model_factory=factory,
             initial_guess_mode="response-linear",
             jacobian_mode="frozen-nominal",
             response_matrix_cache=response_cache,
             recompute_response=true,
             reltol, abstol, maxiter,
-            model_factory=factory,
         )
         result = solve_timed.value
         all(result.converged) || error(
             "Only $(count(result.converged))/$(length(result.converged)) states converged for lambda2=$lambda2",
         )
         extracted = extract_variant(
-            lambda2, result, linear.detector_response, samples, rhos, base_kick,
+            lambda2, result, linear.detector_response, samples, rhos, base_kick, linear.layout,
         )
         push!(variants, (;
             lambda2, extracted...,
@@ -349,6 +383,12 @@ function main_cascade(args=ARGS)
         "trials_per_lambda" => trials,
         "seed" => seed,
         "base_kick_rad" => base_kick,
+        "input_csv" => input_path,
+        "control_count" => length(names),
+        "control_names" => names,
+        "detector_count" => length(detectors),
+        "observable_count" => length(linear.layout.labels),
+        "observable_labels" => linear.layout.labels,
         "scaled_order2_field_count" => length(inventory),
         "total_nonlinear_states" => length(lambdas) * size(samples.values, 1),
         "total_solve_seconds" => total_solve_seconds,
@@ -364,6 +404,7 @@ function main_cascade(args=ARGS)
         "vectors_csv" => vector_path,
         "inventory_csv" => inventory_path,
     )
+    merge!(metadata, ring_metadata(config; ring))
     metadata_path = joinpath(output_dir, "sextupole_cascade_metadata.toml")
     open(metadata_path, "w") do io
         TOML.print(io, metadata; sorted=true)

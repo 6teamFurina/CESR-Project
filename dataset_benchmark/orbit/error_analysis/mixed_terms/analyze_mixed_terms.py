@@ -112,10 +112,11 @@ def share_cell(row: dict[str, float], plane: str, term: str) -> str:
 
 
 def write_component_share_tex(path: Path, rows: list[dict[str, float]]) -> None:
+    direction_count = int(round(max(float(row["directions"]) for row in rows)))
     lines = [
         r"\begin{table*}[!t]",
         r"  \centering",
-        r"  \caption{Four-sign finite-difference validation of the GTPSA direction-resolved quadratic-block shares. Each entry is median [P10, P90] in percent across the same 100 fixed H/V direction pairs.}",
+        rf"  \caption{{Four-sign finite-difference validation of the GTPSA direction-resolved quadratic-block shares. Each entry is median [P10, P90] in percent across the same {direction_count} fixed H/V direction pairs.}}",
         r"  \resizebox{\textwidth}{!}{%",
         r"  \begin{tabular}{@{}crrrrrr@{}}",
         r"    \toprule",
@@ -236,20 +237,23 @@ def render_component_share_svg(path: Path, rows) -> None:
     def yp(value: float) -> float:
         return bottom - 4 - (bottom - top - 8) * value
 
+    direction_count = int(round(max(float(row["directions"]) for row in rows)))
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="share-title share-desc">',
         '<title id="share-title">Quadratic orbit-response block squared-norm shares</title>',
-        '<desc id="share-desc">Two side-by-side panels show median and P10 to P90 bands across 100 directions. The X orbit component is dominated by vv and the Y orbit component by hv.</desc>',
+        f'<desc id="share-desc">Two side-by-side panels show median and P10 to P90 bands across {direction_count} directions. The X orbit component is dominated by vv and the Y orbit component by hv.</desc>',
         '<rect width="100%" height="100%" fill="white"/>',
         '<text x="580" y="32" text-anchor="middle" font-size="21" font-weight="600">Quadratic block squared-norm shares</text>',
-        '<text x="580" y="57" text-anchor="middle" font-size="13" fill="#555">Median and P10–P90 across 100 fixed H/V direction pairs</text>',
+        f'<text x="580" y="57" text-anchor="middle" font-size="13" fill="#555">Median and P10–P90 across {direction_count} fixed H/V direction pairs</text>',
     ]
     for index, term in enumerate(("hh", "hv", "vv")):
         x = 415 + 115 * index
         parts.append(f'<line x1="{x}" y1="87" x2="{x+28}" y2="87" stroke="{colors[term]}" stroke-width="2.7"/>')
         parts.append(f'<text x="{x+35}" y="91" font-size="13">{term}</text>')
 
-    tick_rhos = (0.1, 0.2, 0.4, 0.8, 1.13)
+    tick_rhos = tuple(rhos if len(rhos) <= 6 else [
+        rhos[index] for index in sorted({0, len(rhos) // 4, len(rhos) // 2, (3 * len(rhos)) // 4, len(rhos) - 1})
+    ])
     for plane, left in zip(("x", "y"), lefts):
         right = left + panel_width
         parts.append(f'<text x="{(left+right)/2:.2f}" y="112" text-anchor="middle" font-size="15" font-weight="600">{titles[plane]}</text>')
@@ -286,7 +290,10 @@ def render_component_share_svg(path: Path, rows) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results-dir", type=Path, default=Path(__file__).parent / "results")
+    parser.add_argument(
+        "--results-dir", type=Path,
+        default=Path(__file__).parent / "results" / "latest_cesr",
+    )
     args = parser.parse_args()
     summary = load_csv(args.results_dir / "mixed_term_summary.csv")
     directions = load_csv(args.results_dir / "mixed_term_directions.csv")

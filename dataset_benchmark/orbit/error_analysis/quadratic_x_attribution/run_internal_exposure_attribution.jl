@@ -14,12 +14,14 @@ using TOML
 
 function parse_exposure_args(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
         "rho" => "1.13",
-        "gtpsa-direction-csv" => joinpath(MIXED_TERM_HERE, "gtpsa_results", "gtpsa_direction_q.csv"),
-        "output-dir" => joinpath(ATTRIBUTION_HERE, "element_results"),
+        "gtpsa-direction-csv" => "",
+        "output-dir" => "",
+        "inputs" => "",
     )
     for argument in args
         startswith(argument, "--") || error("Arguments must have --name=value form: $argument")
@@ -28,6 +30,18 @@ function parse_exposure_args(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    isempty(options["inputs"]) &&
+        (options["inputs"] = default_ring_paths(; ring).inputs)
+    artifact = ring_artifact_id(ring)
+    isempty(options["gtpsa-direction-csv"]) &&
+        (options["gtpsa-direction-csv"] = joinpath(
+            MIXED_TERM_HERE, "gtpsa_results", artifact, "gtpsa_direction_q.csv",
+        ))
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(ATTRIBUTION_HERE, "element_results", artifact))
     return options
 end
 
@@ -57,11 +71,17 @@ function normal_sextupole_inventory(ring)
     return inventory
 end
 
-function all_corrector_first_order_model(names, base_kick)
-    descriptor = Descriptor(6, 1, length(names), 1)
+function all_corrector_first_order_model(
+    names,
+    base_kick,
+    state_dimension;
+    model_factory=load_ring_model,
+    config=nothing,
+)
+    descriptor = Descriptor(state_dimension, 1, length(names), 1)
     variables = vars(descriptor)
     parameters = params(descriptor)
-    model = load_cesr_model(zero_value=zero(parameters[1]), rf_on=true)
+    model = configured_model(model_factory, config; zero_value=zero(parameters[1]), rf_on=true)
     for index in eachindex(names)
         model.controls[names[index]] = base_kick * parameters[index]
     end
@@ -69,7 +89,9 @@ function all_corrector_first_order_model(names, base_kick)
 end
 
 function track_with_sextupole_maps(ring, input_map, inventory)
-    bunch = Bunch(v=reshape(input_map, 1, 6))
+    state_dimension = length(input_map)
+    state_dimension = length(input_map)
+    bunch = Bunch(v=reshape(input_map, 1, state_dimension))
     SciBmad.BTBL.check_bl_bunch!(bunch, ring, false)
     sextupole_maps = NamedTuple[]
     for (element_index, element) in enumerate(ring.line)
@@ -78,7 +100,7 @@ function track_with_sextupole_maps(ring, input_map, inventory)
         track!(bunch, element)
         exit_map = copy.(vec(bunch.coords.v))
         if !isnothing(active)
-            midpoint = [(entrance[index] + exit_map[index]) / 2 for index in 1:6]
+            midpoint = [(entrance[index] + exit_map[index]) / 2 for index in 1:state_dimension]
             push!(sextupole_maps, (;
                 element_index, name=active.name, s_m=active.s_m,
                 k2l=active.k2l, map=midpoint,
@@ -89,19 +111,31 @@ function track_with_sextupole_maps(ring, input_map, inventory)
     return copy.(vec(bunch.coords.v)), sextupole_maps
 end
 
-function build_internal_response(names, closed_orbit, base_kick, inventory)
-    setup = all_corrector_first_order_model(names, base_kick)
-    input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:6]
+function build_internal_response(
+    names,
+    closed_orbit,
+    base_kick,
+    inventory;
+    model_factory=load_ring_model,
+    config=nothing,
+)
+    state_dimension = length(closed_orbit)
+    setup = all_corrector_first_order_model(
+        names, base_kick, state_dimension;
+        model_factory, config,
+    )
+    input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:state_dimension]
     one_turn_map, sextupole_maps = track_with_sextupole_maps(
         setup.model.ring, input_map, inventory,
     )
     jacobian = Matrix(GTPSA.jacobian(one_turn_map; include_params=true))
-    expected_columns = 6 + length(names)
-    size(jacobian) == (6, expected_columns) || error("Unexpected all-corrector Jacobian size")
-    A, B = jacobian[:, 1:6], jacobian[:, 7:end]
+    expected_columns = state_dimension + length(names)
+    size(jacobian) == (state_dimension, expected_columns) || error("Unexpected all-corrector Jacobian size")
+    A, B = jacobian[:, 1:state_dimension], jacobian[:, state_dimension + 1:end]
     first = (I - A) \ B
     lifted = vcat(first, Matrix{Float64}(I, length(names), length(names)))
     first_residual = norm((I - A) * first - B, Inf)
+    transverse = transverse_coordinate_indices(config; state_dimension)
     response_x = zeros(length(sextupole_maps), length(names))
     response_y = similar(response_x)
     k2l = zeros(length(sextupole_maps))
@@ -110,10 +144,10 @@ function build_internal_response(names, closed_orbit, base_kick, inventory)
     s_m = zeros(length(sextupole_maps))
     for (row, item) in enumerate(sextupole_maps)
         internal_jacobian = Matrix(GTPSA.jacobian(item.map; include_params=true))
-        size(internal_jacobian) == (6, expected_columns) ||
+        size(internal_jacobian) == (state_dimension, expected_columns) ||
             error("Unexpected internal all-corrector Jacobian size")
-        response_x[row, :] .= vec(view(internal_jacobian, 1, :)' * lifted)
-        response_y[row, :] .= vec(view(internal_jacobian, 3, :)' * lifted)
+        response_x[row, :] .= vec(view(internal_jacobian, transverse.x, :)' * lifted)
+        response_y[row, :] .= vec(view(internal_jacobian, transverse.y, :)' * lifted)
         k2l[row] = item.k2l
         element_indices[row] = item.element_index
         element_names[row] = item.name
@@ -228,8 +262,10 @@ function summarize_attribution(rows)
     return (; direction_pairs=length(rows), statistics...)
 end
 
-function main_internal_exposure(args=ARGS)
+function main_internal_exposure(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_exposure_args(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     trials = parse(Int, options["trials"])
     trials >= 3 || error("--trials must be at least 3")
     seed = parse(Int, options["seed"])
@@ -246,18 +282,21 @@ function main_internal_exposure(args=ARGS)
     length(exact_lookup) >= trials || error(
         "GTPSA direction CSV has only $(length(exact_lookup)) directions at rho=$rho",
     )
-    input_reference = read_samples(joinpath(
-        MIXED_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv",
-    ))
+    input_path = abspath(options["inputs"])
+    input_reference = read_samples(input_path)
     names = input_reference.names
-    float_model = load_cesr_model(zero_value=0.0, rf_on=true)
+    validate_control_names(names, config)
+    float_model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
     closed_orbit = nominal_closed_orbit(float_model.ring)
     inventory = normal_sextupole_inventory(float_model.ring)
     samples = generate_mixed_samples(names, [1.0], trials, seed, base_kick)
     rows = NamedTuple[]
     element_rows = NamedTuple[]
     solve_seconds = @elapsed begin
-        response = build_internal_response(names, closed_orbit, base_kick, inventory)
+        response = build_internal_response(
+            names, closed_orbit, base_kick, inventory;
+            model_factory, config,
+        )
         for trial in 1:trials
             @printf("Internal-exposure direction %d/%d\n", trial, trials)
             result = direction_attribution(
@@ -291,11 +330,17 @@ function main_internal_exposure(args=ARGS)
         "internal_sampling" => "average of entrance and exit TPSA maps for every element with nonzero normal Kn2",
         "source_exposure" => "sum(abs(Kn2L) * first_order_orbit^2) over active normal sextupoles",
         "trials" => trials, "seed" => seed, "base_kick_rad" => base_kick, "rho" => rho,
+        "input_csv" => input_path,
+        "control_count" => length(names),
+        "control_names" => names,
+        "state_dimension" => length(closed_orbit),
+        "active_normal_sextupoles" => length(inventory),
         "gtpsa_direction_csv" => gtpsa_direction_path,
         "solve_seconds" => solve_seconds,
         "direction_csv" => direction_path, "summary_csv" => summary_path,
         "element_direction_csv" => element_path,
     )
+    merge!(metadata, ring_metadata(config; ring))
     metadata_path = joinpath(output_dir, "metadata.toml")
     open(metadata_path, "w") do io
         TOML.print(io, metadata; sorted=true)

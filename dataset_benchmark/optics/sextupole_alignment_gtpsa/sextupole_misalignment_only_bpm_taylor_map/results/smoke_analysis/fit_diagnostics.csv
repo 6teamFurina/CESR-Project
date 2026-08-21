@@ -1,0 +1,7 @@
+target,target_index,realization,method,inverse_condition,retained_rows,surface_relative_residual,local_map_jacobian_condition,local_map_fit_rmse_um,taylor_design_rank,taylor_design_condition,taylor_map_relative_residual,taylor_root_rms_scaled
+SEX_09AW,1,1,quadratic_o_derivative_predicted,1.0260704039800408,444,0.0007346111985627462,,,,,,
+SEX_09AW,1,1,chain_rule_o_derivative_predicted,1.0260119147136726,444,0.0012596106020185793,1.0058338998352332,0.0004222291386799913,,,,
+SEX_09AW,1,1,o_taylor_order3_nominal_local,,,,,,10,7.027918691515671,0.0007347308680459892,0.0006183476063004126
+SEX_09AW,1,1,o_taylor_order4_nominal_local,,,,,,20,13.100877953268231,9.722412428208472e-06,2.5822638183865208e-05
+SEX_09AW,1,1,o_taylor_order5_nominal_local,,,,,,34,37.23763883775788,1.9354104767141746e-06,7.737397342437834e-06
+SEX_09AW,1,1,o_taylor_order4_all_state_local,,,,,,20,13.100877954783684,5.855758042145446e-06,2.582284859427286e-05

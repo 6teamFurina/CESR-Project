@@ -5,25 +5,66 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
+import tomllib
 from html import escape
 from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
 CALCULATION_DIR = HERE.parent / "Orbit_Calculation"
-DEFAULT_FIGURES = HERE / "response_rho_sweep_600" / "figures"
+DEFAULT_FIGURES = HERE / "response_rho_sweep_600" / "latest_cesr" / "figures"
 RESULT_CANDIDATES = (
-    HERE / "response_rho_sweep_600" / "combined",
-    CALCULATION_DIR / "results" / "response_rho_sweep_600" / "combined",
-    CALCULATION_DIR / "results" / "response_rho_sweep",
+    # Keep the no-argument renderer on the maintained ring.  The old
+    # unscoped/combined directories contain a 119-control historical export
+    # and must never win default-path discovery.
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "production",
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "merged",
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "gtpsa_smoke",
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "smoke",
 )
 
 
 def default_results() -> Path:
-    return next(
-        (path for path in RESULT_CANDIDATES if (path / "rho_sweep_summary.csv").is_file()),
-        RESULT_CANDIDATES[0],
+    for path in RESULT_CANDIDATES:
+        summary = path / "rho_sweep_summary.csv"
+        if not summary.is_file():
+            continue
+        metadata = read_metadata(summary)
+        if str(metadata.get("ring_id", "")).lower() == "latest_cesr":
+            return path
+    return RESULT_CANDIDATES[0]
+
+
+def read_metadata(summary: Path) -> dict[str, object]:
+    """Read either a single-run TOML sidecar or a merged JSON sidecar.
+
+    Merged chunk output keeps the complete per-chunk metadata for auditability
+    and also promotes the common fields.  Older render code only looked for
+    TOML and consequently dropped dynamic control/detector labels for merged
+    production data.
+    """
+
+    toml_path = summary.with_name("rho_sweep_metadata.toml")
+    if toml_path.is_file():
+        with toml_path.open("rb") as stream:
+            return dict(tomllib.load(stream))
+    json_path = summary.with_name("rho_sweep_metadata.json")
+    if json_path.is_file():
+        raw = json.loads(json_path.read_text(encoding="utf-8"))
+        if not isinstance(raw, dict):
+            raise RuntimeError(f"Merged metadata is not an object: {json_path}")
+        metadata = dict(raw)
+        chunks = raw.get("chunk_metadata")
+        if isinstance(chunks, list) and chunks and isinstance(chunks[0], dict):
+            # The merger promotes common provenance fields.  The fallback
+            # keeps the renderer useful for a hand-created/older merged file.
+            for key, value in chunks[0].items():
+                metadata.setdefault(key, value)
+        return metadata
+    raise RuntimeError(
+        f"No rho_sweep_metadata.toml or rho_sweep_metadata.json beside {summary}"
     )
 
 
@@ -48,8 +89,8 @@ def arguments() -> argparse.Namespace:
     parser.add_argument(
         "--base-kick-urad",
         type=float,
-        default=5.0,
-        help="Active-corrector RMS kick represented by rho=1 (default: 5 microrad).",
+        default=None,
+        help="Active-corrector RMS kick represented by rho=1 (default: read from metadata).",
     )
     parser.add_argument(
         "--layout",
@@ -59,6 +100,10 @@ def arguments() -> argparse.Namespace:
     )
     args = parser.parse_args()
     if args.output is None:
+        # Resolve the actual CLI-selected summary, rather than the directory
+        # discovered for the no-argument default.  Explicit smoke/production
+        # summaries must keep their figures beside that result.
+        selected_results = args.summary.expanduser().resolve().parent
         stem = (
             "scibmad_orbit_response_error_rho2_normalized.svg"
             if args.normalize_rho_squared
@@ -69,7 +114,10 @@ def arguments() -> argparse.Namespace:
             if args.layout == "stacked"
             else stem
         )
-        args.output = DEFAULT_FIGURES / filename
+        # Keep a figure next to the selected latest-ring result.  This makes
+        # an explicit smoke/production summary self-contained and avoids
+        # writing a figure into an unrelated legacy directory.
+        args.output = selected_results / "figures" / filename
     return args
 
 
@@ -170,11 +218,27 @@ def format_log_tick(value: float) -> str:
 
 def main() -> int:
     args = arguments()
-    if not math.isfinite(args.base_kick_urad) or args.base_kick_urad <= 0:
-        raise ValueError("--base-kick-urad must be finite and positive")
     summary = args.summary.expanduser().resolve()
     output = args.output.expanduser().resolve()
     rows = read_summary(summary)
+    metadata = read_metadata(summary)
+    ring_id = str(metadata.get("ring_id", "")).lower()
+    if ring_id != "latest_cesr":
+        raise RuntimeError(
+            f"The rho renderer accepts only ring-scoped latest_cesr metadata; got {ring_id or 'missing ring_id'}"
+        )
+    if str(metadata.get("engine", "SciBmad")) != "SciBmad":
+        raise RuntimeError("The primary rho figure must be generated from SciBmad output")
+    response_method = str(metadata.get("response_method", "")).lower()
+    if not response_method:
+        raise RuntimeError("Rho metadata is missing response_method provenance")
+    if not str(metadata.get("response_pair_id", "")):
+        raise RuntimeError("Rho metadata is missing response_pair_id provenance")
+    base_kick_urad = args.base_kick_urad
+    if base_kick_urad is None:
+        base_kick_urad = 1.0e6 * float(metadata.get("base_kick_rad", 5.0e-6))
+    if not math.isfinite(base_kick_urad) or base_kick_urad <= 0:
+        raise ValueError("--base-kick-urad must be finite and positive")
     trial_counts = sorted({int(row["trials"]) for row in rows})
     trial_note = (
         f"{trial_counts[0]} random directions per input scale"
@@ -198,10 +262,15 @@ def main() -> int:
             rho = float(row["rho"])
             return value / (rho * rho)
         return value
+    control_count = metadata.get("control_count")
+    horizontal_count = metadata.get("horizontal_control_count")
+    vertical_count = metadata.get("vertical_control_count")
+    def count_label(prefix: str, count: object) -> str:
+        return f"{prefix} ({int(count)})" if count is not None else prefix
     scenarios = (
-        ("all", "All correctors (119)", "#0072B2", "", "circle"),
-        ("horizontal", "Horizontal only (58)", "#D55E00", "9 4", "square"),
-        ("vertical", "Vertical only (61)", "#009E73", "2 3", "triangle"),
+        ("all", count_label("All controls", control_count), "#0072B2", "", "circle"),
+        ("horizontal", count_label("Horizontal only", horizontal_count), "#D55E00", "9 4", "square"),
+        ("vertical", count_label("Vertical only", vertical_count), "#009E73", "2 3", "triangle"),
     )
     stacked = args.layout == "stacked"
     if stacked:
@@ -261,11 +330,11 @@ def main() -> int:
         return panel_top + plot_height * (1.0 - fraction)
 
     subtitle = (
-        f"CESR RF-on; {trial_counts[0]} directions/scale; rho = 1: "
-        f"{args.base_kick_urad:g} microrad active-corrector RMS"
+        f"CESR RF-on; {response_method} response; {trial_counts[0]} directions/scale; rho = 1: "
+        f"{base_kick_urad:g} microrad active-control RMS"
         if stacked and len(trial_counts) == 1
-        else f"CESR RF-on closed orbit; {trial_note}; rho = 1 corresponds to "
-        f"{args.base_kick_urad:g} microrad active-corrector RMS"
+        else f"CESR RF-on closed orbit; {response_method} response; {trial_note}; rho = 1 corresponds to "
+        f"{base_kick_urad:g} microrad active-control RMS"
     )
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title description">',

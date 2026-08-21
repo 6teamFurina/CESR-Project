@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Summarize and render thick-element sextupole sourcing results."""
+"""Summarize and render complete-element nonlinear-error sourcing results."""
 
 from __future__ import annotations
 
@@ -17,6 +17,21 @@ def rows(path: Path) -> list[dict[str, str]]:
 
 def f(row: dict[str, str], key: str) -> float:
     return float(row[key])
+
+
+def validate_finite_rows(label: str, data: list[dict[str, str]]) -> None:
+    if not data:
+        raise ValueError(f"{label} is empty")
+    for row_number, row in enumerate(data, 1):
+        for key, value in row.items():
+            try:
+                numeric = float(value)
+            except (TypeError, ValueError):
+                continue
+            if not math.isfinite(numeric):
+                raise ValueError(
+                    f"non-finite {label} value at row {row_number}, column {key}"
+                )
 
 
 def percentile(values: list[float], probability: float) -> float:
@@ -128,7 +143,6 @@ def render_svg(path: Path, elements: list[dict[str, str]]) -> None:
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
-<<<<<<< HEAD
 def render_paired_svg(
     path: Path,
     horizontal: list[dict[str, str]],
@@ -297,62 +311,42 @@ def render_paired_svg(
     path.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
-=======
->>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
 def write_report(
     path: Path,
     elements: list[dict[str, str]],
     families: list[dict[str, str]],
     directions: list[dict[str, str]],
     summary: dict[str, str],
-    comparison: dict[str, float | bool] | None,
     family_percentiles: list[dict[str, float | str]],
     output_plane: str,
 ) -> None:
     ranked = sorted(elements, key=lambda row: abs(f(row, "eta_total")), reverse=True)
-    closures = [f(row, "sextupole_total_relative_closure") for row in directions]
-    projections = [f(row, "sextupole_total_signed_projection") for row in directions]
+    closures = [f(row, "all_element_total_relative_closure") for row in directions]
+    projections = [f(row, "all_element_total_signed_projection") for row in directions]
+    family_partition = [f(row, "family_partition_relative_closure") for row in directions]
     lines = [
-        f"# Detector-{output_plane} thick-element Hessian sourcing result", "",
-        "## Closure", "",
+        f"# Detector-{output_plane} complete-element nonlinear-error attribution", "",
+        "## Summed nonlinear target and vector closure", "",
         f'- Directions: `{summary["trials"]}`; lattice elements: `{summary["elements"]}`; active normal sextupoles: `{summary["active_normal_sextupoles"]}`; detectors: `{summary["detectors"]}`.',
         f'- All-element total relative closure: `{f(summary,"total_all_element_relative_closure"):.6g}`.',
-        f'- Sextupole-only HH / HV / VV relative closure: `{f(summary,"hh_sextupole_relative_closure"):.6g} / {f(summary,"hv_sextupole_relative_closure"):.6g} / {f(summary,"vv_sextupole_relative_closure"):.6g}`.',
-        f'- Sextupole-only total relative closure: `{f(summary,"total_sextupole_relative_closure"):.6g}`.',
-        f'- Sextupole-only total signed projection: `{f(summary,"total_sextupole_signed_projection"):.6g}`.',
-        f'- Direction-level sextupole closure P10 / median / P90: `{percentile(closures,0.1):.6g} / {percentile(closures,0.5):.6g} / {percentile(closures,0.9):.6g}`.',
+        f'- Ensemble total signed projection of all element vectors: `{f(summary,"total_all_element_signed_projection"):.12g}`.',
+        f'- Direction-level total closure P10 / median / P90: `{percentile(closures,0.1):.6g} / {percentile(closures,0.5):.6g} / {percentile(closures,0.9):.6g}`.',
         f'- Direction-level signed projection P10 / median / P90: `{percentile(projections,0.1):.6g} / {percentile(projections,0.5):.6g} / {percentile(projections,0.9):.6g}`.',
-        f'- Family partition maximum absolute reconstruction difference: `{f(summary,"family_partition_check_max"):.6g} m`.',
+        f'- Family-vector partition maximum absolute error: `{f(summary,"family_partition_check_max"):.6g} m`.',
+        f'- Family-vector partition relative closure maximum: `{f(summary,"family_partition_relative_check_max"):.6g}`.',
+        f'- Direction-level family partition relative closure P10 / median / P90: `{percentile(family_partition,0.1):.6g} / {percentile(family_partition,0.5):.6g} / {percentile(family_partition,0.9):.6g}`.',
+        "",
+        "The target is the summed leading second-order nonlinear detector vector. Signed projections are additive; magnitude ratios are not, because family vectors interfere.",
     ]
-    if "hh_target_squared_norm_share" in summary:
-        lines.append(
-            f'- HH / HV / VV target squared-norm shares: '
-            f'`{100*f(summary,"hh_target_squared_norm_share"):.6f}% / '
-            f'{100*f(summary,"hv_target_squared_norm_share"):.6f}% / '
-            f'{100*f(summary,"vv_target_squared_norm_share"):.6f}%`.'
-        )
-    if comparison is not None:
-        lines.extend([
-            "", "## Comparison with the midpoint thin-kick reconstruction", "",
-            f'- Thin / thick total relative closure: `{comparison["thin_closure"]:.6g} / {comparison["thick_closure"]:.6g}`.',
-            f'- Absolute closure improvement: `{comparison["closure_improvement"]:.6g}`.',
-            f'- Pearson correlation of the 76 signed `eta_total` values: `{comparison["eta_correlation"]:.12g}`.',
-            f'- Maximum absolute change in an element `eta_total`: `{comparison["max_eta_difference"]:.6g}`.',
-            f'- Top-15 absolute-projection ordering identical: `{comparison["top15_identical"]}`.',
-            "",
-            "The near-identical ranking and small closure change show that the remaining residual is not primarily caused by treating the sextupoles as thin midpoint sources.",
-        ])
     lines.extend([
         "", "## Complete-element source families", "",
-        "Signed projections add to one; magnitude ratios do not add because family vectors interfere.", "",
-        "| family | elements | eta HH | eta HV | eta VV | eta total | magnitude total |",
-        "|---|---:|---:|---:|---:|---:|---:|",
+        "| family | elements | eta total | magnitude total |",
+        "|---|---:|---:|---:|",
     ])
     for row in sorted(families, key=lambda item: abs(f(item, "eta_total")), reverse=True):
         lines.append(
             f'| `{row["family"]}` | {int(float(row["element_count"]))} | '
-            f'{100*f(row,"eta_hh"):+.3f}% | {100*f(row,"eta_hv"):+.3f}% | '
-            f'{100*f(row,"eta_vv"):+.3f}% | {100*f(row,"eta_total"):+.3f}% | '
+            f'{100*f(row,"eta_total"):+.3f}% | '
             f'{100*f(row,"magnitude_total"):.3f}% |'
         )
     lines.extend([
@@ -368,14 +362,14 @@ def write_report(
         )
     lines.extend([
         "", "## Largest absolute signed projections", "",
-        "| rank | sextupole | s [m] | K2L [m^-2] | eta total | magnitude ratio |",
-        "|---:|---|---:|---:|---:|---:|",
+        "| rank | element | type | s [m] | K2L [m^-2] | eta total | magnitude ratio |",
+        "|---:|---|---|---:|---:|---:|---:|",
     ])
     for rank, row in enumerate(ranked[:15], 1):
-        lines.append(f'| {rank} | `{row["element_name"]}` | {f(row,"s_m"):.3f} | {f(row,"k2l_m2"):.5g} | {100*f(row,"eta_total"):+.4f}% | {100*f(row,"magnitude_total"):.4f}% |')
+        lines.append(f'| {rank} | `{row["element_name"]}` | `{row["element_type"]}` | {f(row,"s_m"):.3f} | {f(row,"k2l_m2"):.5g} | {100*f(row,"eta_total"):+.4f}% | {100*f(row,"magnitude_total"):.4f}% |')
     lines.extend(["", "## Interpretation boundary", "",
-        "The all-element closure validates the chain-rule source decomposition. The sextupole-only residual is retained explicitly and measures sources assigned to other complete lattice elements under this element-boundary convention.", "",
-        f"![Detector-{output_plane} thick-element sextupole sourcing](thick_sextupole_signed_contributions.svg)", ""])
+        "The all-element vector closure validates the chain-rule source decomposition. Family projections describe propagated source vectors under the complete-element boundary convention; they are not hardware-fault probabilities.", "",
+        f"![Detector-{output_plane} complete-element signed nonlinear contributions](element_signed_contributions.svg)", ""])
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
@@ -383,9 +377,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "output_dir", nargs="?", type=Path,
-        default=Path(__file__).resolve().parent / "horizontal_results",
+        default=Path(__file__).resolve().parent / "horizontal_results" / "latest_cesr",
     )
-<<<<<<< HEAD
     parser.add_argument(
         "--paired-with", type=Path,
         help="Result directory for the vertical panel of a paired figure.",
@@ -394,50 +387,33 @@ def main() -> int:
         "--paired-output", type=Path,
         help="Destination SVG for the paired horizontal/vertical figure.",
     )
-=======
->>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
     args = parser.parse_args()
-    elements = rows(args.output_dir / "thick_sextupole_contribution_summary.csv")
+    elements = rows(args.output_dir / "element_contribution_summary.csv")
     families = rows(args.output_dir / "family_contribution_summary.csv")
     directions = rows(args.output_dir / "direction_closure.csv")
     family_directions = rows(args.output_dir / "family_direction_contributions.csv")
     summaries = rows(args.output_dir / "reconstruction_summary.csv")
     if len(summaries) != 1:
         raise RuntimeError("Expected exactly one reconstruction summary row")
+    validate_finite_rows("element contribution", elements)
+    validate_finite_rows("family contribution", families)
+    validate_finite_rows("direction closure", directions)
+    validate_finite_rows("family direction contribution", family_directions)
+    validate_finite_rows("reconstruction summary", summaries)
+    summary = summaries[0]
+    expected_elements = int(float(summary["elements"]))
+    if len(elements) != expected_elements:
+        raise ValueError(
+            f"element summary has {len(elements)} rows; expected {expected_elements}"
+        )
+    family_projection = sum(f(row, "eta_total") for row in families)
+    total_projection = f(summary, "total_all_element_signed_projection")
+    if not math.isclose(family_projection, total_projection, rel_tol=1e-10, abs_tol=1e-12):
+        raise ValueError("family signed projections do not close to the all-element projection")
     metadata_path = args.output_dir / "metadata.toml"
     with metadata_path.open("rb") as stream:
         metadata = tomllib.load(stream)
     output_plane = str(metadata.get("output_plane", "x"))
-    error_analysis = Path(__file__).resolve().parent.parent
-    thin_dir = error_analysis / "sextupole_detector_contributions" / "results"
-    comparison = None
-    if output_plane == "x" and (thin_dir / "sextupole_contribution_summary.csv").is_file() and (
-        thin_dir / "reconstruction_summary.csv"
-    ).is_file():
-        thin_elements = rows(thin_dir / "sextupole_contribution_summary.csv")
-        thin_summary = rows(thin_dir / "reconstruction_summary.csv")[0]
-        thin_eta = {row["element_name"].lower(): f(row, "eta_total") for row in thin_elements}
-        thick_eta = {row["element_name"].lower(): f(row, "eta_total") for row in elements}
-        names = sorted(thin_eta.keys() & thick_eta.keys())
-        x = [thin_eta[name] for name in names]
-        y = [thick_eta[name] for name in names]
-        mean_x, mean_y = sum(x) / len(x), sum(y) / len(y)
-        correlation = sum((a - mean_x) * (b - mean_y) for a, b in zip(x, y)) / math.sqrt(
-            sum((a - mean_x) ** 2 for a in x) * sum((b - mean_y) ** 2 for b in y)
-        )
-        differences = [abs(thin_eta[name] - thick_eta[name]) for name in names]
-        top_thin = sorted(names, key=lambda name: abs(thin_eta[name]), reverse=True)[:15]
-        top_thick = sorted(names, key=lambda name: abs(thick_eta[name]), reverse=True)[:15]
-        thin_closure = f(thin_summary, "total_concatenated_relative_closure")
-        thick_closure = f(summaries[0], "total_sextupole_relative_closure")
-        comparison = {
-            "thin_closure": thin_closure,
-            "thick_closure": thick_closure,
-            "closure_improvement": thin_closure - thick_closure,
-            "eta_correlation": correlation,
-            "max_eta_difference": max(differences),
-            "top15_identical": top_thin == top_thick,
-        }
     norm_by_trial = {int(float(row["trial"])): f(row, "q_total_norm_m") for row in directions}
     family_samples: dict[str, dict[str, list[float]]] = {}
     for row in family_directions:
@@ -466,24 +442,21 @@ def main() -> int:
         ])
         writer.writeheader()
         writer.writerows(sorted(family_percentiles, key=lambda row: str(row["family"])))
-    render_svg(args.output_dir / "thick_sextupole_signed_contributions.svg", elements)
-<<<<<<< HEAD
+    render_svg(args.output_dir / "element_signed_contributions.svg", elements)
     if args.paired_with is not None:
         paired_output = args.paired_output or (
             Path(__file__).resolve().parent
             / "paired_results"
-            / "thick_sextupole_signed_contributions_paired.svg"
+            / "element_signed_contributions_paired.svg"
         )
         render_paired_svg(
             paired_output,
             elements,
-            rows(args.paired_with / "thick_sextupole_contribution_summary.csv"),
+            rows(args.paired_with / "element_contribution_summary.csv"),
         )
-=======
->>>>>>> 78ad0754aaebb36edf4853d38d1b7044d589dfae
     write_report(
         args.output_dir / "RESULTS.md", elements, families, directions,
-        summaries[0], comparison, family_percentiles, output_plane,
+        summary, family_percentiles, output_plane,
     )
     return 0
 

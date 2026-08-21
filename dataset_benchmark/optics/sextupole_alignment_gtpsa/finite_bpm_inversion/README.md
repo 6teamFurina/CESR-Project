@@ -96,3 +96,102 @@ RMS (median `13.026`, P90 `37.964 micrometers`). The BPM-count curve therefore
 currently saturates on bump-coordinate/model mismatch rather than on a lack of
 BPM output channels. The next test is BPM-conditioned estimation of the local
 bump response matrix before optimizing target-specific BPM placement.
+
+## Relative local-orbit predictor comparison
+
+The first BPM-conditioned local-orbit study predicts, for each target
+sextupole and each nonzero bump, the nominal-K2 relative local orbit
+
+`delta z_s(b) = z_s(b) - z_s(zero bump)`.
+
+It reuses the frozen all-76 tensor, which contains unknown target offsets,
+`300 micrometer` RMS offsets on the other 75 sextupoles, and independent
+quadrupole strength errors within `+/-1%`. Exact `target_orbits.npy` values are
+loaded only after every prediction and the BPM-only MAP ridge selection are
+complete.
+
+Three nominal latest-lattice SciBmad baselines were compared:
+
+1. `command_only`: known bump commands propagated to the target;
+2. `two_sided_transport`: command prediction corrected by residual x/y orbit
+   at the nearest upstream and downstream BPMs;
+3. `global_map`: a command-centered regularized effective-corrector fit to all
+   111 BPM residuals, with its ridge ratio chosen by held-out-BPM
+   cross-validation.
+
+Across 76 targets, eight latent machines per target, and four nonzero bumps,
+the relative local-orbit results are:
+
+| method | x RMSE [micrometers] | y RMSE [micrometers] | 2D RMSE [micrometers] | median [micrometers] | P90 [micrometers] | max [micrometers] |
+|---|---:|---:|---:|---:|---:|---:|
+| command only | 10.302 | 20.451 | 22.899 | 13.026 | 37.964 | 91.689 |
+| two-sided transport | 0.237 | 0.185 | 0.301 | 0.049 | 0.250 | 4.385 |
+| global effective-corrector MAP | 7.048 | 13.665 | 15.375 | 8.469 | 24.095 | 96.678 |
+
+The two-sided result improves all 76 targets. Its per-target 2D-RMSE median is
+`0.112 micrometer`; 72 targets are at or below `0.5 micrometer`, 74 at or
+below `1 micrometer`, and all 76 at or below `2 micrometers`. The largest
+two-sided transverse momentum-block condition number is `4.290`, so this
+result is not caused by a numerically singular neighbor pair.
+
+The present global MAP improves over command-only on 68 targets but remains
+inferior to the local transport estimator. This is a limitation of its
+62-corrector discrepancy basis, not evidence that using all BPMs is generally
+worse: a local bump is designed to have small BPM leakage, and an effective-
+corrector fit can reproduce BPM residuals without preserving the correct
+unobserved target displacement. A future global comparison should use a
+distributed-kick/state-smoother basis before introducing a neural network.
+
+Generate the nominal model cache from `CESR Project/` with:
+
+```powershell
+julia --project=. dataset_benchmark/optics/sextupole_alignment_gtpsa/finite_bpm_inversion/generate_local_orbit_models.jl
+```
+
+Run and validate the comparison with:
+
+```powershell
+wsl.exe -d Ubuntu-Bmad -- /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/finite_bpm_inversion/analyze_local_orbit_predictors.py'
+
+wsl.exe -d Ubuntu-Bmad -- /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/finite_bpm_inversion/validate_local_orbit_predictor_results.py'
+```
+
+Maintained outputs are in `results/local_orbit_predictors/`.
+
+## Two-sided-BPM end-to-end center inversion
+
+The two-sided predicted relative coordinates were propagated through the
+maintained all-111-BPM K2-slope center inverse for all 76 targets and eight
+latent machines per target. All earlier machine-error settings were retained,
+and exact target-local orbit remained evaluation-only.
+
+- completed fits: `608`;
+- aggregate x/y/2D center RMSE:
+  `3.826 / 4.444 / 5.864 micrometers`;
+- median/P90/P99/maximum radial error:
+  `3.645 / 9.418 / 17.897 / 25.270 micrometers`;
+- per-target RMSE median/P90/maximum:
+  `4.325 / 7.968 / 17.569 micrometers`.
+
+For the same tensor, command coordinates gave `13.913 micrometers` 2D RMSE
+and exact oracle-local coordinates gave `5.870 micrometers`. Relative to the
+oracle, the two-sided center-error-vector difference had `0.192 micrometer`
+RMS, `0.025 micrometer` median, `0.181 micrometer` P90, and `1.818 micrometer`
+maximum. The correlation between per-case local-orbit prediction RMSE and
+center error was `-0.0143`; the remaining center error is therefore dominated
+by the maintained source-fit/model limitation rather than by the two-sided
+local-orbit estimate.
+
+Run and validate from `CESR Project/` with:
+
+```powershell
+wsl.exe -d Ubuntu-Bmad -- /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/finite_bpm_inversion/analyze_two_sided_center_inversion.py'
+
+wsl.exe -d Ubuntu-Bmad -- /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/optics/sextupole_alignment_gtpsa/finite_bpm_inversion/validate_two_sided_center_inversion.py'
+```
+
+Maintained outputs are in `results/two_sided_center_inversion/`.

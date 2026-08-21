@@ -1,0 +1,12 @@
+{
+  "quadrature_component_increment_rms_um": 21.28257261683838,
+  "linear_vector_sum_increment_rms_um": 21.442989042178553,
+  "actual_compound_increment_rms_um": 21.45776771038499,
+  "nonlinear_interaction_rms_um": 1.5650162269224357,
+  "nonlinear_interaction_p99_um": 4.834243186823986,
+  "nonlinear_interaction_max_um": 7.1735939155565225,
+  "nonlinear_interaction_max_target_index": 9,
+  "nonlinear_interaction_max_realization_index": 1,
+  "interaction_fraction_of_actual_increment": 0.07293471753657811,
+  "nonlinear_interaction_max_target": "SEX_17W"
+}

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import csv
+import argparse
 import math
 import tomllib
 from dataclasses import dataclass
@@ -12,12 +13,21 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 RESULT_DIR = HERE / "results"
-SCIBMAD_PATH = RESULT_DIR / "scibmad" / "scibmad_samples.csv"
-BMAD_PATH = RESULT_DIR / "bmad" / "bmad_samples.csv"
-MANIFEST_PATH = HERE / "shared_input" / "sample_manifest.csv"
-SCIBMAD_TIMING_PATH = RESULT_DIR / "scibmad" / "scibmad_group_timings.csv"
-BMAD_TIMING_PATH = RESULT_DIR / "bmad" / "bmad_group_timings.csv"
-COMPARISON_DIR = RESULT_DIR / "comparison"
+
+
+def ring_paths(ring: str) -> dict[str, Path]:
+    artifact = "latest_cesr" if ring == "latest" else "legacy"
+    bmad_dir = "bmad_reference" if ring == "latest" else "bmad"
+    bmad_name = "bmad_rf_on_samples.csv" if ring == "latest" else "bmad_samples.csv"
+    return {
+        "scibmad": RESULT_DIR / artifact / "scibmad" / "scibmad_samples.csv",
+        "bmad": RESULT_DIR / artifact / bmad_dir / bmad_name,
+        "manifest": HERE / "shared_input" / artifact / "sample_manifest.csv",
+        "scibmad_timing": RESULT_DIR / artifact / "scibmad" / "scibmad_group_timings.csv",
+        "bmad_timing": RESULT_DIR / artifact / bmad_dir / "bmad_group_timings.csv",
+        "scibmad_metadata": RESULT_DIR / artifact / "scibmad" / "scibmad_metadata.toml",
+        "comparison": RESULT_DIR / artifact / "comparison",
+    }
 
 
 @dataclass
@@ -72,10 +82,10 @@ def read_keyed(path: Path) -> tuple[list[str], dict[int, list[str]]]:
         return header, {int(row[0]): row for row in reader}
 
 
-def read_manifest() -> tuple[list[int], dict[int, tuple[str, float]]]:
+def read_manifest(path: Path) -> tuple[list[int], dict[int, tuple[str, float]]]:
     order: list[int] = []
     result: dict[int, tuple[str, float]] = {}
-    with MANIFEST_PATH.open(encoding="utf-8", newline="") as stream:
+    with path.open(encoding="utf-8", newline="") as stream:
         for row in csv.DictReader(stream):
             sample_id = int(row["sample_id"])
             order.append(sample_id)
@@ -96,9 +106,18 @@ def format_number(value: float) -> str:
 
 
 def main() -> int:
-    sample_order, manifest = read_manifest()
-    sci_header, sci_rows = read_keyed(SCIBMAD_PATH)
-    bmad_header, bmad_rows = read_keyed(BMAD_PATH)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--ring",
+        choices=("latest", "legacy"),
+        default="latest",
+        help="Compare ring-scoped latest results, or explicitly compare archived legacy results",
+    )
+    args = parser.parse_args()
+    paths = ring_paths(args.ring)
+    sample_order, manifest = read_manifest(paths["manifest"])
+    sci_header, sci_rows = read_keyed(paths["scibmad"])
+    bmad_header, bmad_rows = read_keyed(paths["bmad"])
     if sci_header != bmad_header:
         raise RuntimeError("SciBmad and Bmad output columns differ")
     if set(sci_rows) != set(sample_order) or set(bmad_rows) != set(sample_order):
@@ -174,9 +193,9 @@ def main() -> int:
                 a - sci_baseline[index], b - bmad_baseline[index]
             )
 
-    sci_timing = read_group_timings(SCIBMAD_TIMING_PATH)
-    bmad_timing = read_group_timings(BMAD_TIMING_PATH)
-    with (RESULT_DIR / "scibmad" / "scibmad_metadata.toml").open("rb") as stream:
+    sci_timing = read_group_timings(paths["scibmad_timing"])
+    bmad_timing = read_group_timings(paths["bmad_timing"])
+    with paths["scibmad_metadata"].open("rb") as stream:
         sci_metadata = tomllib.load(stream)
     output_rows: list[dict[str, str | int]] = []
     for key, group in groups.items():
@@ -227,8 +246,9 @@ def main() -> int:
             }
         )
 
-    COMPARISON_DIR.mkdir(parents=True, exist_ok=True)
-    summary_path = COMPARISON_DIR / "comparison_summary.csv"
+    comparison_dir = paths["comparison"]
+    comparison_dir.mkdir(parents=True, exist_ok=True)
+    summary_path = comparison_dir / "comparison_summary.csv"
     with summary_path.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(output_rows[0]))
         writer.writeheader()
@@ -246,12 +266,12 @@ def main() -> int:
     sci_initial_guess_seconds = float(sci_metadata["shared_initial_guess_setup_seconds"])
     sci_all_runtime_seconds = sci_total_seconds + sci_initial_guess_seconds
 
-    report_path = COMPARISON_DIR / "RESULTS.md"
+    report_path = comparison_dir / "RESULTS.md"
     lines = [
         "# Nonlinear-rho orbit benchmark results",
         "",
         f"The comparison contains {total_samples:,} nonzero shared inputs "
-        f"(600 for every scenario/rho cell), plus one shared baseline.",
+        f"(up to {max(int(row['samples']) for row in output_rows)} for any scenario/rho cell), plus one shared baseline.",
         "",
         "| Metric | SciBmad | Bmad/Tao |",
         "|---|---:|---:|",
@@ -281,8 +301,8 @@ def main() -> int:
     ]
     for row in output_rows:
         lines.append(
-            f"| {row['scenario']} | {row['rho']} | {row['scibmad_converged']}/600 | "
-            f"{row['bmad_converged']}/600 | {row['baseline_subtracted_x_rmse_m']} | "
+            f"| {row['scenario']} | {row['rho']} | {row['scibmad_converged']}/{row['samples']} | "
+            f"{row['bmad_converged']}/{row['samples']} | {row['baseline_subtracted_x_rmse_m']} | "
             f"{100 * float(row['baseline_subtracted_x_relative_rmse']):.4f}% | "
             f"{row['baseline_subtracted_y_rmse_m']} | "
             f"{100 * float(row['baseline_subtracted_y_relative_rmse']):.4f}% | "
@@ -292,10 +312,10 @@ def main() -> int:
         "",
         "## Timing interpretation",
         "",
-        "SciBmad was run in one Julia process, with 600 simultaneous TPSA lanes per cell. "
+        "SciBmad was run in one Julia process, with the configured simultaneous TPSA lanes per cell. "
         "Its physics-only number includes frozen-Jacobian iterations, explicit closure checks, "
         "tracking, and any full-AD fallback. The end-to-end variant additionally includes "
-        "construction of each 600-lane model, but excludes compilation warmup, CSV I/O, and "
+        "construction of each batch model, but excludes compilation warmup, CSV I/O, and "
         "the one-time first-order initial-guess preparation reported in metadata.",
         "",
         "Bmad was run sequentially in one persistent Tao/PyTao process in Ubuntu-Bmad. Its "

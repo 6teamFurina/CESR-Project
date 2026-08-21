@@ -130,7 +130,7 @@ def write_report(
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("output_dir", nargs="?", type=Path, default=Path(__file__).resolve().parent / "results")
+    parser.add_argument("output_dir", nargs="?", type=Path, default=Path(__file__).resolve().parent / "results" / "latest_cesr")
     args = parser.parse_args()
     rows = read_rows(args.output_dir / "sextupole_contribution_summary.csv")
     direction_rows = read_rows(args.output_dir / "direction_closure.csv")

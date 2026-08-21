@@ -1,0 +1,45 @@
+{
+  "format": "cesr-sextupole-local-orbit-validity-envelope-analysis-v1",
+  "engine": "direct SciBmad/GTPSA maps with exact SciBmad validation; exact-scan Taylor fallback when direct GTPSA is unavailable",
+  "target_count": 1,
+  "direct_gtpsa_target_count": 1,
+  "fallback_target_count": 0,
+  "position_tolerance_um": 1.0,
+  "angle_tolerance_urad": 1.0,
+  "maximum_taylor_order": 4,
+  "bump_scale_m": 0.001,
+  "k2_scale_m3": 0.1,
+  "aggregate_limits": {
+    "order4_x_bump_at_abs_k2_0p1_limit_mm": {
+      "minimum": 20.0,
+      "median": 20.0,
+      "p90": 20.0,
+      "maximum": 20.0
+    },
+    "order4_y_bump_at_abs_k2_0p1_limit_mm": {
+      "minimum": 20.0,
+      "median": 20.0,
+      "p90": 20.0,
+      "maximum": 20.0
+    },
+    "order4_k2_at_abs_x_bump_1p5mm_limit_m3": {
+      "minimum": 2.0,
+      "median": 2.0,
+      "p90": 2.0,
+      "maximum": 2.0
+    },
+    "order4_k2_at_abs_y_bump_1p5mm_limit_m3": {
+      "minimum": 2.0,
+      "median": 2.0,
+      "p90": 2.0,
+      "maximum": 2.0
+    },
+    "order4_common_joint_scale_limit": {
+      "minimum": 8.0,
+      "median": 8.0,
+      "p90": 8.0,
+      "maximum": 8.0
+    }
+  },
+  "interpretation_boundary": "Taylor/model-validity limits only. No CESR corrector, sextupole-power-supply, aperture, lifetime, interlock, or operator limit is asserted. A value at the largest scanned amplitude is a lower bound, not a located boundary."
+}

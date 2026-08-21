@@ -6,11 +6,13 @@ include(joinpath(@__DIR__, "run_sextupole_cascade_experiment.jl"))
 
 function parse_corner_args(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "rhos" => "0.4,0.57,0.8,1.13,1.6,2.26",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
-        "output-dir" => joinpath(@__DIR__, "wiggler_corner_results"),
+        "output-dir" => "",
+        "inputs" => "",
         "reltol" => "1e-12",
         "abstol" => "1e-13",
         "maxiter" => "100",
@@ -22,6 +24,15 @@ function parse_corner_args(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    isempty(options["inputs"]) &&
+        (options["inputs"] = default_ring_paths(; ring).inputs)
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(
+            @__DIR__, "wiggler_corner_results", ring_artifact_id(ring),
+        ))
     return options
 end
 
@@ -41,8 +52,10 @@ function write_corner_vectors(path, variants, detectors)
     return path
 end
 
-function main_corner(args=ARGS)
+function main_corner(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_corner_args(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     rhos = parse_sorted_unique(options["rhos"], "--rhos")
     all(>(0), rhos) || error("Every rho must be positive")
     trials = parse(Int, options["trials"])
@@ -55,25 +68,33 @@ function main_corner(args=ARGS)
     output_dir = abspath(options["output-dir"])
     mkpath(output_dir)
 
-    input_reference = read_samples(joinpath(
-        CASCADE_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv",
-    ))
+    input_path = abspath(options["inputs"])
+    input_reference = read_samples(input_path)
     names = input_reference.names
-    samples = generate_vertical_pairs(names, rhos, trials, seed, base_kick)
+    validate_control_names(names, config)
+    base_model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    samples = generate_vertical_pairs(names, rhos, trials, seed, base_kick; config, model=base_model)
     corners = ((0.0, 0.0), (1.0, 0.0), (0.0, 1.0), (1.0, 1.0))
     variants = NamedTuple[]
     detectors = String[]
+    layout = nothing
     maximum_closure = 0.0
     total_fallback = 0
     total_seconds = 0.0
 
     @printf("K2/wiggler corner experiment: 4 variants x %d states\n", size(samples.values, 1))
     for (lambda2, wiggler_scale) in corners
-        factory = ScaledCESRFactory(lambda2, wiggler_scale)
+        factory = ScaledCESRFactory(
+            lambda2,
+            wiggler_scale;
+            base_factory=model_factory,
+            config,
+        )
         @printf("K2=%.0f, wiggler=%.0f: response map...\n", lambda2, wiggler_scale)
         linear = nominal_and_detector_response(factory, names; reltol, abstol, maxiter)
         if isempty(detectors)
             detectors = linear.detectors
+            layout = linear.layout
         else
             detectors == linear.detectors || error("Detector order changed")
         end
@@ -81,8 +102,10 @@ function main_corner(args=ARGS)
             output_dir,
             "closed_response_k2_$(lambda_token(lambda2))_wig_$(lambda_token(wiggler_scale)).csv",
         )
-        timed = @timed simulate_batch(
+        timed = @timed configured_simulate_batch(
+            simulate_batch,
             names, samples.values;
+            config,
             initial_guess_mode="response-linear",
             jacobian_mode="frozen-nominal",
             response_matrix_cache=cache,
@@ -93,7 +116,7 @@ function main_corner(args=ARGS)
         result = timed.value
         all(result.converged) || error("A corner variant has nonconverged states")
         extracted = extract_variant(
-            lambda2, result, linear.detector_response, samples, rhos, base_kick,
+            lambda2, result, linear.detector_response, samples, rhos, base_kick, linear.layout,
         )
         push!(variants, (; lambda2, wiggler_scale, extracted...))
         maximum_closure = max(maximum_closure, maximum(result.closure_norms))
@@ -125,6 +148,11 @@ function main_corner(args=ARGS)
         "trials_per_corner" => trials,
         "seed" => seed,
         "base_kick_rad" => base_kick,
+        "input_csv" => input_path,
+        "control_count" => length(names),
+        "control_names" => names,
+        "detector_count" => length(detectors),
+        "observable_count" => isnothing(layout) ? 0 : length(layout.labels),
         "total_nonlinear_states" => length(corners) * size(samples.values, 1),
         "total_solve_seconds" => total_seconds,
         "total_fallback_count" => total_fallback,
@@ -133,6 +161,7 @@ function main_corner(args=ARGS)
         "pairs_csv" => pair_path,
         "coefficients_csv" => coefficient_path,
     )
+    merge!(metadata, ring_metadata(config; ring))
     metadata_path = joinpath(output_dir, "wiggler_corner_metadata.toml")
     open(metadata_path, "w") do io
         TOML.print(io, metadata; sorted=true)

@@ -245,7 +245,7 @@ def render_top_exposure_svg(path: Path, element_rows: list[dict[str, object]]) -
         '<rect width="100%" height="100%" fill="white"/>',
         SVG_STYLE,
         '<text x="40" y="38" class="title">15 Sextupoles with the Largest Exposure Differences</text>',
-        '<text x="40" y="62" class="sub">Mean unsigned source exposures over 100 equal-corrector-RMS direction pairs</text>',
+        '<text x="40" y="62" class="sub">Mean unsigned source exposures over the configured H/V direction pairs</text>',
     ]
     chart_width = right - left
     for tick in range(6):
@@ -454,7 +454,7 @@ def write_report(
     lines = [
         "# Element-local normal-sextupole exposure result",
         "",
-        f"Result recorded {date.today().isoformat()}. The analysis uses 100 equal-corrector-RMS H/V direction pairs and all {len(elements)} active normal sextupoles.",
+        f"Result recorded {date.today().isoformat()}. The analysis uses the configured equal-control-RMS H/V direction pairs and all {len(elements)} active normal sextupoles.",
         "",
         "## Global closure",
         "",
@@ -562,14 +562,14 @@ def main() -> int:
         "element_csv",
         nargs="?",
         type=Path,
-        default=here / "element_results" / "element_exposure_directions.csv",
+        default=here / "element_results" / "latest_cesr" / "element_exposure_directions.csv",
     )
     parser.add_argument(
         "--direction-csv",
         type=Path,
-        default=here / "element_results" / "direction_attribution.csv",
+        default=here / "element_results" / "latest_cesr" / "direction_attribution.csv",
     )
-    parser.add_argument("--output-dir", type=Path, default=here / "element_results")
+    parser.add_argument("--output-dir", type=Path, default=here / "element_results" / "latest_cesr")
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     elements, pairs, sides, signs, trial_totals = load_rows(args.element_csv)

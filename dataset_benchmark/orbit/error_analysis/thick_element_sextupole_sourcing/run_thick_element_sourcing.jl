@@ -1,6 +1,6 @@
 #!/usr/bin/env julia
 
-"""Attribute detector Q_x or Q_y to exact local Hessian sources of thick elements."""
+"""Attribute a summed nonlinear detector target to complete-element sources."""
 
 const THICK_SOURCE_HERE = @__DIR__
 const QUADRATIC_ATTRIBUTION_HERE = normpath(joinpath(
@@ -15,11 +15,13 @@ using TOML
 
 function parse_thick_source_args(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
         "output-plane" => "x",
-        "output-dir" => joinpath(THICK_SOURCE_HERE, "horizontal_results"),
+        "output-dir" => "",
+        "inputs" => "",
     )
     for argument in args
         startswith(argument, "--") || error("Arguments must have --name=value form: $argument")
@@ -28,17 +30,31 @@ function parse_thick_source_args(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    output_plane = lowercase(options["output-plane"])
+    output_plane in ("x", "y") || error("--output-plane must be x or y")
+    isempty(options["inputs"]) &&
+        (options["inputs"] = default_ring_paths(; ring).inputs)
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(
+            THICK_SOURCE_HERE,
+            output_plane == "x" ? "horizontal_results" : "vertical_results",
+            ring_artifact_id(ring),
+        ))
     return options
 end
 
 """First- and second-order derivatives after substituting the closed orbit."""
 function closed_map_derivatives(map, closed_derivatives)
-    jacobian, hessians = map_derivatives(map)
+    state_dimension = size(closed_derivatives.lifted, 1) - 2
+    jacobian, hessians = map_derivatives(map, state_dimension)
     first = jacobian * closed_derivatives.lifted
-    second = zeros(6, 2, 2)
-    for coordinate in 1:6, left in 1:2, right in left:2
+    second = zeros(state_dimension, 2, 2)
+    for coordinate in 1:state_dimension, left in 1:2, right in left:2
         value = dot(
-            view(jacobian, coordinate, 1:6),
+            view(jacobian, coordinate, 1:state_dimension),
             view(closed_derivatives.second, :, left, right),
         ) + dot(
             view(closed_derivatives.lifted, :, left),
@@ -51,7 +67,7 @@ function closed_map_derivatives(map, closed_derivatives)
 end
 
 function one_turn_direction_map(ring, input_map)
-    bunch = Bunch(v=reshape(copy.(input_map), 1, 6))
+    bunch = Bunch(v=reshape(copy.(input_map), 1, length(input_map)))
     SciBmad.BTBL.check_bl_bunch!(bunch, ring, false)
     for element in ring.line
         track!(bunch, element)
@@ -60,12 +76,22 @@ function one_turn_direction_map(ring, input_map)
 end
 
 """Baseline local and cumulative first-order maps at every element exit."""
-function build_linear_lattice_data(closed_orbit, detectors)
-    descriptor = Descriptor(6, 1)
+function build_linear_lattice_data(
+    closed_orbit,
+    detectors;
+    model_factory=load_ring_model,
+    config=nothing,
+)
+    state_dimension = length(closed_orbit)
+    descriptor = Descriptor(state_dimension, 1)
     variables = vars(descriptor)
-    model = load_cesr_model(zero_value=zero(variables[1]), rf_on=true)
-    input_map = [closed_orbit[index] + copy(variables[index]) for index in 1:6]
-    bunch = Bunch(v=reshape(input_map, 1, 6))
+    # This is a phase-space-only TPSA map.  Keep every unselected lattice
+    # control primitive; promoting the complete control registry with
+    # zero(variables[1]) can evaluate combined-multipole expressions such as
+    # SEX_14W at sqrt(0) in the wrong numerical domain.
+    model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    input_map = [closed_orbit[index] + copy(variables[index]) for index in 1:state_dimension]
+    bunch = Bunch(v=reshape(input_map, 1, state_dimension))
     SciBmad.BTBL.check_bl_bunch!(bunch, model.ring, false)
 
     n_elements = length(model.ring.line)
@@ -79,12 +105,12 @@ function build_linear_lattice_data(closed_orbit, detectors)
     detector_maps = Vector{Matrix{Float64}}(undef, length(detectors))
     found = falses(length(detectors))
 
-    previous = Matrix{Float64}(I, 6, 6)
+    previous = Matrix{Float64}(I, state_dimension, state_dimension)
     s_m = 0.0
     for (element_index, element) in enumerate(model.ring.line)
         track!(bunch, element)
         current = Matrix(GTPSA.jacobian(copy.(vec(bunch.coords.v)); include_params=true))
-        size(current) == (6, 6) || error("Unexpected cumulative map size $(size(current))")
+        size(current) == (state_dimension, state_dimension) || error("Unexpected cumulative map size $(size(current))")
         local_maps[element_index] = current / previous
         cumulative_maps[element_index] = current
         previous = current
@@ -117,7 +143,7 @@ function build_element_source_response(linear, element_indices, output_coordinat
         exit_map = linear.cumulative_maps[element_index]
         downstream_to_end = linear.one_turn_map / exit_map
         closed_start = fixed_point \ downstream_to_end
-        response = zeros(length(linear.detector_maps), 6)
+        response = zeros(length(linear.detector_maps), size(linear.one_turn_map, 1))
         for detector in eachindex(linear.detector_maps)
             detector_map = linear.detector_maps[detector]
             total = detector_map * closed_start
@@ -133,9 +159,10 @@ end
 
 """Reconstruct one detector coordinate from arbitrary local six-dimensional sources."""
 function reconstruct_sources(linear, sources, output_coordinate, mask=nothing)
-    size(sources) == (6, length(linear.local_maps)) || error("Source matrix size mismatch")
+    state_dimension = size(linear.one_turn_map, 1)
+    size(sources) == (state_dimension, length(linear.local_maps)) || error("Source matrix size mismatch")
     isnothing(mask) || length(mask) == length(linear.local_maps) || error("Source mask size mismatch")
-    end_source = zeros(6)
+    end_source = zeros(state_dimension)
     for element_index in eachindex(linear.local_maps)
         end_source = linear.local_maps[element_index] * end_source
         if isnothing(mask) || mask[element_index]
@@ -162,28 +189,35 @@ end
 
 function source_family(element_type, element_index, inventory)
     haskey(inventory, element_index) && return "normal_sextupole"
-    element_type == "Sextupole" && return "other_sextupole"
-    return lowercase(element_type)
+    normalized = lowercase(strip(String(element_type)))
+    normalized == "sextupole" && return "other_sextupole"
+    return normalized
 end
 
 """Exact local Hessian sources and detector targets for one direction pair."""
 function direction_thick_sources(
     names, detectors, closed_orbit, h_direction, v_direction, base_kick, linear,
-    output_coordinate,
+    output_coordinate;
+    model_factory=load_ring_model,
+    config=nothing,
 )
-    setup = direction_parameterized_model(names, h_direction, v_direction, base_kick)
-    input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:6]
+    state_dimension = length(closed_orbit)
+    setup = direction_parameterized_model(
+        names, h_direction, v_direction, base_kick, state_dimension;
+        model_factory, config,
+    )
+    input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:state_dimension]
     one_turn_map = one_turn_direction_map(setup.model.ring, input_map)
-    closed_derivatives = implicit_closed_orbit_derivatives(one_turn_map)
+    closed_derivatives = implicit_closed_orbit_derivatives(one_turn_map, state_dimension)
 
-    bunch = Bunch(v=reshape(copy.(input_map), 1, 6))
+    bunch = Bunch(v=reshape(copy.(input_map), 1, state_dimension))
     SciBmad.BTBL.check_bl_bunch!(bunch, setup.model.ring, false)
     entrance = closed_map_derivatives(input_map, closed_derivatives)
     n_elements = length(setup.model.ring.line)
     sources = Dict(
-        :hh => zeros(6, n_elements),
-        :hv => zeros(6, n_elements),
-        :vv => zeros(6, n_elements),
+        :hh => zeros(state_dimension, n_elements),
+        :hv => zeros(state_dimension, n_elements),
+        :vv => zeros(state_dimension, n_elements),
     )
     targets = Dict(:hh => zeros(length(detectors)),
                    :hv => zeros(length(detectors)),
@@ -231,68 +265,83 @@ function relative_residual(target, reconstruction)
     return denominator == 0 ? NaN : norm(target - reconstruction) / denominator
 end
 
-function main_thick_element_sourcing(args=ARGS)
+function assert_finite_rows(label, rows)
+    isempty(rows) && error("No rows were produced for $label")
+    for (row_index, row) in enumerate(rows), column in propertynames(row)
+        value = getproperty(row, column)
+        value isa Real || continue
+        isfinite(Float64(value)) || error(
+            "Non-finite $label value at row $row_index, column $column: $value",
+        )
+    end
+    return nothing
+end
+
+function main_thick_element_sourcing(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_thick_source_args(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     trials = parse(Int, options["trials"])
     trials >= 1 || error("--trials must be positive")
     seed = parse(Int, options["seed"])
     base_kick = parse(Float64, options["base-kick-rad"])
     base_kick > 0 || error("--base-kick-rad must be positive")
     output_plane = lowercase(options["output-plane"])
-    output_coordinate = output_plane == "x" ? 1 : output_plane == "y" ? 3 :
-        error("--output-plane must be x or y")
     output_dir = abspath(options["output-dir"])
 
-    reference = read_samples(joinpath(
-        MIXED_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv",
-    ))
+    input_path = abspath(options["inputs"])
+    reference = read_samples(input_path)
     names = reference.names
-    float_model = load_cesr_model(zero_value=0.0, rf_on=true)
-    detectors = detector_names(float_model.ring)
+    validate_control_names(names, config)
+    float_model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    detectors = configured_detector_names(float_model, config)
     closed_orbit = nominal_closed_orbit(float_model.ring)
+    transverse = transverse_coordinate_indices(config; state_dimension=length(closed_orbit))
+    output_coordinate = output_plane == "x" ? transverse.x : output_plane == "y" ? transverse.y :
+        error("--output-plane must be x or y")
     inventory = normal_sextupole_inventory(float_model.ring)
-    sextupole_indices = sort!(collect(keys(inventory)))
+    element_indices = collect(eachindex(float_model.ring.line))
     samples = generate_mixed_samples(names, [1.0], trials, seed, base_kick)
 
     println("Building baseline thick-element linear maps...")
-    linear = build_linear_lattice_data(closed_orbit, detectors)
-    println("Building periodic six-dimensional response for $(length(sextupole_indices)) sextupoles...")
-    sextupole_response = build_element_source_response(
-        linear, sextupole_indices, output_coordinate,
+    linear = build_linear_lattice_data(
+        closed_orbit, detectors;
+        model_factory, config,
+    )
+    length(element_indices) == length(linear.local_maps) ||
+        error("Element registry changed while building baseline maps")
+    println("Building periodic $(length(closed_orbit))-dimensional response for $(length(element_indices)) complete elements...")
+    element_response = build_element_source_response(
+        linear, element_indices, output_coordinate,
     )
     element_families = [
         source_family(linear.element_types[index], index, inventory)
         for index in eachindex(linear.element_types)
     ]
     family_names = sort!(unique(element_families))
-    family_masks = Dict(
-        family => BitVector(item == family for item in element_families)
+    family_element_indices = Dict(
+        family => findall(==(family), element_families)
         for family in family_names
     )
     println("Source families: $(join(family_names, ", "))")
 
+    # Hessian blocks are only an internal route to the summed second-order
+    # target.  They are not exported as paper-facing block shares.
     blocks = (:hh, :hv, :vv)
-    n_sources = length(sextupole_indices)
-    denominator = Dict(block => 0.0 for block in blocks)
-    all_residual_sq = Dict(block => 0.0 for block in blocks)
-    sext_residual_sq = Dict(block => 0.0 for block in blocks)
-    numerator = Dict(block => zeros(n_sources) for block in blocks)
-    magnitude_sq = Dict(block => zeros(n_sources) for block in blocks)
+    n_sources = length(element_indices)
     total_denominator = 0.0
     total_all_residual_sq = 0.0
-    total_sext_residual_sq = 0.0
     total_numerator = zeros(n_sources)
     total_magnitude_sq = zeros(n_sources)
-    family_numerator = Dict((family, block) => 0.0 for family in family_names for block in blocks)
-    family_magnitude_sq = Dict((family, block) => 0.0 for family in family_names for block in blocks)
     family_total_numerator = Dict(family => 0.0 for family in family_names)
     family_total_magnitude_sq = Dict(family => 0.0 for family in family_names)
     first_closure_max = 0.0
     second_closure_max = 0.0
     periodic_source_closure_max = 0.0
-    sext_response_check_max = 0.0
+    element_response_check_max = 0.0
     independent_target_check_max = 0.0
     family_partition_check_max = 0.0
+    family_partition_relative_check_max = 0.0
     direction_rows = NamedTuple[]
     element_direction_rows = NamedTuple[]
     family_direction_rows = NamedTuple[]
@@ -304,76 +353,65 @@ function main_thick_element_sourcing(args=ARGS)
                 names, detectors, closed_orbit,
                 view(samples.horizontal_directions, trial, :),
                 view(samples.vertical_directions, trial, :),
-                base_kick, linear, output_coordinate,
+                base_kick, linear, output_coordinate;
+                model_factory, config,
             )
             if trial <= min(trials, 3)
                 independent = direction_gtpsa_q(
                     names, detectors, closed_orbit,
                     view(samples.horizontal_directions, trial, :),
                     view(samples.vertical_directions, trial, :),
-                    base_kick,
+                    base_kick, length(closed_orbit);
+                    model_factory, config,
                 )
-                for block in blocks
-                    independent_target_check_max = max(
-                        independent_target_check_max,
-                        maximum(abs, result.targets[block] - independent.q[Symbol("$(output_plane)_$(block)")]),
-                    )
-                end
+                independent_total = sum(
+                    independent.q[Symbol("$(output_plane)_$(block)")]
+                    for block in blocks
+                )
+                independent_target_check_max = max(
+                    independent_target_check_max,
+                    maximum(abs, sum(result.targets[block] for block in blocks) - independent_total),
+                )
             end
             first_closure_max = max(first_closure_max, result.first_closure_residual)
             second_closure_max = max(second_closure_max, result.second_closure_residual)
             all_reconstruction = Dict{Symbol,Vector{Float64}}()
-            sext_reconstruction = Dict{Symbol,Vector{Float64}}()
+            element_reconstruction = Dict{Symbol,Vector{Float64}}()
             contributions = Dict{Symbol,Matrix{Float64}}()
             family_reconstruction = Dict{Tuple{String,Symbol},Vector{Float64}}()
 
             for block in blocks
-                target = result.targets[block]
                 all_vector, periodic_closure = reconstruct_sources(
                     linear, result.sources[block], output_coordinate,
                 )
                 periodic_source_closure_max = max(periodic_source_closure_max, periodic_closure)
                 contribution = zeros(length(detectors), n_sources)
-                sext_sources = zeros(size(result.sources[block]))
                 for source in 1:n_sources
-                    element_index = sextupole_indices[source]
+                    element_index = element_indices[source]
                     local_source = view(result.sources[block], :, element_index)
-                    contribution[:, source] .= sextupole_response[source] * local_source
-                    sext_sources[:, element_index] .= local_source
-                    numerator[block][source] += dot(view(contribution, :, source), target)
-                    magnitude_sq[block][source] += sum(abs2, view(contribution, :, source))
+                    contribution[:, source] .= element_response[source] * local_source
                 end
-                sext_vector = vec(sum(contribution; dims=2))
-                sext_check, _ = reconstruct_sources(
-                    linear, sext_sources, output_coordinate,
-                )
-                sext_response_check_max = max(
-                    sext_response_check_max, maximum(abs, sext_vector - sext_check),
+                element_vector = vec(sum(contribution; dims=2))
+                element_response_check_max = max(
+                    element_response_check_max, maximum(abs, element_vector - all_vector),
                 )
                 all_reconstruction[block] = all_vector
-                sext_reconstruction[block] = sext_vector
+                element_reconstruction[block] = element_vector
                 contributions[block] = contribution
-                denominator[block] += sum(abs2, target)
-                all_residual_sq[block] += sum(abs2, target - all_vector)
-                sext_residual_sq[block] += sum(abs2, target - sext_vector)
                 for family in family_names
-                    family_vector, _ = reconstruct_sources(
-                        linear, result.sources[block], output_coordinate,
-                        family_masks[family],
-                    )
+                    source_columns = family_element_indices[family]
+                    family_vector = isempty(source_columns) ?
+                        zeros(length(detectors)) :
+                        vec(sum(view(contribution, :, source_columns); dims=2))
                     family_reconstruction[(family, block)] = family_vector
-                    family_numerator[(family, block)] += dot(family_vector, target)
-                    family_magnitude_sq[(family, block)] += sum(abs2, family_vector)
                 end
             end
 
             total_target = sum(result.targets[block] for block in blocks)
             total_all = sum(all_reconstruction[block] for block in blocks)
-            total_sext = sum(sext_reconstruction[block] for block in blocks)
             total_contribution = sum(contributions[block] for block in blocks)
             total_denominator += sum(abs2, total_target)
             total_all_residual_sq += sum(abs2, total_target - total_all)
-            total_sext_residual_sq += sum(abs2, total_target - total_sext)
             family_total_vectors = Dict{String,Vector{Float64}}()
             for family in family_names
                 vector = sum(family_reconstruction[(family, block)] for block in blocks)
@@ -381,7 +419,7 @@ function main_thick_element_sourcing(args=ARGS)
                 family_total_numerator[family] += dot(vector, total_target)
                 family_total_magnitude_sq[family] += sum(abs2, vector)
                 push!(family_direction_rows, (; trial, family,
-                    element_count=count(family_masks[family]),
+                    element_count=length(family_element_indices[family]),
                     contribution_norm_m=norm(vector),
                     projection_numerator=dot(vector, total_target)))
             end
@@ -389,110 +427,119 @@ function main_thick_element_sourcing(args=ARGS)
             family_partition_check_max = max(
                 family_partition_check_max, maximum(abs, family_total - total_all),
             )
+            family_partition_relative_check_max = max(
+                family_partition_relative_check_max,
+                norm(family_total - total_all) / max(norm(total_target), eps(Float64)),
+            )
             for source in 1:n_sources
                 vector = view(total_contribution, :, source)
                 total_numerator[source] += dot(vector, total_target)
                 total_magnitude_sq[source] += sum(abs2, vector)
-                element_index = sextupole_indices[source]
+                element_index = element_indices[source]
                 push!(element_direction_rows, (; trial, element_order=source,
                     element_index,
                     element_name=linear.element_names[element_index],
+                    element_type=linear.element_types[element_index],
                     s_m=linear.element_s_m[element_index],
-                    k2l_m2=Float64(inventory[element_index].k2l),
+                    k2l_m2=haskey(inventory, element_index) ?
+                        Float64(inventory[element_index].k2l) : 0.0,
                     projection_numerator=dot(vector, total_target),
                     contribution_norm_m=norm(vector)))
             end
             push!(direction_rows, (; trial,
                 q_total_norm_m=norm(total_target),
                 all_element_total_relative_closure=relative_residual(total_target, total_all),
-                sextupole_total_relative_closure=relative_residual(total_target, total_sext),
-                sextupole_total_signed_projection=dot(total_sext, total_target) / sum(abs2, total_target),
-                hh_all_relative_closure=relative_residual(result.targets[:hh], all_reconstruction[:hh]),
-                hv_all_relative_closure=relative_residual(result.targets[:hv], all_reconstruction[:hv]),
-                vv_all_relative_closure=relative_residual(result.targets[:vv], all_reconstruction[:vv]),
-                hh_sextupole_relative_closure=relative_residual(result.targets[:hh], sext_reconstruction[:hh]),
-                hv_sextupole_relative_closure=relative_residual(result.targets[:hv], sext_reconstruction[:hv]),
-                vv_sextupole_relative_closure=relative_residual(result.targets[:vv], sext_reconstruction[:vv])))
+                all_element_total_signed_projection=dot(total_all, total_target) /
+                    sum(abs2, total_target),
+                family_partition_absolute_error_m=norm(family_total - total_all, Inf),
+                family_partition_relative_closure=norm(family_total - total_all) /
+                    max(norm(total_target), eps(Float64))))
         end
     end
 
     element_rows = NamedTuple[]
     for source in 1:n_sources
-        element_index = sextupole_indices[source]
+        element_index = element_indices[source]
         push!(element_rows, (; element_order=source, element_index,
             element_name=linear.element_names[element_index],
+            element_type=linear.element_types[element_index],
             s_m=linear.element_s_m[element_index],
-            k2l_m2=Float64(inventory[element_index].k2l),
-            eta_hh=numerator[:hh][source] / denominator[:hh],
-            eta_hv=numerator[:hv][source] / denominator[:hv],
-            eta_vv=numerator[:vv][source] / denominator[:vv],
+            k2l_m2=haskey(inventory, element_index) ?
+                Float64(inventory[element_index].k2l) : 0.0,
             eta_total=total_numerator[source] / total_denominator,
-            magnitude_hh=sqrt(magnitude_sq[:hh][source] / denominator[:hh]),
-            magnitude_hv=sqrt(magnitude_sq[:hv][source] / denominator[:hv]),
-            magnitude_vv=sqrt(magnitude_sq[:vv][source] / denominator[:vv]),
             magnitude_total=sqrt(total_magnitude_sq[source] / total_denominator)))
     end
 
     family_rows = NamedTuple[]
     for family in family_names
-        push!(family_rows, (; family, element_count=count(family_masks[family]),
-            eta_hh=family_numerator[(family, :hh)] / denominator[:hh],
-            eta_hv=family_numerator[(family, :hv)] / denominator[:hv],
-            eta_vv=family_numerator[(family, :vv)] / denominator[:vv],
+        push!(family_rows, (; family, element_count=length(family_element_indices[family]),
             eta_total=family_total_numerator[family] / total_denominator,
-            magnitude_hh=sqrt(family_magnitude_sq[(family, :hh)] / denominator[:hh]),
-            magnitude_hv=sqrt(family_magnitude_sq[(family, :hv)] / denominator[:hv]),
-            magnitude_vv=sqrt(family_magnitude_sq[(family, :vv)] / denominator[:vv]),
             magnitude_total=sqrt(family_total_magnitude_sq[family] / total_denominator)))
     end
 
-    block_squared_norm_sum = sum(values(denominator))
     summary = (; trials, output_plane, output_coordinate,
         elements=length(linear.local_maps),
-        active_normal_sextupoles=n_sources, detectors=length(detectors),
+        active_normal_sextupoles=length(inventory), detectors=length(detectors),
         first_fixed_point_closure_max=first_closure_max,
         second_fixed_point_closure_max=second_closure_max,
         periodic_source_closure_max,
-        sextupole_response_check_max=sext_response_check_max,
+        element_response_check_max,
         independent_target_check_max,
         family_partition_check_max,
-        hh_target_squared_norm_share=denominator[:hh] / block_squared_norm_sum,
-        hv_target_squared_norm_share=denominator[:hv] / block_squared_norm_sum,
-        vv_target_squared_norm_share=denominator[:vv] / block_squared_norm_sum,
-        hh_all_element_relative_closure=sqrt(all_residual_sq[:hh] / denominator[:hh]),
-        hv_all_element_relative_closure=sqrt(all_residual_sq[:hv] / denominator[:hv]),
-        vv_all_element_relative_closure=sqrt(all_residual_sq[:vv] / denominator[:vv]),
+        family_partition_relative_check_max,
         total_all_element_relative_closure=sqrt(total_all_residual_sq / total_denominator),
-        hh_sextupole_relative_closure=sqrt(sext_residual_sq[:hh] / denominator[:hh]),
-        hv_sextupole_relative_closure=sqrt(sext_residual_sq[:hv] / denominator[:hv]),
-        vv_sextupole_relative_closure=sqrt(sext_residual_sq[:vv] / denominator[:vv]),
-        total_sextupole_relative_closure=sqrt(total_sext_residual_sq / total_denominator),
-        hh_sextupole_signed_projection=sum(numerator[:hh]) / denominator[:hh],
-        hv_sextupole_signed_projection=sum(numerator[:hv]) / denominator[:hv],
-        vv_sextupole_signed_projection=sum(numerator[:vv]) / denominator[:vv],
-        total_sextupole_signed_projection=sum(total_numerator) / total_denominator,
+        total_all_element_signed_projection=sum(total_numerator) / total_denominator,
+        total_target_rms_m=sqrt(total_denominator / trials),
         solve_seconds)
 
+    length(element_rows) == length(linear.local_maps) ||
+        error("Element summary does not cover every complete lattice element")
+    length(direction_rows) == trials || error("Direction summary count mismatch")
+    length(element_direction_rows) == n_sources * trials ||
+        error("Element direction summary does not cover every element/direction pair")
+    length(family_direction_rows) == length(family_names) * trials ||
+        error("Family direction summary count mismatch")
+    assert_finite_rows("element contribution", element_rows)
+    assert_finite_rows("family contribution", family_rows)
+    assert_finite_rows("direction closure", direction_rows)
+    assert_finite_rows("element direction contribution", element_direction_rows)
+    assert_finite_rows("family direction contribution", family_direction_rows)
+    assert_finite_rows("reconstruction summary", [summary])
+
     mkpath(output_dir)
-    element_path = write_namedtuple_csv(joinpath(output_dir, "thick_sextupole_contribution_summary.csv"), element_rows)
+    element_path = write_namedtuple_csv(joinpath(output_dir, "element_contribution_summary.csv"), element_rows)
     family_path = write_namedtuple_csv(joinpath(output_dir, "family_contribution_summary.csv"), family_rows)
     direction_path = write_namedtuple_csv(joinpath(output_dir, "direction_closure.csv"), direction_rows)
-    element_direction_path = write_namedtuple_csv(joinpath(output_dir, "thick_sextupole_direction_contributions.csv"), element_direction_rows)
+    element_direction_path = write_namedtuple_csv(joinpath(output_dir, "element_direction_contributions.csv"), element_direction_rows)
     family_direction_path = write_namedtuple_csv(joinpath(output_dir, "family_direction_contributions.csv"), family_direction_rows)
     summary_path = write_namedtuple_csv(joinpath(output_dir, "reconstruction_summary.csv"), [summary])
     metadata_path = joinpath(output_dir, "metadata.toml")
     open(metadata_path, "w") do io
-        TOML.print(io, Dict(
-            "format" => "cesr-thick-element-hessian-sourcing-v2",
+        metadata = merge(ring_metadata(config; ring), Dict(
+            "format" => "cesr-thick-element-hessian-sourcing-v3",
             "date" => string(Dates.today()), "trials" => trials, "seed" => seed,
             "base_kick_rad" => base_kick,
             "output_plane" => output_plane,
             "output_coordinate" => output_coordinate,
-            "target" => "Q_$(output_plane) = Q_hh,$(output_plane) + Q_hv,$(output_plane) + Q_vv,$(output_plane) at 99 detectors",
+            "target" => "summed second-order nonlinear detector vector Q_$(output_plane) at $(length(detectors)) detectors",
+            "target_definition" => "Q = Q_hh + Q_hv + Q_vv; Hessian blocks are internal computation only",
+            "nonlinear_order" => "second_order",
             "local_source" => "exact complete-element Hessian source g_j = S_exit - A_j*S_entrance",
-            "source_coordinates" => "six-dimensional canonical state at element exit",
+            "source_coordinates" => "$(length(closed_orbit))-dimensional canonical state at element exit",
+            "source_scope" => "every complete element in the selected ring line",
+            "source_families" => family_names,
+            "element_count" => length(element_indices),
+            "element_types" => sort!(unique(linear.element_types)),
+            "detector_count" => length(detectors),
+            "detector_names" => detectors,
+            "input_csv" => input_path,
+            "control_count" => length(names),
+            "control_names" => names,
+            "state_dimension" => length(closed_orbit),
             "projection" => "ensemble dot(C_j,Q)/ensemble norm(Q)^2",
-        ); sorted=true)
+            "closure" => "vector norm(target - sum(all element source vectors))/vector norm(target)",
+        ))
+        TOML.print(io, metadata; sorted=true)
     end
     @printf("Solve time: %.3f s\n", solve_seconds)
     println("Elements:           $element_path")

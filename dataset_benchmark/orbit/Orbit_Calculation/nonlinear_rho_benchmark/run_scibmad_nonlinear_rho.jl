@@ -6,10 +6,42 @@ include(joinpath(CALCULATION_DIR_NL, "benchmark_scibmad.jl"))
 
 using Dates
 
-const INPUT_PATH_NL = joinpath(HERE_NL, "shared_input", "nonlinear_rho_correctors.csv")
-const MANIFEST_PATH_NL = joinpath(HERE_NL, "shared_input", "sample_manifest.csv")
-const RESULT_DIR_NL = joinpath(HERE_NL, "results", "scibmad")
-const RESPONSE_PATH_NL = joinpath(ORBIT_ROOT, "reference", "closed_orbit_response_6x119.csv")
+function selected_nl_ring()
+    ring = :latest
+    for argument in ARGS
+        startswith(argument, "--ring=") || continue
+        ring = Symbol(lowercase(split(argument, "="; limit=2)[2]))
+    end
+    return canonical_ring_id(ring)
+end
+
+const ARTIFACT_RING_NL = selected_nl_ring()
+const RING_NL = ARTIFACT_RING_NL == :latest_cesr ? :latest : :legacy
+const INPUT_PATH_NL = joinpath(
+    HERE_NL,
+    "shared_input",
+    String(ARTIFACT_RING_NL),
+    "nonlinear_rho_correctors.csv",
+)
+const MANIFEST_PATH_NL = joinpath(
+    HERE_NL,
+    "shared_input",
+    String(ARTIFACT_RING_NL),
+    "sample_manifest.csv",
+)
+const RESULT_DIR_NL = joinpath(HERE_NL, "results", String(ARTIFACT_RING_NL), "scibmad")
+const RESPONSE_DIR_NL = joinpath(
+    ORBIT_ROOT,
+    "reference",
+    String(ARTIFACT_RING_NL),
+    ARTIFACT_RING_NL == :latest_cesr ? "gtpsa" : "",
+)
+const RESPONSE_PATH_NL = joinpath(
+    RESPONSE_DIR_NL,
+    "closed_orbit_response.csv",
+)
+const RESPONSE_METHOD_NL = ARTIFACT_RING_NL == :latest_cesr ? "gtpsa" : "central-difference"
+const MODEL_FACTORY_NL = (; kwargs...) -> load_ring_model(; ring=RING_NL, kwargs...)
 const RELTOL_NL = 1.0e-8
 const ABSTOL_NL = 1.0e-10
 const MAXITER_NL = 100
@@ -65,6 +97,7 @@ function main_nl()
     mkpath(RESULT_DIR_NL)
 
     warmup_sample_count = 600
+    warmup_sample_count = min(warmup_sample_count, max(1, size(samples.values, 1) - 1))
     warmup_seconds = @elapsed simulate_batch(
         samples.names,
         samples.values[2:(1 + warmup_sample_count), :];
@@ -72,9 +105,11 @@ function main_nl()
         jacobian_mode="frozen-nominal",
         response_matrix_cache=RESPONSE_PATH_NL,
         recompute_response=false,
+        response_method=RESPONSE_METHOD_NL,
         reltol=RELTOL_NL,
         abstol=ABSTOL_NL,
         maxiter=MAXITER_NL,
+        model_factory=MODEL_FACTORY_NL,
     )
 
     guess_timed = @timed prepare_initial_guess(
@@ -83,17 +118,14 @@ function main_nl()
         "response-linear";
         response_matrix_cache=RESPONSE_PATH_NL,
         recompute_response=false,
+        response_method=RESPONSE_METHOD_NL,
         reltol=RELTOL_NL,
         abstol=ABSTOL_NL,
         maxiter=MAXITER_NL,
+        model_factory=MODEL_FACTORY_NL,
     )
     guess = guess_timed.value
     n_samples = length(samples.sample_ids)
-    observables = Matrix{Float64}(undef, n_samples, 198)
-    converged = falses(n_samples)
-    iterations = fill(MAXITER_NL, n_samples)
-    closure_norms = fill(Inf, n_samples)
-    detectors = String[]
     group_rows = NamedTuple[]
 
     baseline_result = simulate_batch(
@@ -103,15 +135,25 @@ function main_nl()
         jacobian_mode="frozen-nominal",
         response_matrix_cache=RESPONSE_PATH_NL,
         recompute_response=false,
+        response_method=RESPONSE_METHOD_NL,
         reltol=RELTOL_NL,
         abstol=ABSTOL_NL,
         maxiter=MAXITER_NL,
+        model_factory=MODEL_FACTORY_NL,
     )
+    observables = Matrix{Float64}(
+        undef,
+        n_samples,
+        size(baseline_result.observables, 2),
+    )
+    converged = falses(n_samples)
+    iterations = fill(MAXITER_NL, n_samples)
+    closure_norms = fill(Inf, n_samples)
+    detectors = copy(baseline_result.detectors)
     observables[1, :] .= baseline_result.observables[1, :]
     converged[1] = baseline_result.converged[1]
     iterations[1] = baseline_result.iterations[1]
     closure_norms[1] = baseline_result.closure_norms[1]
-    append!(detectors, baseline_result.detectors)
 
     for (scenario, rho) in ordered_groups(manifest)
         selected = findall(
@@ -120,7 +162,11 @@ function main_nl()
         )
         run_indices = selected
         values = Matrix(samples.values[run_indices, :])
-        model_timed = @timed prepare_batch_model(samples.names, values)
+        model_timed = @timed prepare_batch_model(
+            samples.names,
+            values;
+            model_factory=MODEL_FACTORY_NL,
+        )
         exact_timed = @timed begin
             current = frozen_solve_and_track(
                 model_timed.value,
@@ -138,6 +184,7 @@ function main_nl()
                 reltol=RELTOL_NL,
                 abstol=ABSTOL_NL,
                 maxiter=MAXITER_NL,
+                model_factory=MODEL_FACTORY_NL,
             )
         end
         result = exact_timed.value
@@ -192,10 +239,17 @@ function main_nl()
         end
     end
     metadata = Dict(
-        "format" => "cesr-nonlinear-rho-scibmad-v1",
+        "format" => "ring-nonlinear-rho-scibmad-v2",
+        "ring" => String(ARTIFACT_RING_NL),
         "date" => string(Dates.today()),
         "engine" => "SciBmad",
         "input_csv" => INPUT_PATH_NL,
+        "lattice_path" => String(
+            ARTIFACT_RING_NL == :latest_cesr ?
+            ORBIT_ADAPTER_LATEST_LATTICE : ORBIT_ADAPTER_LEGACY_MODEL,
+        ),
+        "response_method" => RESPONSE_METHOD_NL,
+        "response_matrix_cache" => RESPONSE_PATH_NL,
         "sample_count" => n_samples,
         "converged_count" => count(converged),
         "failed_count" => count(.!converged),
@@ -203,7 +257,7 @@ function main_nl()
         "abstol" => ABSTOL_NL,
         "maxiter" => MAXITER_NL,
         "initial_guess" => "nominal first-order closed-orbit response",
-        "jacobian" => "frozen nominal 6x6 Jacobian with shared LU per group",
+        "jacobian" => "frozen nominal phase-space Jacobian with shared LU per group",
         "full_ad_fallback" => true,
         "warmup_seconds" => warmup_seconds,
         "warmup_sample_count" => warmup_sample_count,

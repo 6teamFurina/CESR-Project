@@ -23,6 +23,7 @@ def parser() -> argparse.ArgumentParser:
         "--gtpsa-coefficients",
         type=Path,
         default=ALIGNMENT_DIR
+        / "archived_methods"
         / "response_map"
         / "results"
         / "full"

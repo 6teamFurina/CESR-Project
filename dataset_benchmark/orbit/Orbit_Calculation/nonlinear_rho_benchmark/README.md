@@ -1,58 +1,38 @@
-# Nonlinear-rho SciBmad/Bmad orbit benchmark
+# Nonlinear-rho benchmark: latest CESR ring
 
-This benchmark compares the maintained SciBmad and Bmad/Tao closed-orbit
-paths on identical corrector inputs in the moderate nonlinear regime.
+Status: `not_run` for the 9,001-state production execution; the latest-ring
+input manifest and response-cache path are prepared and syntax-checked.
 
-The committed configuration uses the same direction-generation convention as
-the response-rho sweep:
+This study will compare exact nonlinear closed-orbit calculations with the
+local first-order response model over reusable random directions and selected
+input radii. The latest SciBmad lattice is
+[`Latest_Lattice/latest_cesr_scibmad_repaired.jl`](../../../../Latest_Lattice/latest_cesr_scibmad_repaired.jl).
 
-- scenarios: `all`, `horizontal`, and `vertical`;
-- radii: `1.13`, `3.2`, `4.53`, `6.4`, and `9.05`;
-- 600 fixed Gaussian unit-RMS directions per scenario and radius;
-- base kick: `5e-6 rad`;
-- seed: `20260803`, incremented by scenario as in the original sweep;
-- one shared zero-control baseline.
+For `--ring=latest`, the SciBmad runner reads the 103-control latest input at
+[`shared_input/latest_cesr/nonlinear_rho_correctors.csv`](shared_input/latest_cesr/nonlinear_rho_correctors.csv),
+its paired manifest, and the GTPSA closed-orbit response under
+`reference/latest_cesr/gtpsa/`. The response method is passed explicitly as
+GTPSA; the root-level central-difference cache is not used by the latest run.
 
-This gives 9,001 states. SciBmad uses the first-order response initial guess,
-one frozen nominal 6x6 Jacobian/LU factorization, exact nonlinear one-turn
-residuals, closure checks, and full-AD fallback. Bmad uses one persistent Tao
-process and its standard RF-on closed-orbit calculation, warm-starting from
-the previous successful orbit as Tao normally does.
+Use ring-scoped paths for the new run:
 
-From `CESR Project` on Windows:
-
-```powershell
-julia --project=. dataset_benchmark/orbit/Orbit_Calculation/nonlinear_rho_benchmark/generate_inputs.jl
-julia --threads=auto --project=. dataset_benchmark/orbit/Orbit_Calculation/nonlinear_rho_benchmark/run_scibmad_nonlinear_rho.jl
+```text
+shared_input/latest_cesr/
+results/latest_cesr/scibmad/
+results/latest_cesr/bmad/       # optional labeled reference
+results/latest_cesr/comparison/
 ```
 
-Run Bmad in the local `Ubuntu-Bmad` WSL distribution and then compare:
+The direction generator and solver must obtain control names, horizontal or
+vertical groups, detector labels, and output planes from the runtime ring
+configuration. The README for a completed run must state the number of
+directions, radii, samples, RF mode, base kick and units, seed, convergence
+counts, closure threshold, fallback count, and SciBmad/Bmad provenance.
 
-```powershell
-wsl.exe -d Ubuntu-Bmad -- /home/joeyfurina/miniforge3/envs/bmad/bin/python <mounted-path>/run_bmad_nonlinear_rho.py
-python dataset_benchmark/orbit/Orbit_Calculation/nonlinear_rho_benchmark/compare_nonlinear_rho.py
-```
+No latest-ring numerical result is present yet. The existing
+[`results/comparison/RESULTS.md`](results/comparison/RESULTS.md) and raw files
+are historical outputs from the older CESR export; they are retained without
+renaming and must remain labeled legacy in downstream comparisons.
 
-Generated inputs and results are kept under `shared_input/` and `results/`.
-
-## Recorded result (2026-08-06)
-
-Both engines converged for all 9,001 states. Across the 9,000 nonzero states,
-SciBmad required 28.204 s of steady-state physics time versus 102.725 s for
-Bmad/Tao, a 3.642x speedup. Including all SciBmad runtime preparation (the
-shared first-order initial guesses and all 15 batch-model constructions) gives
-30.907 s and a 3.324x speedup. Compilation warmup and file I/O are excluded
-from both steady-state comparisons.
-
-The frozen-Jacobian solver used at most five iterations, every explicit
-one-turn closure norm was below approximately `1e-10`, and no sample required
-the full-AD fallback. After subtracting each engine's zero-input orbit, the
-main-plane response RMSE is approximately 0.05% in x for all/horizontal inputs
-and 0.24--0.28% in y for all/vertical inputs. The zero-input x orbits themselves
-differ by 3.105 micrometers RMS, so absolute-orbit and baseline-subtracted
-comparisons are both retained.
-
-See [`results/comparison/RESULTS.md`](results/comparison/RESULTS.md) for the
-per-cell table and timing interpretation, and
-[`results/comparison/comparison_summary.csv`](results/comparison/comparison_summary.csv)
-for the full machine-readable metrics.
+The former fixed-dimension workflow is preserved in
+[`README_archived.md`](README_archived.md).

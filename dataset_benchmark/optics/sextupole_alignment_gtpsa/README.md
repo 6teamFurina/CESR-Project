@@ -1,38 +1,53 @@
 # CESR sextupole magnetic-center studies
 
-This directory separates two related but scientifically distinct experiments.
+New or extended calculations in this study use the repaired latest SciBmad
+lattice at `Latest_Lattice/latest_cesr_scibmad_repaired.jl`.
 
-## `response_map/`
+## Maintained studies
 
-The completed per-sextupole GTPSA response-map study. It contains the three-
-parameter `Kn2`, `x_offset`, and `y_offset` calculation for all 76 active
-normal sextupoles, the independent finite-difference check, and the local
-`2 x 1191` thin-SVD analysis.
+- `direct_observable_nuisance_ablation/` contains the scan-conditioned
+  bump-by-`K2` magnetic-center estimator and its nuisance/protocol ablations.
+- `finite_bpm_inversion/` studies the replacement of exact target-local orbit
+  coordinates by finite BPM information.
+- `real_machine_nuisance_ablation/` adds BPM/corrector gain, K2 calibration,
+  quadrupole strength/roll/misalignment, scan-time drift, and BPM noise one at
+  a time to the finite-BPM center inverse.
+- `interleaved_measurement_protocol/` compares blocked and interleaved
+  `0,+,0,-,0` acquisition, repeated per-point averaging, correlated random-walk
+  drift, and BPM white noise while all sextupole offsets remain hidden and
+  quadrupole misalignment is disabled.
+- `quadrupole_affinity/` studies quadrupole selection and nuisance leverage on
+  the latest repaired lattice.
+- `sextupole_misalignment_only_bpm_taylor_map/` is the isolated 76-sextupole
+  misalignment benchmark comparing the maintained finite-difference source
+  inverse, direct observable-derivative inverses, scan-fitted high-order
+  observation Taylor maps, and a separately qualified direct GTPSA subset.
+- `sextupole_excitation_validity_envelope/` expands the target-sextupole
+  entrance/exit orbit in the two model-based corrector bump knobs and target
+  `delta K2`, then uses 49,476 exact latest-lattice SciBmad states to report a
+  signed, per-target order-two/order-four last-pass and first-fail envelope.
+  The limits quantify Taylor/model validity and deliberately do not claim
+  corrector, power-supply, aperture, lifetime, or operator safety limits.
+- `gtpsa_derivative_stochastic_inverse/` fixes the two local `dO/dK2` source
+  templates with latest-lattice SciBmad/GTPSA transport, then treats BPM white
+  noise and random-walk drift through parity contrasts and analytic
+  covariance.  Its all-76 noise-plus-drift-only benchmark passes the
+  50-micrometer RMSE/P99 acceptance gate without invoking the failing direct
+  high-order map.  A newer paired compound test that also enables BPM,
+  corrector, K2, quadrupole-strength, and quadrupole-roll errors (but excludes
+  quadrupole misalignment) finds no nonlinear error explosion, yet fails the
+  full tail gate because quadrupole-strength sensitivity raises P99 and two
+  target-level RMSEs above 50 micrometers.
 
-## `targeted_bump_k2_inversion/`
+## `archived_methods/`
 
-The follow-up protocol experiment. For a target sextupole with known simulated
-truth, it combines known two-plane local-orbit bumps with a symmetric target-
-`K2` scan, reconstructs the target magnetic center, and compares the inferred
-`x/y` offsets directly with truth. Its purpose is to decide the final scan
-protocol, observable set, input representation, and whether a locally
-conditioned inverse remains unbiased when the other sextupoles are also
-misaligned.
+This folder preserves the two historical studies built around the older
+`cesr_model.jl` lattice and nominal/conditioned response dictionaries:
 
-The completed response-map coefficients are inputs to the new inverse
-experiment; they are not themselves treated as independent training samples.
+- `response_map/`: the 76-sextupole `Kn2`/offset GTPSA response map and local
+  SVD baseline;
+- `targeted_bump_k2_inversion/`: the P0--P3 and P1/P2 source-reconstruction
+  experiments that consume the historical response map.
 
-## `quadrupole_affinity/`
-
-The nuisance-marginalized quadrupole-selection study. Its maintained version
-uses the repaired CHESS-U 6 GeV SciBmad lattice, keeps 15 of 113 independent
-active quadrupole knobs per target sextupole using exact scalar local
-beta/phase leverage, and calculates the target mixed `Kn2-offset` response
-under nominal and `Kn1 +/-` optics with batched GTPSA. The response dictionary
-uses fixed and four-probe launch trajectories at 111 BPMs (1110 direct BPM
-readings), rather than differentiated coupled-Twiss gauge quantities. The
-information and precision heatmaps include 150 response columns from the
-offsets of the other 75 sextupoles as explicit nuisance directions. Heatmap
-columns are target sextupoles and rows are quadrupoles. This is a nominal-launch
-pre-screen for the later bump-grid protocol, not a final machine-precision
-result.
+They remain useful for provenance and method comparison, but are not the
+default starting point for new sextupole-alignment calculations.

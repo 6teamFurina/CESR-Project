@@ -17,13 +17,16 @@ using TOML
 
 const HERE = @__DIR__
 const PROJECT_DIR = normpath(joinpath(HERE, "..", "..", "..", ".."))
-include(joinpath(PROJECT_DIR, "cesr_model.jl"))
+const ERROR_ANALYSIS_DIR = normpath(joinpath(HERE, ".."))
+include(joinpath(ERROR_ANALYSIS_DIR, "ring_analysis_config.jl"))
+using .RingErrorAnalysisConfig
 
 constant_term(value) = Float64(GTPSA.scalar(value))
 
 function parse_options(args)
     options = Dict{String,String}(
-        "output-dir" => joinpath(HERE, "results"),
+        "ring" => "latest",
+        "output-dir" => "",
     )
     for argument in args
         startswith(argument, "--") || error("Arguments must have --name=value form: $argument")
@@ -32,6 +35,11 @@ function parse_options(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(HERE, "results", ring_artifact_id(ring)))
     return options
 end
 
@@ -61,16 +69,21 @@ function write_rows(path, rows)
     return path
 end
 
-function main(args=ARGS)
+function main(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_options(args)
+    ring_id = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring=ring_id)
     output_dir = abspath(options["output-dir"])
 
-    model = load_cesr_model(zero_value=0.0, rf_on=true)
-    ring = model.ring
-    closed = find_closed_orbit(ring)
-    descriptor = Descriptor(6, 1)
+    model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    lattice = model.ring
+    detector_registry = configured_detector_names(model, config)
+    detectors = Set(detector_registry)
+    closed = find_closed_orbit(lattice)
+    state_dimension = ndims(closed.v0) == 1 ? length(closed.v0) : size(closed.v0, 2)
+    descriptor = Descriptor(state_dimension, 1)
     optics = twiss(
-        ring;
+        lattice;
         GTPSA_descriptor=descriptor,
         at=:,
         v0=closed.v0,
@@ -90,10 +103,10 @@ function main(args=ARGS)
         get!(entrance_row, index, row)
     end
 
-    element_start_s = zeros(length(ring.line))
-    element_exit_s = zeros(length(ring.line))
+    element_start_s = zeros(length(lattice.line))
+    element_exit_s = zeros(length(lattice.line))
     s_m = 0.0
-    for (index, element) in enumerate(ring.line)
+    for (index, element) in enumerate(lattice.line)
         element_start_s[index] = s_m
         s_m += constant_term(Beamlines.deval(element.L))
         element_exit_s[index] = s_m
@@ -102,12 +115,12 @@ function main(args=ARGS)
     rows = NamedTuple[]
     sextupole_count = 0
     detector_count = 0
-    for (index, element) in enumerate(ring.line)
+    for (index, element) in enumerate(lattice.line)
         name = String(element.name)
         upper_name = uppercase(name)
         k2l = integrated_normal_sextupole_strength(element)
         if !iszero(k2l)
-            index < length(ring.line) || error("Active sextupole at final lattice index")
+            index < length(lattice.line) || error("Active sextupole at final lattice index")
             reference_index = index + 1
             haskey(entrance_row, reference_index) || error(
                 "No Twiss entrance row for sextupole-exit reference index $reference_index",
@@ -129,7 +142,7 @@ function main(args=ARGS)
                 twiss_reference_s_m=constant_term(table.s[table_row]),
             ))
         end
-        if startswith(upper_name, "DET_")
+        if upper_name in detectors
             haskey(entrance_row, index) || error("No Twiss row for detector index $index")
             table_row = entrance_row[index]
             detector_count += 1
@@ -149,8 +162,8 @@ function main(args=ARGS)
             ))
         end
     end
-    sextupole_count == 76 || error("Expected 76 active normal sextupoles, found $sextupole_count")
-    detector_count == 99 || error("Expected 99 detectors, found $detector_count")
+    sextupole_count > 0 || error("No active normal sextupoles were found")
+    detector_count > 0 || error("No detector markers were found")
 
     # SciBmad table phases are accumulated in turns.  The final rows contain
     # the full accumulated tunes, whereas optics.tunes are signed eigentunes.
@@ -166,6 +179,11 @@ function main(args=ARGS)
         "detector_reference" => "detector-marker entrance",
         "active_normal_sextupoles" => sextupole_count,
         "detectors" => detector_count,
+        "detector_names" => detector_registry,
+        "normal_sextupole_names" => [row.element_name for row in rows if row.point_type == "sextupole_exit"],
+        "source_boundary" => "normal sextupole complete-element exit; detector marker entrance",
+        "predictor_phase_units" => "turn",
+        "state_dimension" => state_dimension,
         "ring_length_m" => s_m,
         "full_tune_1_turn" => full_tune_1,
         "full_tune_2_turn" => full_tune_2,
@@ -173,6 +191,7 @@ function main(args=ARGS)
         "signed_eigentune_2" => constant_term(optics.tunes[2]),
         "points_csv" => points_path,
     )
+    merge!(metadata, ring_metadata(config; ring=ring_id))
     metadata_path = joinpath(output_dir, "nominal_optics_metadata.toml")
     mkpath(output_dir)
     open(metadata_path, "w") do io

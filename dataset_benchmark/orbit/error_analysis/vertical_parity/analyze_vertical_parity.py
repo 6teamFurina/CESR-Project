@@ -6,15 +6,10 @@ from __future__ import annotations
 import argparse
 import csv
 import math
+import tomllib
 from html import escape
 from pathlib import Path
 
-
-ORIGINAL_RHOS = (
-    0.05, 0.075, 0.1, 0.14, 0.2, 0.28, 0.4, 0.57, 0.8, 1.13,
-    1.6, 2.26, 3.2, 4.53, 6.4,
-)
-PERCENTILE_RHOS = ORIGINAL_RHOS + (7.5, 8.8, 10.05)
 
 def local_slopes(rhos: list[float], values: list[float]) -> list[float]:
     slopes = [math.nan]
@@ -64,7 +59,8 @@ def percentile(values: list[float], probability: float) -> float:
 
 def direction_percentiles(pairs: list[dict[str, float]]) -> list[dict[str, float]]:
     result = []
-    for rho in PERCENTILE_RHOS:
+    percentile_rhos = sorted({row["rho"] for row in pairs})
+    for rho in percentile_rhos:
         selected = [row for row in pairs if math.isclose(row["rho"], rho)]
         if not selected:
             raise ValueError(f"No pair-level rows found for original rho={rho:g}")
@@ -89,7 +85,12 @@ def write_direction_percentiles(path: Path, rows: list[dict[str, float]]) -> Non
         writer.writerows(rows)
 
 
-def write_analysis(path: Path, rows: list[dict[str, float]]) -> None:
+def write_analysis(
+    path: Path,
+    rows: list[dict[str, float]],
+    base_kick_urad: float,
+    direction_count: int,
+) -> None:
     rhos = [row["rho"] for row in rows]
     x_even = [row["mean_x_even_rmse_m"] for row in rows]
     x_odd = [row["mean_x_odd_nl_rmse_m"] for row in rows]
@@ -107,7 +108,7 @@ def write_analysis(path: Path, rows: list[dict[str, float]]) -> None:
         "`even` contains even Taylor orders; `odd_nl` is the odd part after subtracting",
         "the nominal first-order detector response.",
         "",
-        "| ρ | kick RMS (µrad) | X even (µm) | X odd-nl (µm) | X p_even | X p_odd | Y even (µm) | Y odd-nl (µm) | Y p_even | Y p_odd | Y odd/even |",
+        f"| ρ | active-control RMS (µrad) | X even (µm) | X odd-nl (µm) | X p_even | X p_odd | Y even (µm) | Y odd-nl (µm) | Y p_even | Y p_odd | Y odd/even |",
         "|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
     ]
     for index, rho in enumerate(rhos):
@@ -115,7 +116,7 @@ def write_analysis(path: Path, rows: list[dict[str, float]]) -> None:
             return "n/a" if math.isnan(value) else f"{value:.3f}"
 
         lines.append(
-            f"| {rho:g} | {5 * rho:.3g} | {1e6*x_even[index]:.6g} | "
+            f"| {rho:g} | {base_kick_urad * rho:.3g} | {1e6*x_even[index]:.6g} | "
             f"{1e6*x_odd[index]:.6g} | {slope_text(x_even_slopes[index])} | "
             f"{slope_text(x_odd_slopes[index])} | {1e6*y_even[index]:.6g} | "
             f"{1e6*y_odd[index]:.6g} | {slope_text(y_even_slopes[index])} | "
@@ -187,7 +188,7 @@ def render(path: Path, rows: list[dict[str, float]]) -> None:
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020">',
         '<text x="580" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical-corrector signed-parity decomposition</text>',
-        '<text x="580" y="56" text-anchor="middle" font-size="13" fill="#555">100 paired random directions; ρ = 1 is 5 µrad active-corrector RMS</text>',
+        '<text x="580" y="56" text-anchor="middle" font-size="13" fill="#555">Paired random directions; ρ = 1 is the configured active-control RMS</text>',
         '<line x1="95" y1="88" x2="129" y2="88" stroke="#D55E00" stroke-width="2.4"/>',
         '<rect x="109" y="85" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>',
         '<text x="138" y="93" font-size="13">Even component</text>',
@@ -275,7 +276,7 @@ def render_linear_growth(path: Path, rows: list[dict[str, float]]) -> None:
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020">',
         '<text x="520" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical detector: cubic growth versus quadratic growth</text>',
-        '<text x="520" y="56" text-anchor="middle" font-size="13" fill="#555">Linear y-axis; 100 paired vertical-corrector directions</text>',
+        '<text x="520" y="56" text-anchor="middle" font-size="13" fill="#555">Linear y-axis; paired vertical-control directions</text>',
         '<line x1="322" y1="82" x2="358" y2="82" stroke="#D55E00" stroke-width="2.6"/>',
         '<rect x="337" y="79" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>',
         '<text x="368" y="87" font-size="13">Even quadratic component</text>',
@@ -377,7 +378,7 @@ def render_crossover_loglog(path: Path, rows: list[dict[str, float]]) -> None:
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020">',
         '<text x="480" y="32" text-anchor="middle" font-size="21" font-weight="600">Vertical response near the even–odd crossover</text>',
-        '<text x="480" y="56" text-anchor="middle" font-size="13" fill="#555">Focused log–log view; mean across the same 100 corrector directions</text>',
+        '<text x="480" y="56" text-anchor="middle" font-size="13" fill="#555">Focused log–log view; mean across the same paired directions</text>',
         '<line x1="246" y1="82" x2="282" y2="82" stroke="#D55E00" stroke-width="2.6"/>',
         '<rect x="261" y="79" width="6" height="6" fill="white" stroke="#D55E00" stroke-width="1.5"/>',
         '<text x="292" y="87" font-size="13">Even component (ρ²)</text>',
@@ -454,7 +455,7 @@ def render_direction_percentiles(
         y_ticks = [(index / 10, f"{10 * index}%") for index in range(11)]
         reference, reference_label = 0.5, "Equal odd/even squared-RMSE share (50%)"
         title = "Direction dependence of odd squared-error share"
-        subtitle = "P10–P90 across the same 100 directions; original scan plus 3 high-ρ points"
+        subtitle = "P10–P90 across the same paired directions"
         y_label = "Odd share  f = E_odd^2 / (E_odd^2 + E_even^2)"
         desc = "The median and tenth-to-ninetieth percentile band of the bounded odd squared-error share."
     else:
@@ -475,7 +476,7 @@ def render_direction_percentiles(
         ]
         reference, reference_label = 1.0, "Equal odd/even RMSE (r = 1)"
         title = "Direction dependence of odd/even RMSE ratio"
-        subtitle = "P10–P90 across the same 100 directions; original scan plus 3 high-ρ points"
+        subtitle = "P10–P90 across the same paired directions"
         y_label = "Odd/even ratio  r = E_odd / E_even"
         desc = "The median and tenth-to-ninetieth percentile band of the unbounded odd-to-even RMSE ratio."
 
@@ -555,7 +556,14 @@ def main() -> int:
     rows = load_summary(args.summary)
     pairs = load_pairs(args.pairs or args.summary.parent / "vertical_parity_pairs.csv")
     percentiles = direction_percentiles(pairs)
-    write_analysis(output_dir / "VERTICAL_PARITY_RESULTS.md", rows)
+    metadata_path = args.summary.parent / "vertical_parity_metadata.toml"
+    metadata: dict[str, object] = {}
+    if metadata_path.is_file():
+        with metadata_path.open("rb") as stream:
+            metadata = tomllib.load(stream)
+    base_kick_urad = 1.0e6 * float(metadata.get("base_kick_rad", 5.0e-6))
+    direction_count = max((int(row["directions"]) for row in percentiles), default=0)
+    write_analysis(output_dir / "VERTICAL_PARITY_RESULTS.md", rows, base_kick_urad, direction_count)
     render_crossover_loglog(output_dir / "vertical_parity_crossover_loglog", rows)
     render_linear_growth(output_dir / "vertical_parity_growth_linear", rows)
     write_direction_percentiles(

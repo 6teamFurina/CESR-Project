@@ -6,8 +6,24 @@ using TOML
 
 const HERE = @__DIR__
 const ORBIT_ROOT = normpath(joinpath(HERE, "..", ".."))
-const RESPONSE_PATH = joinpath(ORBIT_ROOT, "reference", "closed_orbit_response_6x119.csv")
-const OUTPUT_DIR = joinpath(HERE, "shared_input")
+const PROJECT_ROOT = normpath(joinpath(HERE, "..", "..", "..", ".."))
+
+function selected_ring()
+    ring = :latest
+    for argument in ARGS
+        startswith(argument, "--ring=") || continue
+        ring = Symbol(lowercase(split(argument, "="; limit=2)[2]))
+    end
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or explicitly legacy")
+    return ring in (:latest, :latest_cesr, :repaired_latest) ? :latest_cesr : :legacy
+end
+
+const ARTIFACT_RING = selected_ring()
+const CONTROL_SOURCE = ARTIFACT_RING == :latest_cesr ?
+    joinpath(PROJECT_ROOT, "Latest_Lattice", "bmad_control_tracking_reference", "controls.csv") :
+    joinpath(ORBIT_ROOT, "reference", "closed_orbit_response_6x119.csv")
+const OUTPUT_DIR = joinpath(HERE, "shared_input", String(ARTIFACT_RING))
 const INPUT_PATH = joinpath(OUTPUT_DIR, "nonlinear_rho_correctors.csv")
 const MANIFEST_PATH = joinpath(OUTPUT_DIR, "sample_manifest.csv")
 const METADATA_PATH = joinpath(OUTPUT_DIR, "input_metadata.toml")
@@ -17,25 +33,47 @@ const TRIALS = 600
 const SEED = 20260803
 const BASE_KICK = 5.0e-6
 
-function control_names(path)
-    header = split(first(readlines(path)), ',')
-    first(header) == "coordinate" || error("Unexpected response header: $path")
-    names = String.(header[2:end])
-    length(names) == 119 || error("Expected 119 controls, found $(length(names))")
-    return names
+function control_inventory(path)
+    lines = readlines(path)
+    isempty(lines) && error("Empty control reference: $path")
+    header = split(first(lines), ',')
+    names, planes = if first(header) == "lord_id"
+        lord_name = findfirst(==("lord_name"), header)
+        lord_key = findfirst(==("lord_key"), header)
+        variable = findfirst(==("variable"), header)
+        (isnothing(lord_name) || isnothing(lord_key) || isnothing(variable)) &&
+            error("Latest control metadata has an incomplete header: $path")
+        selected = [
+            fields for fields in (split(line, ','; keepempty=true) for line in lines[2:end])
+            if length(fields) == length(header) &&
+               uppercase(fields[lord_key]) == "OVERLAY" &&
+               uppercase(fields[variable]) in ("HKICK", "VKICK")
+        ]
+        (
+            [fields[lord_name] for fields in selected],
+            [uppercase(fields[variable]) == "HKICK" ? :horizontal : :vertical for fields in selected],
+        )
+    elseif first(header) in ("coordinate", "observable")
+        names = String.(header[2:end])
+        (names, [startswith(name, "H") ? :horizontal : :vertical for name in names])
+    else
+        error("Unexpected control reference header: $path")
+    end
+    isempty(names) && error("No steering controls found in $path")
+    length(unique(names)) == length(names) || error("Control names are not unique")
+    return names, planes
 end
 
-function active_indices(names, scenario)
+function active_indices(names, planes, scenario)
     scenario == "all" && return collect(eachindex(names))
-    prefix = scenario == "horizontal" ? "H" : "V"
-    indices = findall(name -> startswith(name, prefix), names)
-    expected = scenario == "horizontal" ? 58 : 61
-    length(indices) == expected || error("Expected $expected $scenario controls")
+    selected_plane = scenario == "horizontal" ? :horizontal : :vertical
+    indices = findall(==(selected_plane), planes)
+    isempty(indices) && error("No $scenario controls found in selected ring")
     return indices
 end
 
-function unit_rms_directions(rng, names, scenario)
-    indices = active_indices(names, scenario)
+function unit_rms_directions(rng, names, planes, scenario)
+    indices = active_indices(names, planes, scenario)
     directions = zeros(TRIALS, length(names))
     for trial in 1:TRIALS
         active = randn(rng, length(indices))
@@ -46,7 +84,7 @@ function unit_rms_directions(rng, names, scenario)
 end
 
 function main()
-    names = control_names(RESPONSE_PATH)
+    names, planes = control_inventory(CONTROL_SOURCE)
     mkpath(OUTPUT_DIR)
     open(INPUT_PATH, "w") do input_io
         open(MANIFEST_PATH, "w") do manifest_io
@@ -57,7 +95,7 @@ function main()
             sample_id = 0
             for (scenario_index, scenario) in enumerate(SCENARIOS)
                 directions, indices = unit_rms_directions(
-                    MersenneTwister(SEED + scenario_index - 1), names, scenario,
+                    MersenneTwister(SEED + scenario_index - 1), names, planes, scenario,
                 )
                 for rho in RHOS, trial in 1:TRIALS
                     sample_id += 1
@@ -90,7 +128,8 @@ function main()
     end
 
     metadata = Dict(
-        "format" => "cesr-nonlinear-rho-shared-input-v1",
+        "format" => "ring-nonlinear-rho-shared-input-v2",
+        "ring" => String(ARTIFACT_RING),
         "scenarios" => collect(SCENARIOS),
         "rhos" => RHOS,
         "trials_per_scenario_rho" => TRIALS,
@@ -103,7 +142,8 @@ function main()
         "base_kick_rad" => BASE_KICK,
         "direction_distribution" => "Gaussian direction normalized to exact unit RMS over active controls",
         "direction_reuse" => "same 600 directions reused at every rho within each scenario",
-        "control_order_source" => RESPONSE_PATH,
+        "control_order_source" => CONTROL_SOURCE,
+        "control_planes" => String.(planes),
         "input_csv" => INPUT_PATH,
         "manifest_csv" => MANIFEST_PATH,
     )

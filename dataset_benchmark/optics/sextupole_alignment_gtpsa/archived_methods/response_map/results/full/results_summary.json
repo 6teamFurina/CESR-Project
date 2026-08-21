@@ -1,0 +1,89 @@
+{
+  "active_normal_sextupoles": 76,
+  "all_coefficients_finite": true,
+  "coefficient_rows": 90516,
+  "combined_coefficients_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\response_map\\results\\full\\alignment_coefficients.csv",
+  "combined_timings_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\response_map\\results\\full\\alignment_timings.csv",
+  "descriptor": "Descriptor(6, 3, 3, 2)",
+  "detector_observables": 12,
+  "detectors": 99,
+  "format": "cesr-sextupole-alignment-gtpsa-summary-v1",
+  "identifiability_by_observable_family": {
+    "alpha": {
+      "condition_median": 2.353502859987738,
+      "condition_p10": 1.403903716780092,
+      "condition_p90": 4.5003074895680655,
+      "singular_min_median": 355.3387671803571,
+      "singular_min_p10": 209.63298317607695,
+      "singular_min_p90": 544.9144518888322
+    },
+    "beta": {
+      "condition_median": 1.5532735603409198,
+      "condition_p10": 1.1748463384820917,
+      "condition_p90": 2.752663253448337,
+      "singular_min_median": 1503.755282866266,
+      "singular_min_p10": 1029.33564176003,
+      "singular_min_p90": 2541.4881896010775
+    },
+    "coupling": {
+      "condition_median": 378.0693405051802,
+      "condition_p10": 152.86179872904563,
+      "condition_p90": 2136.3015810466813,
+      "singular_min_median": 2.504229697167216,
+      "singular_min_p10": 0.4501162371858377,
+      "singular_min_p90": 5.257539017138777
+    },
+    "orbit": {
+      "condition_median": 1.8749521268833633,
+      "condition_p10": 1.28890035413164,
+      "condition_p90": 2.595389825342109,
+      "singular_min_median": 0.10501927752885257,
+      "singular_min_p10": 0.012123604981973232,
+      "singular_min_p90": 0.20195891289707762
+    },
+    "phase": {
+      "condition_median": 19.916623720970698,
+      "condition_p10": 7.953592683471,
+      "condition_p90": 74.28634522869561,
+      "singular_min_median": 0.5840771100458297,
+      "singular_min_p10": 0.23799415687330777,
+      "singular_min_p90": 1.3829271312187483
+    },
+    "tune": {
+      "condition_median": 712.2146203893323,
+      "condition_p10": 361.44671508640056,
+      "condition_p90": 2706.982442711263,
+      "singular_min_median": 0.0008863312355475046,
+      "singular_min_p10": 0.00023326025195110587,
+      "singular_min_p90": 0.001925156138859953
+    }
+  },
+  "identifiability_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\response_map\\results\\full\\mixed_response_identifiability.csv",
+  "observable_counts": {
+    "alpha_1": 7524,
+    "alpha_2": 7524,
+    "beta_1": 7524,
+    "beta_2": 7524,
+    "c11": 7524,
+    "c12": 7524,
+    "c21": 7524,
+    "c22": 7524,
+    "orbit_x": 7524,
+    "orbit_y": 7524,
+    "phi_1": 7524,
+    "phi_2": 7524,
+    "tune_1": 76,
+    "tune_2": 76,
+    "tune_3": 76
+  },
+  "parameter_order": 2,
+  "phase_reference": "DET_00W",
+  "ring_tunes": 3,
+  "rows_per_sextupole": 1191,
+  "twiss_seconds": {
+    "maximum": 420.7906274,
+    "median": 6.23185245,
+    "minimum": 4.4736022,
+    "sum": 2232.2240701
+  }
+}

@@ -30,14 +30,14 @@ using Printf
 
 function parse_gtpsa_mixed_args(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "rhos" => "0.1,0.14,0.2,0.28,0.4,0.57,0.8,1.13",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
-        "output-dir" => joinpath(GTPSA_MIXED_HERE, "gtpsa_results"),
-        "finite-difference-directions" => joinpath(
-            GTPSA_MIXED_HERE, "results", "mixed_term_directions.csv",
-        ),
+        "output-dir" => "",
+        "inputs" => "",
+        "finite-difference-directions" => "",
     )
     for argument in args
         startswith(argument, "--") ||
@@ -47,6 +47,18 @@ function parse_gtpsa_mixed_args(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    isempty(options["inputs"]) &&
+        (options["inputs"] = default_ring_paths(; ring).inputs)
+    artifact = ring_artifact_id(ring)
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(GTPSA_MIXED_HERE, "gtpsa_results", artifact))
+    isempty(options["finite-difference-directions"]) &&
+        (options["finite-difference-directions"] = joinpath(
+            GTPSA_MIXED_HERE, "results", artifact, "mixed_term_directions.csv",
+        ))
     return options
 end
 
@@ -62,11 +74,23 @@ function nominal_closed_orbit(ring)
     return vec(Float64.(solution.v0[1, :]))
 end
 
-function direction_parameterized_model(names, h_direction, v_direction, base_kick)
-    descriptor = Descriptor(6, 2, 2, 2)
+function direction_parameterized_model(
+    names,
+    h_direction,
+    v_direction,
+    base_kick,
+    state_dimension;
+    model_factory=load_ring_model,
+    config=nothing,
+)
+    descriptor = Descriptor(state_dimension, 2, 2, 2)
     variables = vars(descriptor)
     parameters = params(descriptor)
-    model = load_cesr_model(zero_value=zero(parameters[1]), rf_on=true)
+    # Keep unselected skew/group controls primitive.  Only the requested H/V
+    # steering controls below carry the two GTPSA parameters; promoting the
+    # complete registry can trigger the known combined-multipole sqrt(0)
+    # domain failure around SEX_14W.
+    model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
     for index in eachindex(names)
         value = base_kick * (
             h_direction[index] * parameters[1] +
@@ -78,7 +102,8 @@ function direction_parameterized_model(names, h_direction, v_direction, base_kic
 end
 
 function track_direction_maps(ring, input_map, detectors)
-    bunch = Bunch(v=reshape(input_map, 1, 6))
+    state_dimension = length(input_map)
+    bunch = Bunch(v=reshape(input_map, 1, state_dimension))
     SciBmad.BTBL.check_bl_bunch!(bunch, ring, false)
     detector_index = Dict(name => index for (index, name) in enumerate(detectors))
     maps = Vector{typeof(copy.(input_map))}(undef, length(detectors))
@@ -96,30 +121,31 @@ function track_direction_maps(ring, input_map, detectors)
     return maps, copy.(vec(bunch.coords.v))
 end
 
-function map_derivatives(map)
+function map_derivatives(map, state_dimension)
     jacobian = Matrix(GTPSA.jacobian(map; include_params=true))
-    size(jacobian) == (6, 8) ||
-        error("Expected a 6 x 8 direction-map Jacobian, got $(size(jacobian))")
-    hessians = [Matrix(GTPSA.hessian(map[index]; include_params=true)) for index in 1:6]
-    all(size(hessian) == (8, 8) for hessian in hessians) ||
-        error("Expected 8 x 8 direction-map Hessians")
+    expected_columns = state_dimension + 2
+    size(jacobian) == (state_dimension, expected_columns) ||
+        error("Expected a $state_dimension x $expected_columns direction-map Jacobian, got $(size(jacobian))")
+    hessians = [Matrix(GTPSA.hessian(map[index]; include_params=true)) for index in 1:state_dimension]
+    all(size(hessian) == (expected_columns, expected_columns) for hessian in hessians) ||
+        error("Expected $expected_columns x $expected_columns direction-map Hessians")
     return jacobian, hessians
 end
 
 """Implicit first and second derivatives of the closed-orbit fixed point."""
-function implicit_closed_orbit_derivatives(one_turn_map)
-    jacobian, hessians = map_derivatives(one_turn_map)
-    A = jacobian[:, 1:6]
-    B = jacobian[:, 7:8]
-    fixed_point_matrix = I - A
+function implicit_closed_orbit_derivatives(one_turn_map, state_dimension)
+    jacobian, hessians = map_derivatives(one_turn_map, state_dimension)
+    A = jacobian[:, 1:state_dimension]
+    B = jacobian[:, state_dimension + 1:state_dimension + 2]
+    fixed_point_matrix = Matrix{Float64}(I, state_dimension, state_dimension) - A
     first = fixed_point_matrix \ B
     lifted = vcat(first, Matrix{Float64}(I, 2, 2))
-    second = zeros(6, 2, 2)
-    sources = zeros(6, 2, 2)
+    second = zeros(state_dimension, 2, 2)
+    sources = zeros(state_dimension, 2, 2)
     for left in 1:2, right in left:2
         source = [
             dot(view(lifted, :, left), hessians[coordinate] * view(lifted, :, right))
-            for coordinate in 1:6
+        for coordinate in 1:state_dimension
         ]
         value = fixed_point_matrix \ source
         sources[:, left, right] .= source
@@ -137,14 +163,16 @@ function implicit_closed_orbit_derivatives(one_turn_map)
         first_residual=norm(first_residual, Inf), second_residual)
 end
 
-function detector_second_derivatives(detector_maps, closed_derivatives)
+function detector_second_derivatives(detector_maps, closed_derivatives; config=nothing)
     count = length(detector_maps)
     horizontal = zeros(count, 2, 2)
     vertical = zeros(count, 2, 2)
+    state_dimension = size(closed_derivatives.lifted, 1) - 2
+    transverse = transverse_coordinate_indices(config; state_dimension)
     for detector in 1:count
-        jacobian, hessians = map_derivatives(detector_maps[detector])
-        for (coordinate, output) in ((1, horizontal), (3, vertical))
-            initial_gradient = view(jacobian, coordinate, 1:6)
+        jacobian, hessians = map_derivatives(detector_maps[detector], state_dimension)
+        for (coordinate, output) in ((transverse.x, horizontal), (transverse.y, vertical))
+            initial_gradient = view(jacobian, coordinate, 1:state_dimension)
             hessian = hessians[coordinate]
             for left in 1:2, right in left:2
                 value = dot(
@@ -169,17 +197,21 @@ function direction_gtpsa_q(
     h_direction,
     v_direction,
     base_kick,
+    state_dimension;
+    model_factory=load_ring_model,
+    config=nothing,
 )
     setup = direction_parameterized_model(
-        names, h_direction, v_direction, base_kick,
+        names, h_direction, v_direction, base_kick, state_dimension;
+        model_factory, config,
     )
-    input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:6]
+    input_map = [closed_orbit[index] + copy(setup.variables[index]) for index in 1:state_dimension]
     detector_maps, one_turn_map = track_direction_maps(
         setup.model.ring, input_map, detectors,
     )
-    closed_derivatives = implicit_closed_orbit_derivatives(one_turn_map)
+    closed_derivatives = implicit_closed_orbit_derivatives(one_turn_map, state_dimension)
     horizontal, vertical = detector_second_derivatives(
-        detector_maps, closed_derivatives,
+        detector_maps, closed_derivatives; config,
     )
     q = Dict{Symbol,Vector{Float64}}(
         :x_hh => horizontal[:, 1, 1] / 2,
@@ -295,8 +327,10 @@ function compare_finite_difference(gtpsa_rows, finite_difference_path)
     return output
 end
 
-function main_gtpsa_mixed(args=ARGS)
+function main_gtpsa_mixed(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_gtpsa_mixed_args(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     rhos = parse.(Float64, split(options["rhos"], ','))
     !isempty(rhos) && all(isfinite, rhos) && all(>(0), rhos) ||
         error("All radii must be finite and positive")
@@ -307,14 +341,16 @@ function main_gtpsa_mixed(args=ARGS)
     base_kick > 0 || error("--base-kick-rad must be positive")
     output_dir = abspath(options["output-dir"])
 
-    input_reference = read_samples(joinpath(
-        MIXED_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv",
-    ))
+    input_path = abspath(options["inputs"])
+    input_reference = read_samples(input_path)
     names = input_reference.names
-    float_model = load_cesr_model(zero_value=0.0, rf_on=true)
-    detectors = detector_names(float_model.ring)
+    validate_control_names(names, config)
+    float_model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    detectors = configured_detector_names(float_model, config)
+    layout = observable_layout(detectors; config)
     closed_orbit = nominal_closed_orbit(float_model.ring)
-    samples = generate_mixed_samples(names, [1.0], trials, seed, base_kick)
+    state_dimension = length(closed_orbit)
+    samples = generate_mixed_samples(names, [1.0], trials, seed, base_kick; config, model=float_model)
 
     rows = NamedTuple[]
     solve_seconds = @elapsed begin
@@ -327,6 +363,9 @@ function main_gtpsa_mixed(args=ARGS)
                 view(samples.horizontal_directions, trial, :),
                 view(samples.vertical_directions, trial, :),
                 base_kick,
+                state_dimension;
+                model_factory,
+                config,
             )
             for rho in rhos
                 push!(rows, q_direction_row(trial, rho, base_kick, result))
@@ -350,11 +389,20 @@ function main_gtpsa_mixed(args=ARGS)
         "definition" => "two second-order GTPSA corrector parameters plus implicit differentiation of the RF-on closed-orbit fixed point",
         "result_role" => "adopted final quadratic response; four-sign finite differences are an independent validation",
         "reporting_statistic" => "median [P10, P90] across fixed directions",
-        "descriptor" => "Descriptor(6, 2, 2, 2)",
+        "descriptor" => "Descriptor($(state_dimension), 2, 2, 2)",
         "rhos" => rhos,
         "trials" => trials,
         "seed" => seed,
         "base_kick_rad" => base_kick,
+        "input_csv" => input_path,
+        "control_count" => length(names),
+        "control_names" => names,
+        "horizontal_control_count" => length(samples.horizontal_indices),
+        "vertical_control_count" => length(samples.vertical_indices),
+        "state_dimension" => state_dimension,
+        "detector_count" => length(detectors),
+        "observable_count" => length(layout.labels),
+        "observable_labels" => layout.labels,
         "solve_seconds" => solve_seconds,
         "direction_csv" => direction_path,
         "summary_csv" => summary_path,
@@ -363,6 +411,7 @@ function main_gtpsa_mixed(args=ARGS)
         "maximum_first_order_closure_residual" => maximum(row.first_closure_residual for row in rows),
         "maximum_second_order_closure_residual" => maximum(row.second_closure_residual for row in rows),
     )
+    merge!(metadata, ring_metadata(config; ring))
     metadata_path = joinpath(output_dir, "gtpsa_metadata.toml")
     open(metadata_path, "w") do io
         TOML.print(io, metadata; sorted=true)

@@ -24,10 +24,32 @@ sys.path.insert(0, str(PROJECT_ROOT / "test_codes"))
 import benchmark_bmad as common  # noqa: E402
 
 
-INPUT_PATH = HERE / "shared_input" / "nonlinear_rho_correctors.csv"
-MANIFEST_PATH = HERE / "shared_input" / "sample_manifest.csv"
-LATTICE_PATH = ORBIT_ROOT / "reference" / "cesr_bmad_compatible.bmad"
-RESULT_DIR = HERE / "results" / "bmad"
+def selected_ring() -> str:
+    ring = "latest"
+    for argument in sys.argv[1:]:
+        if argument.startswith("--ring="):
+            ring = argument.split("=", 1)[1].lower()
+    ring in {"latest", "legacy"} or raise_value_error()
+    return ring
+
+
+def raise_value_error() -> None:
+    raise ValueError("--ring must be latest or legacy")
+
+
+RING = selected_ring()
+ARTIFACT_RING = "latest_cesr" if RING == "latest" else "legacy"
+INPUT_PATH = HERE / "shared_input" / ARTIFACT_RING / "nonlinear_rho_correctors.csv"
+MANIFEST_PATH = HERE / "shared_input" / ARTIFACT_RING / "sample_manifest.csv"
+LATTICE_PATH = (
+    PROJECT_ROOT / "Latest_Lattice" / "lat.bmad"
+    if RING == "latest"
+    else ORBIT_ROOT / "reference" / "cesr_bmad_compatible.bmad"
+)
+RESULT_DIR = HERE / "results" / ARTIFACT_RING / (
+    "bmad_reference" if RING == "latest" else "bmad"
+)
+SAMPLES_FILENAME = "bmad_rf_on_samples.csv" if RING == "latest" else "bmad_samples.csv"
 
 
 def read_manifest(path: Path) -> dict[int, tuple[str, float, int]]:
@@ -98,9 +120,6 @@ def main() -> int:
     y_rows = common.response_tools.active_data(tao, "y")
     labels = [f"{row['ele_name'].upper()}:x" for row in x_rows]
     labels += [f"{row['ele_name'].upper()}:y" for row in y_rows]
-    if len(labels) != 198:
-        raise RuntimeError(f"Expected 198 observables, found {len(labels)}")
-
     warmup_start = time.perf_counter()
     for sample in samples[1:3]:
         common.apply_sample(tao, references, sample)
@@ -159,7 +178,7 @@ def main() -> int:
             print(f"Bmad completed {sample_index + 1}/{len(samples)} samples", flush=True)
     physics_seconds = time.perf_counter() - physics_start
 
-    output_path = RESULT_DIR / "bmad_samples.csv"
+    output_path = RESULT_DIR / SAMPLES_FILENAME
     timing_path = RESULT_DIR / "bmad_sample_timings.csv"
     group_path = RESULT_DIR / "bmad_group_timings.csv"
     common.write_outputs(output_path, sample_ids, labels, observables, converged)
@@ -184,7 +203,8 @@ def main() -> int:
 
     version = tao.cmd("show version", raises=False)
     metadata = {
-        "format": "cesr-nonlinear-rho-bmad-v1",
+        "format": "ring-nonlinear-rho-bmad-v2",
+        "ring": ARTIFACT_RING,
         "engine": "Bmad/Tao/PyTao",
         "input_csv": str(INPUT_PATH),
         "lattice": str(LATTICE_PATH),
@@ -200,7 +220,7 @@ def main() -> int:
         "tao_version_raw": version,
         "maximum_resident_set_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         "execution_model": (
-            "one persistent Tao instance; 119 variable commands batched with "
+            f"one persistent Tao instance; {len(names)} variable commands batched with "
             "suppress_lattice_calc=True; one model recalculation per sample"
         ),
         "timed_region": "variable update + Tao lattice recalculation + observable read",

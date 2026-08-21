@@ -1,0 +1,2 @@
+target_sextupole,target_s_m,design_amplitude_m,achieved_x_from_x_knob_m,achieved_y_from_x_knob_m,achieved_x_from_y_knob_m,achieved_y_from_y_knob_m,detector_leakage_x_knob_rms_m,detector_leakage_y_knob_rms_m,maximum_abs_x_corrector_rad,maximum_abs_y_corrector_rad,ridge_fraction
+SEX_08W,42.907498779194896,0.001,0.0009999999999999974,-5.823351512373315e-21,-2.8445732105351307e-18,0.0009999999999999996,7.62135617724392e-5,6.931829220906641e-5,0.000608246041976377,0.00032624076530796164,1.0e-6
