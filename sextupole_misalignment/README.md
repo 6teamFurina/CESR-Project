@@ -3,6 +3,10 @@
 New or extended calculations in this study use the repaired latest SciBmad
 lattice at `Latest_Lattice/latest_cesr_scibmad_repaired.jl`.
 
+For a poster-style overview of the measurement protocol, finite-BPM local-orbit
+inference, center inverse, stochastic-noise mitigation, results, and the
+unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
+
 ## Maintained studies
 
 - `direct_observable_nuisance_ablation/` contains the scan-conditioned
