@@ -9,6 +9,9 @@ Manifest.toml
 *.pyc
 *.pyo
 
+# Local TeX/font caches and rendered PDF verification pages.
+tmp/
+
 # Local persistent context for Codex; not part of the published project.
 PROJECT_MEMORY.md
 bmad_to_scibmad_missing_translations_issue.md
