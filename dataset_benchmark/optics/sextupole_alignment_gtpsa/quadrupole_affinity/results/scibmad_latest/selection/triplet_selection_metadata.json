@@ -1,0 +1,21 @@
+{
+  "format": "cesr-sextupole-five-to-three-quadrupole-selection-v1",
+  "engine": "SciBmad/GTPSA repaired-lattice response bundles",
+  "selection_objective": "maximum nuisance-marginalized log determinant among all 3-of-5 subsets; worst-axis precision is the tie-breaker",
+  "available_condition_design": "nominal plus K1 +/- for each retained quadrupole (11 one-at-a-time conditions)",
+  "evaluated_condition_count_per_triplet": 7,
+  "nuisance_rms_m": 0.0003,
+  "k2_step_m3": 0.01,
+  "k2_levels": [
+    -2.0,
+    -1.0,
+    0.0,
+    1.0,
+    2.0
+  ],
+  "limitations": [
+    "This is the response-level 11-condition selection, not yet the exact 3 x 3 bump by five-point K2 finite-amplitude scan.",
+    "Other-sextupole nuisance responses are evaluated at nominal optics and reused in every K1 block.",
+    "Combined K1 states are not part of this one-at-a-time design; they belong to the subsequent three-knob 3^3 validation."
+  ]
+}

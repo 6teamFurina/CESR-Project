@@ -1,0 +1,11 @@
+base_kick_rad = 5.0e-6
+date = "2026-08-12"
+direction_state = "simultaneous h+v direction at unit rho"
+format = "cesr-sextupole-beta-phase-direction-optics-v1"
+lattice_mode = "RF-on CESR"
+phase_units = "turn"
+points_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\sextupole_beta_phase_correlation\\results\\direction_optics_points.csv"
+seed = 20260804
+solve_seconds = 103.4555994
+trials = 100
+tunes_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\sextupole_beta_phase_correlation\\results\\direction_optics_tunes.csv"

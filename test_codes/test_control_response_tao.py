@@ -13,7 +13,7 @@ The response convention is
 
 with rows ordered as every DET_* orbit.x datum followed by every DET_* orbit.y
 datum, and columns ordered as all HKICK Overlay lords followed by all VKICK
-Overlay lords.  The expected CESR dimensions are 198 x 119.
+Overlay lords.  The selected lattice determines the matrix dimensions.
 
 Typical VM usage from /home/jn577/cesr_scibmad:
 
@@ -39,22 +39,40 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 
-EXPECTED_DETECTORS = 99
-EXPECTED_H_CONTROLS = 58
-EXPECTED_V_CONTROLS = 61
-
 DETECTOR_RE = re.compile(
     r"(?im)^\s*(DET_[A-Za-z0-9_]+)\s*:\s*Marker\b"
 )
-CONTROL_RE = re.compile(
+CONTROL_DECL_RE = re.compile(
     r"(?ims)^\s*([A-Za-z][A-Za-z0-9_]*)\s*:\s*overlay\s*=\s*"
-    r"\{.*?\}\s*,\s*var\s*=\s*\{\s*(HKICK|VKICK)\s*\}"
+    r"(?P<body>.*?)(?=^\s*[A-Za-z][A-Za-z0-9_]*\s*:|\Z)"
 )
+CONTROL_ATTRIBUTE_RE = re.compile(
+    r"(?:^|,)\s*(?:var\s*=\s*\{\s*)?(HKICK|VKICK)\b",
+    re.IGNORECASE,
+)
+CALL_RE = re.compile(r"(?im)^\s*call\s*,\s*file\s*=\s*([^,\s!]+)")
 
 
 def strip_bmad_comments(text: str) -> str:
     """Remove Bmad ! comments while preserving line boundaries."""
     return "\n".join(line.split("!", 1)[0] for line in text.splitlines())
+
+
+def read_lattice_source(path: Path, seen: Optional[set[Path]] = None) -> str:
+    """Read a Bmad file and its relative ``call, file=...`` dependencies."""
+    seen = set() if seen is None else seen
+    path = path.resolve()
+    if path in seen:
+        return ""
+    seen.add(path)
+    text = strip_bmad_comments(path.read_text(encoding="utf-8"))
+    parts = [text]
+    for match in CALL_RE.finditer(text):
+        include_path = (path.parent / match.group(1).strip('"\'')).resolve()
+        if not include_path.is_file():
+            continue
+        parts.append(read_lattice_source(include_path, seen))
+    return "\n".join(parts)
 
 
 def unique_in_order(values: Iterable[str]) -> List[str]:
@@ -69,34 +87,25 @@ def unique_in_order(values: Iterable[str]) -> List[str]:
 
 
 def parse_cesr_layout(lattice: Path) -> Tuple[List[str], List[str], List[str]]:
-    text = strip_bmad_comments(lattice.read_text(encoding="utf-8"))
+    text = read_lattice_source(lattice)
     detectors = unique_in_order(match.group(1) for match in DETECTOR_RE.finditer(text))
 
     horizontal: List[str] = []
     vertical: List[str] = []
-    for match in CONTROL_RE.finditer(text):
+    for match in CONTROL_DECL_RE.finditer(text):
         name = match.group(1).upper()
-        attribute = match.group(2).upper()
+        body = match.group("body")
+        closing_brace = body.find("}")
+        if closing_brace < 0:
+            continue
+        attribute_match = CONTROL_ATTRIBUTE_RE.search(body[closing_brace + 1 :])
+        if attribute_match is None:
+            continue
+        attribute = attribute_match.group(1).upper()
         (horizontal if attribute == "HKICK" else vertical).append(name)
 
     horizontal = unique_in_order(horizontal)
     vertical = unique_in_order(vertical)
-
-    errors = []
-    if len(detectors) != EXPECTED_DETECTORS:
-        errors.append(
-            f"expected {EXPECTED_DETECTORS} DET_* markers, found {len(detectors)}"
-        )
-    if len(horizontal) != EXPECTED_H_CONTROLS:
-        errors.append(
-            f"expected {EXPECTED_H_CONTROLS} HKICK controls, found {len(horizontal)}"
-        )
-    if len(vertical) != EXPECTED_V_CONTROLS:
-        errors.append(
-            f"expected {EXPECTED_V_CONTROLS} VKICK controls, found {len(vertical)}"
-        )
-    if errors:
-        raise RuntimeError("CESR lattice inventory mismatch: " + "; ".join(errors))
 
     return detectors, horizontal, vertical
 
@@ -406,11 +415,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     tracking_indices = tao.lat_list(
         "*", "ele.ix_ele", which="model", flags="-array_out -track_only"
     )
-    if len(tracking_indices) != 870:
-        raise RuntimeError(
-            f"Expected 870 tracking positions including BEGINNING, got "
-            f"{len(tracking_indices)}"
-        )
+    if not tracking_indices:
+        raise RuntimeError("Tao returned no tracking positions")
 
     # Explicitly activate only the data and variables used in this matrix.
     tao.cmd("veto var *; veto dat *")
@@ -427,10 +433,10 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     v_vars = active_variables(tao, "v_steer")
 
     if (len(x_data), len(y_data), len(h_vars), len(v_vars)) != (
-        EXPECTED_DETECTORS,
-        EXPECTED_DETECTORS,
-        EXPECTED_H_CONTROLS,
-        EXPECTED_V_CONTROLS,
+        len(detectors),
+        len(detectors),
+        len(horizontal),
+        len(vertical),
     ):
         raise RuntimeError(
             "Unexpected active Tao inventory: "

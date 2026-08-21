@@ -1,0 +1,26 @@
+{
+  "format": "cesr-sextupole-greedy-quadrupole-selection-v1",
+  "engine": "SciBmad/GTPSA repaired-lattice response bundles",
+  "response_directory": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\quadrupole_affinity\\results\\scibmad_latest\\responses",
+  "affinity_directory": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\optics\\sextupole_alignment_gtpsa\\quadrupole_affinity\\results\\scibmad_latest\\affinity",
+  "target_count": 76,
+  "screened_candidates_per_target": 15,
+  "retained_candidates_per_target": 5,
+  "provisional_operational_candidates_per_target": 3,
+  "selection_objective": "greedy maximum cumulative nuisance-marginalized log determinant; worst-axis precision is the tie-breaker and retained diagnostic",
+  "condition_model": "nominal plus symmetric one-at-a-time K1 +/- blocks for every selected quadrupole",
+  "nuisance_rms_m": 0.0003,
+  "k2_step_m3": 0.01,
+  "k2_levels": [
+    -2.0,
+    -1.0,
+    0.0,
+    1.0,
+    2.0
+  ],
+  "limitations": [
+    "This selection reuses nominal other-sextupole nuisance responses in every K1 block.",
+    "It uses the nominal-launch trajectory dictionary and does not yet contain the exact 3 x 3 orbit-bump grid.",
+    "The first three candidates are provisional until finite-amplitude, observable-ablation, and operational-knob checks are complete."
+  ]
+}

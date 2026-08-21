@@ -1,0 +1,13 @@
+base_kick_rad = 5.0e-6
+coefficients_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\sextupole_cascade\\wiggler_corner_results\\wiggler_corner_coefficients.csv"
+date = "2026-08-05"
+format = "cesr-k2-wiggler-cubic-corners-v1"
+maximum_closure_norm = 9.99879907876892e-14
+pairs_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\sextupole_cascade\\wiggler_corner_results\\wiggler_corner_pairs.csv"
+rhos = [0.4, 0.57, 0.8, 1.13, 1.6, 2.26]
+seed = 20260804
+total_fallback_count = 0
+total_nonlinear_states = 4804
+total_solve_seconds = 88.3298373
+trials_per_corner = 100
+vectors_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\sextupole_cascade\\wiggler_corner_results\\wiggler_corner_vectors.csv"

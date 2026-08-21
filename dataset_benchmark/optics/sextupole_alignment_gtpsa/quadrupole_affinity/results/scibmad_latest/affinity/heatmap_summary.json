@@ -1,0 +1,26 @@
+{
+  "retained_pairs": 1140,
+  "sextupoles": 76,
+  "independent_quadrupoles_screened": 113,
+  "quadrupoles_shown": 47,
+  "quadrupoles_with_at_least_one_retained_pair": 47,
+  "blank_cells_are_not_evaluated": true,
+  "plots": [
+    {
+      "metric": "information_gain_logdet",
+      "minimum": 1.3979467441513052,
+      "median": 1.852763819274852,
+      "maximum": 2.1418767903116525,
+      "svg": "information_gain_heatmap.svg",
+      "png": "information_gain_heatmap.png"
+    },
+    {
+      "metric": "precision_improvement_worst_axis",
+      "minimum": 1.4557308740283317,
+      "median": 1.6033354726224374,
+      "maximum": 1.7122715196302785,
+      "svg": "precision_improvement_heatmap.svg",
+      "png": "precision_improvement_heatmap.png"
+    }
+  ]
+}

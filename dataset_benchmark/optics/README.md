@@ -1,5 +1,29 @@
 # CESR chromatic-optics benchmark
 
+The focused 119-corrector first-order optics-Jacobian timing experiment is in
+`corrector_jacobian_benchmark/`. On the local host, 238 Bmad/Tao symmetric
+finite-difference optics evaluations took 10.335 s, while SciBmad's implicit
+closed-orbit response plus one `Descriptor(6, 2, 119, 1)` Twiss call took
+21.656 s. Thus the current SciBmad implementation was 2.095x slower for this
+specific dense first-order Jacobian workload.
+
+A follow-up implemented the developer-recommended strategy of one
+`Descriptor(6,2,1,1)` parameterized Twiss per corrector. The 119 stable serial
+Twiss calls plus extraction took 137.206 s, or 202.539 s when separate
+start-orbit response columns are included. Its assembled Jacobian agrees with
+the wide-descriptor result to `1.24e-15` relative Frobenius difference, but its
+serial optics-only time is 9.623x slower than the wide SciBmad calculation and
+13.276x slower than Bmad. The P=1 strategy reduces first-call warmup, not total
+serial throughput for this 119-column workload.
+
+The extended test found the same direction more strongly. For 119 correctors
+plus 106 quadrupole strengths, Bmad took 19.720 s; SciBmad took 43.930 s for
+Twiss plus extraction, or 61.399 s including its separate start-orbit
+response. With 76 sextupole strengths added (`P=301`), Bmad took 26.558 s,
+whereas SciBmad did not complete its first parameterized Twiss within a
+one-hour bounded run. See
+`corrector_jacobian_benchmark/results/extended/RESULTS.md`.
+
 This directory benchmarks Bmad/Tao and three SciBmad evaluation strategies on
 the same 1,000 CESR corrector samples and the same 99 zero-length `DET_*`
 markers. RF is off, so the result is four-dimensional coasting closed-orbit
@@ -199,3 +223,20 @@ file writing are excluded and separately recorded.
 All methods write a detector table with 99,000 rows and 40 columns, a 1,000-row
 ring table, and method metadata. Pointwise SciBmad also writes the 1,000 start
 closed orbits.
+
+## Nonlinear-rho 9,001-state extension
+
+The follow-up study under `nonlinear_rho_benchmark/` reuses the orbit paper's
+exact 9,000 nonzero corrector states plus its shared zero-input baseline. It
+computes this same RF-off chromatic-optics data product in SciBmad and Bmad,
+checkpointed by the original 15 `(scenario, rho)` cells.
+
+Both engines completed all `9001/9001` states. SciBmad also completed all
+`9001/9001` RF-on initial orbits and RF-off coasting orbits before Twiss. The
+baseline-subtracted cross-engine response NRMSE has an overall median near 2%
+for ordinary Twiss, chromatic derivatives, tunes, and ring chromatic
+quantities. Weak horizontal-only coupling responses have larger relative
+errors, and `dorbit_z_ddelta` remains a separate longitudinal outlier. See
+`nonlinear_rho_benchmark/README.md` and
+`nonlinear_rho_benchmark/results/full_9001/comparison/RESULTS.md` for the
+field- and cell-resolved results.

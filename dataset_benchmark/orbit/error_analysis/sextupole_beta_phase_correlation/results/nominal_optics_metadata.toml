@@ -1,0 +1,14 @@
+active_normal_sextupoles = 76
+date = "2026-08-12"
+detector_reference = "detector-marker entrance"
+detectors = 99
+format = "cesr-sextupole-beta-phase-nominal-optics-v1"
+full_tune_1_turn = 10.52992621198687
+full_tune_2_turn = 9.579077486058923
+lattice_mode = "RF-on nominal CESR"
+phase_units = "turn"
+points_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\sextupole_beta_phase_correlation\\results\\nominal_optics_points.csv"
+ring_length_m = 768.426421416168
+sextupole_reference = "complete-element exit boundary"
+signed_eigentune_1 = -0.47007378801313243
+signed_eigentune_2 = -0.42092251394105457

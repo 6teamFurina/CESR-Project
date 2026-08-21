@@ -1,0 +1,6 @@
+truth
+zero
+x_plus
+x_minus
+y_plus
+y_minus

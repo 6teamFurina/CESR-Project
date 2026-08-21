@@ -1,0 +1,2048 @@
+{
+  "format": "cesr-extended-optics-jacobian-v1",
+  "engine": "Bmad/Tao/PyTao",
+  "method": "symmetric finite differences of exact scalar periodic optics",
+  "rf_mode": "off (4D coasting)",
+  "parameter_count": 225,
+  "family_counts": {
+    "corrector": 119,
+    "quadrupole": 106,
+    "sextupole": 0
+  },
+  "detector_count": 99,
+  "detector_quantity_count": 18,
+  "detector_jacobian_shape": [
+    1782,
+    225
+  ],
+  "exact_optics_solve_count": 450,
+  "initialization_seconds": 0.6290631659999999,
+  "warmup_seconds": 0.12102936000000053,
+  "physics_seconds": 19.719600025,
+  "seconds_per_parameter": [
+    0.09343700900000051,
+    0.08414249600000012,
+    0.08690708799999936,
+    0.08566883599999997,
+    0.08570203499999884,
+    0.08677480799999948,
+    0.0854697489999996,
+    0.08630387100000014,
+    0.08508410600000005,
+    0.08511451900000111,
+    0.08851956400000027,
+    0.08608932499999966,
+    0.0854947199999998,
+    0.0880421000000009,
+    0.08532091200000025,
+    0.08443965500000061,
+    0.08507727799999998,
+    0.09307775700000143,
+    0.08513664100000007,
+    0.08461266399999978,
+    0.08506969299999945,
+    0.08376742599999965,
+    0.0865806280000001,
+    0.08359062099999903,
+    0.08608622200000049,
+    0.08420790399999944,
+    0.09077078999999877,
+    0.08848372099999935,
+    0.08415789400000051,
+    0.08652797199999895,
+    0.09356385999999972,
+    0.09110256099999958,
+    0.0861618049999997,
+    0.08631770199999877,
+    0.08550270200000121,
+    0.08398883799999979,
+    0.09309494300000054,
+    0.09186950900000035,
+    0.08558503300000098,
+    0.09577659300000008,
+    0.08864176099999987,
+    0.08505230600000147,
+    0.0851694529999989,
+    0.08327148899999948,
+    0.08641824099999873,
+    0.08631530899999973,
+    0.08515824100000025,
+    0.08712763199999962,
+    0.09049363799999988,
+    0.08858270300000015,
+    0.08640828400000089,
+    0.08540292699999874,
+    0.08722959800000041,
+    0.09776820799999975,
+    0.09703154500000011,
+    0.09520374900000128,
+    0.09748641000000013,
+    0.09197487299999985,
+    0.08719295300000063,
+    0.08559042799999972,
+    0.08472039399999964,
+    0.08635399200000116,
+    0.0855769430000013,
+    0.08564489199999947,
+    0.08462666700000021,
+    0.08633051900000055,
+    0.08437781900000019,
+    0.08566545100000056,
+    0.08937847199999993,
+    0.08524399899999935,
+    0.08544775700000073,
+    0.0902032540000004,
+    0.08329692400000077,
+    0.08452407499999914,
+    0.08472699100000014,
+    0.0850526519999999,
+    0.08689109699999875,
+    0.0846795560000011,
+    0.08553680699999866,
+    0.08560014699999918,
+    0.08757595099999982,
+    0.08582023800000016,
+    0.08373433000000041,
+    0.08632208999999946,
+    0.08426720200000126,
+    0.08559935600000124,
+    0.08563762900000071,
+    0.08449464499999948,
+    0.08430182299999878,
+    0.08551374299999992,
+    0.08925771799999893,
+    0.084647523000001,
+    0.08750534300000012,
+    0.08540720999999962,
+    0.08419946399999922,
+    0.08482633099999859,
+    0.08502985299999821,
+    0.08556562700000114,
+    0.0908129570000007,
+    0.09140921599999885,
+    0.0892717189999992,
+    0.08565167500000115,
+    0.08647681000000063,
+    0.0836979840000005,
+    0.08813284400000043,
+    0.08638801000000029,
+    0.08484853299999884,
+    0.08537621099999981,
+    0.08925981700000207,
+    0.08680784899999949,
+    0.08547154700000092,
+    0.09183693700000006,
+    0.08589657499999959,
+    0.08756652299999956,
+    0.08786132700000238,
+    0.09113704099999964,
+    0.10537022599999801,
+    0.09564484200000223,
+    0.09591138000000043,
+    0.09794939400000047,
+    0.08798438699999878,
+    0.08667200300000033,
+    0.0874869469999986,
+    0.08533176399999931,
+    0.08691664799999899,
+    0.08780115500000107,
+    0.08539175799999654,
+    0.08491740300000217,
+    0.08390039500000057,
+    0.08446175199999928,
+    0.0899995529999984,
+    0.08621324299999955,
+    0.08615076999999971,
+    0.08369163300000082,
+    0.08472907100000171,
+    0.08323182399999851,
+    0.08568127199999864,
+    0.08922523000000027,
+    0.08487463400000195,
+    0.08557731899999865,
+    0.09314509500000057,
+    0.08571956899999833,
+    0.08463382400000086,
+    0.08609869500000045,
+    0.08777115500000221,
+    0.08510163900000123,
+    0.08449996499999912,
+    0.08909901000000175,
+    0.09372439200000215,
+    0.09536150899999996,
+    0.08407257700000059,
+    0.08533914099999862,
+    0.0837998930000019,
+    0.08606289200000106,
+    0.08343379600000134,
+    0.08640014300000232,
+    0.0843694389999996,
+    0.08955647100000164,
+    0.08297368299999874,
+    0.084826826999997,
+    0.08805822700000121,
+    0.0969382319999994,
+    0.08434450900000101,
+    0.08272931200000144,
+    0.08365792300000052,
+    0.08361933399999799,
+    0.08836906400000188,
+    0.08576030700000103,
+    0.0861432139999998,
+    0.08710439700000094,
+    0.0907814579999986,
+    0.09246537399999966,
+    0.08957030700000246,
+    0.08485707399999853,
+    0.085066427000001,
+    0.08380674200000016,
+    0.08510359699999981,
+    0.09275963800000042,
+    0.10312619199999773,
+    0.09861501900000036,
+    0.09877844699999727,
+    0.08835495499999979,
+    0.08909275699999952,
+    0.08759633600000072,
+    0.0849071600000002,
+    0.08966920499999986,
+    0.08645274799999925,
+    0.08477222300000165,
+    0.09365450800000019,
+    0.0851480269999989,
+    0.0844883490000008,
+    0.08783478699999847,
+    0.1003397609999972,
+    0.09628792099999828,
+    0.08447184599999957,
+    0.0856012789999987,
+    0.08986868400000247,
+    0.08505529099999976,
+    0.08411156600000069,
+    0.08502182600000197,
+    0.08596006200000161,
+    0.08695347000000098,
+    0.08748601099999931,
+    0.08519589599999833,
+    0.08897647199999881,
+    0.08561015599999777,
+    0.0929136239999977,
+    0.08950492299999979,
+    0.09000615499999753,
+    0.09117366599999954,
+    0.0885141489999981,
+    0.09337261999999669,
+    0.10260968899999767,
+    0.09135683899999947,
+    0.0891394830000003,
+    0.08529788200000255,
+    0.09325094899999797,
+    0.09251818899999975,
+    0.08686304299999748,
+    0.08533207199999993,
+    0.08423438000000161,
+    0.08546346700000029,
+    0.08408070700000181,
+    0.08902572699999922,
+    0.09671448499999968
+  ],
+  "variable_update_seconds": 3.2426227430000054,
+  "lattice_recalculation_seconds": 0.13199504099999526,
+  "output_query_seconds": 14.190376157999983,
+  "write_seconds": 0.3750944529999991,
+  "lattice": "/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/orbit/reference/cesr_bmad_compatible.bmad",
+  "python_version": "3.14.6",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "tao_version_raw": [
+    "Version: 20260801-1"
+  ],
+  "parameters": [
+    {
+      "label": "COR:H01W",
+      "family": "corrector",
+      "reference": "h_steer[0]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB01",
+      "family": "corrector",
+      "reference": "h_steer[1]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H02W",
+      "family": "corrector",
+      "reference": "h_steer[2]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB02",
+      "family": "corrector",
+      "reference": "h_steer[3]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H03W",
+      "family": "corrector",
+      "reference": "h_steer[4]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB03",
+      "family": "corrector",
+      "reference": "h_steer[5]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H04W",
+      "family": "corrector",
+      "reference": "h_steer[6]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB04",
+      "family": "corrector",
+      "reference": "h_steer[7]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB05",
+      "family": "corrector",
+      "reference": "h_steer[8]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB06",
+      "family": "corrector",
+      "reference": "h_steer[9]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H08W",
+      "family": "corrector",
+      "reference": "h_steer[10]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H10W",
+      "family": "corrector",
+      "reference": "h_steer[11]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H12W",
+      "family": "corrector",
+      "reference": "h_steer[12]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H14W",
+      "family": "corrector",
+      "reference": "h_steer[13]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H16W",
+      "family": "corrector",
+      "reference": "h_steer[14]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H18W",
+      "family": "corrector",
+      "reference": "h_steer[15]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H20W",
+      "family": "corrector",
+      "reference": "h_steer[16]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H22W",
+      "family": "corrector",
+      "reference": "h_steer[17]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H24W",
+      "family": "corrector",
+      "reference": "h_steer[18]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H26W",
+      "family": "corrector",
+      "reference": "h_steer[19]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H28W",
+      "family": "corrector",
+      "reference": "h_steer[20]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H30W",
+      "family": "corrector",
+      "reference": "h_steer[21]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H32W",
+      "family": "corrector",
+      "reference": "h_steer[22]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H34W",
+      "family": "corrector",
+      "reference": "h_steer[23]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H36W",
+      "family": "corrector",
+      "reference": "h_steer[24]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H38W",
+      "family": "corrector",
+      "reference": "h_steer[25]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H40W",
+      "family": "corrector",
+      "reference": "h_steer[26]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H42W",
+      "family": "corrector",
+      "reference": "h_steer[27]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H44W",
+      "family": "corrector",
+      "reference": "h_steer[28]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H46W",
+      "family": "corrector",
+      "reference": "h_steer[29]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H47W",
+      "family": "corrector",
+      "reference": "h_steer[30]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H49W",
+      "family": "corrector",
+      "reference": "h_steer[31]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H49E",
+      "family": "corrector",
+      "reference": "h_steer[32]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H47E",
+      "family": "corrector",
+      "reference": "h_steer[33]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H46E",
+      "family": "corrector",
+      "reference": "h_steer[34]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H44E",
+      "family": "corrector",
+      "reference": "h_steer[35]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H42E",
+      "family": "corrector",
+      "reference": "h_steer[36]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H40E",
+      "family": "corrector",
+      "reference": "h_steer[37]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H38E",
+      "family": "corrector",
+      "reference": "h_steer[38]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H36E",
+      "family": "corrector",
+      "reference": "h_steer[39]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H34E",
+      "family": "corrector",
+      "reference": "h_steer[40]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H32E",
+      "family": "corrector",
+      "reference": "h_steer[41]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H30E",
+      "family": "corrector",
+      "reference": "h_steer[42]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H28E",
+      "family": "corrector",
+      "reference": "h_steer[43]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H26E",
+      "family": "corrector",
+      "reference": "h_steer[44]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H24E",
+      "family": "corrector",
+      "reference": "h_steer[45]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H22E",
+      "family": "corrector",
+      "reference": "h_steer[46]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H20E",
+      "family": "corrector",
+      "reference": "h_steer[47]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H18E",
+      "family": "corrector",
+      "reference": "h_steer[48]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H16E",
+      "family": "corrector",
+      "reference": "h_steer[49]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H14E",
+      "family": "corrector",
+      "reference": "h_steer[50]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H12E",
+      "family": "corrector",
+      "reference": "h_steer[51]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H10E",
+      "family": "corrector",
+      "reference": "h_steer[52]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H08E",
+      "family": "corrector",
+      "reference": "h_steer[53]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H04E",
+      "family": "corrector",
+      "reference": "h_steer[54]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H03E",
+      "family": "corrector",
+      "reference": "h_steer[55]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H02E",
+      "family": "corrector",
+      "reference": "h_steer[56]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H01E",
+      "family": "corrector",
+      "reference": "h_steer[57]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V01W",
+      "family": "corrector",
+      "reference": "v_steer[0]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V02W",
+      "family": "corrector",
+      "reference": "v_steer[1]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V04W",
+      "family": "corrector",
+      "reference": "v_steer[2]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V05W",
+      "family": "corrector",
+      "reference": "v_steer[3]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V06W",
+      "family": "corrector",
+      "reference": "v_steer[4]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V07W",
+      "family": "corrector",
+      "reference": "v_steer[5]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V08W",
+      "family": "corrector",
+      "reference": "v_steer[6]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V09W",
+      "family": "corrector",
+      "reference": "v_steer[7]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V10W",
+      "family": "corrector",
+      "reference": "v_steer[8]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V11W",
+      "family": "corrector",
+      "reference": "v_steer[9]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V13W",
+      "family": "corrector",
+      "reference": "v_steer[10]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V15W",
+      "family": "corrector",
+      "reference": "v_steer[11]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V16W",
+      "family": "corrector",
+      "reference": "v_steer[12]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V17W",
+      "family": "corrector",
+      "reference": "v_steer[13]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V19W",
+      "family": "corrector",
+      "reference": "v_steer[14]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V21W",
+      "family": "corrector",
+      "reference": "v_steer[15]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V23W",
+      "family": "corrector",
+      "reference": "v_steer[16]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V25W",
+      "family": "corrector",
+      "reference": "v_steer[17]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V27W",
+      "family": "corrector",
+      "reference": "v_steer[18]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V29W",
+      "family": "corrector",
+      "reference": "v_steer[19]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V31W",
+      "family": "corrector",
+      "reference": "v_steer[20]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V33W",
+      "family": "corrector",
+      "reference": "v_steer[21]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V35W",
+      "family": "corrector",
+      "reference": "v_steer[22]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V37W",
+      "family": "corrector",
+      "reference": "v_steer[23]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V39W",
+      "family": "corrector",
+      "reference": "v_steer[24]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V41W",
+      "family": "corrector",
+      "reference": "v_steer[25]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V43W",
+      "family": "corrector",
+      "reference": "v_steer[26]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V45W",
+      "family": "corrector",
+      "reference": "v_steer[27]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V47W",
+      "family": "corrector",
+      "reference": "v_steer[28]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V48W",
+      "family": "corrector",
+      "reference": "v_steer[29]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V49W",
+      "family": "corrector",
+      "reference": "v_steer[30]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V49E",
+      "family": "corrector",
+      "reference": "v_steer[31]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V48E",
+      "family": "corrector",
+      "reference": "v_steer[32]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V47E",
+      "family": "corrector",
+      "reference": "v_steer[33]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V45E",
+      "family": "corrector",
+      "reference": "v_steer[34]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V43E",
+      "family": "corrector",
+      "reference": "v_steer[35]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V41E",
+      "family": "corrector",
+      "reference": "v_steer[36]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V39E",
+      "family": "corrector",
+      "reference": "v_steer[37]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V37E",
+      "family": "corrector",
+      "reference": "v_steer[38]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V35E",
+      "family": "corrector",
+      "reference": "v_steer[39]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V34E",
+      "family": "corrector",
+      "reference": "v_steer[40]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V33E",
+      "family": "corrector",
+      "reference": "v_steer[41]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V31E",
+      "family": "corrector",
+      "reference": "v_steer[42]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V29E",
+      "family": "corrector",
+      "reference": "v_steer[43]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V27E",
+      "family": "corrector",
+      "reference": "v_steer[44]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V25E",
+      "family": "corrector",
+      "reference": "v_steer[45]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V23E",
+      "family": "corrector",
+      "reference": "v_steer[46]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V21E",
+      "family": "corrector",
+      "reference": "v_steer[47]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V19E",
+      "family": "corrector",
+      "reference": "v_steer[48]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V17E",
+      "family": "corrector",
+      "reference": "v_steer[49]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V15E",
+      "family": "corrector",
+      "reference": "v_steer[50]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V13E",
+      "family": "corrector",
+      "reference": "v_steer[51]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V11E",
+      "family": "corrector",
+      "reference": "v_steer[52]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V09E",
+      "family": "corrector",
+      "reference": "v_steer[53]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V08E",
+      "family": "corrector",
+      "reference": "v_steer[54]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V07E",
+      "family": "corrector",
+      "reference": "v_steer[55]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V06E",
+      "family": "corrector",
+      "reference": "v_steer[56]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V05E",
+      "family": "corrector",
+      "reference": "v_steer[57]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V04E",
+      "family": "corrector",
+      "reference": "v_steer[58]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V02E",
+      "family": "corrector",
+      "reference": "v_steer[59]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V01E",
+      "family": "corrector",
+      "reference": "v_steer[60]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "name": "Q00E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.84178483645302,
+      "label": "K1:Q00E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q00W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.84178483645302,
+      "label": "K1:Q00W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q01E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.639155,
+      "label": "K1:Q01E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q01W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.639155,
+      "label": "K1:Q01W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q02E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.206328,
+      "label": "K1:Q02E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q02W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.206328,
+      "label": "K1:Q02W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q03E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.128947,
+      "label": "K1:Q03E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q03W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.128947,
+      "label": "K1:Q03W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q04E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.420143,
+      "label": "K1:Q04E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q04W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.420143,
+      "label": "K1:Q04W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q05E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.373608,
+      "label": "K1:Q05E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q05W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.373608,
+      "label": "K1:Q05W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q06E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.421931,
+      "label": "K1:Q06E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q06W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.421931,
+      "label": "K1:Q06W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q07E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.246488,
+      "label": "K1:Q07E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q07W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.246488,
+      "label": "K1:Q07W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q08E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.144685,
+      "label": "K1:Q08E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q08W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.144685,
+      "label": "K1:Q08W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q09E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.190367,
+      "label": "K1:Q09E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q09W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.19165,
+      "label": "K1:Q09W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q10E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.266253,
+      "label": "K1:Q10E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q10W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.265126,
+      "label": "K1:Q10W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q11E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.20311,
+      "label": "K1:Q11E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q11W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.203919,
+      "label": "K1:Q11W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q12E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.263148,
+      "label": "K1:Q12E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q12W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.267546,
+      "label": "K1:Q12W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q13E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.212727,
+      "label": "K1:Q13E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q13W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.21212,
+      "label": "K1:Q13W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q14E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.27781,
+      "label": "K1:Q14E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q14W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.27781,
+      "label": "K1:Q14W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q15E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225322,
+      "label": "K1:Q15E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q15W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225322,
+      "label": "K1:Q15W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q16E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.272512,
+      "label": "K1:Q16E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q16W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.272512,
+      "label": "K1:Q16W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q17E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.270314,
+      "label": "K1:Q17E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q17W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.270314,
+      "label": "K1:Q17W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q18E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228205,
+      "label": "K1:Q18E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q18W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228205,
+      "label": "K1:Q18W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q19E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.321716,
+      "label": "K1:Q19E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q19W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.321716,
+      "label": "K1:Q19W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q20E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234421,
+      "label": "K1:Q20E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q20W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234421,
+      "label": "K1:Q20W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q21E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.277998,
+      "label": "K1:Q21E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q21W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.277998,
+      "label": "K1:Q21W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q22E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.255022,
+      "label": "K1:Q22E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q22W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.255022,
+      "label": "K1:Q22W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q23E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.25753,
+      "label": "K1:Q23E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q23W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.25753,
+      "label": "K1:Q23W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q24E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247642,
+      "label": "K1:Q24E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q24W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247642,
+      "label": "K1:Q24W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q25E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.31703,
+      "label": "K1:Q25E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q25W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.31703,
+      "label": "K1:Q25W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q26E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247656,
+      "label": "K1:Q26E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q26W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247656,
+      "label": "K1:Q26W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q27E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.306087,
+      "label": "K1:Q27E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q27W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.306087,
+      "label": "K1:Q27W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q28E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.250556,
+      "label": "K1:Q28E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q28W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.250556,
+      "label": "K1:Q28W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q29E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225074,
+      "label": "K1:Q29E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q29W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225074,
+      "label": "K1:Q29W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q30E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.24048,
+      "label": "K1:Q30E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q30W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.24048,
+      "label": "K1:Q30W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q31E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.204765,
+      "label": "K1:Q31E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q31W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.204765,
+      "label": "K1:Q31W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q32E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.19573,
+      "label": "K1:Q32E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q32W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.19573,
+      "label": "K1:Q32W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q33E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.192521,
+      "label": "K1:Q33E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q33W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.192521,
+      "label": "K1:Q33W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q34E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.231217,
+      "label": "K1:Q34E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q34W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.231217,
+      "label": "K1:Q34W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q35E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.161904,
+      "label": "K1:Q35E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q35W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.161904,
+      "label": "K1:Q35W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q36E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.208172,
+      "label": "K1:Q36E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q36W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.208172,
+      "label": "K1:Q36W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q37E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.220991,
+      "label": "K1:Q37E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q37W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.220991,
+      "label": "K1:Q37W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q38E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.236366,
+      "label": "K1:Q38E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q38W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.236366,
+      "label": "K1:Q38W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q39E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.207659,
+      "label": "K1:Q39E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q39W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.207659,
+      "label": "K1:Q39W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q40E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228319,
+      "label": "K1:Q40E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q40W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228319,
+      "label": "K1:Q40W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q41E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.226064,
+      "label": "K1:Q41E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q41W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.226064,
+      "label": "K1:Q41W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q42E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.22907,
+      "label": "K1:Q42E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q42W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.22907,
+      "label": "K1:Q42W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43AE",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234224,
+      "label": "K1:Q43AE",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43AW",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234224,
+      "label": "K1:Q43AW",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.237661,
+      "label": "K1:Q43E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.237661,
+      "label": "K1:Q43W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q44E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225715,
+      "label": "K1:Q44E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q44W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225715,
+      "label": "K1:Q44W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q45E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.305287,
+      "label": "K1:Q45E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q45W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.305287,
+      "label": "K1:Q45W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q46E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.235653,
+      "label": "K1:Q46E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q46W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.235653,
+      "label": "K1:Q46W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47AE",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.356866,
+      "label": "K1:Q47AE",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47AW",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.356866,
+      "label": "K1:Q47AW",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.405364,
+      "label": "K1:Q47E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.405364,
+      "label": "K1:Q47W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q48E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.555738,
+      "label": "K1:Q48E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q48W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.555738,
+      "label": "K1:Q48W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49AE",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.0930455,
+      "label": "K1:Q49AE",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49AW",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.0930455,
+      "label": "K1:Q49AW",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.317601,
+      "label": "K1:Q49E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.317601,
+      "label": "K1:Q49W",
+      "family": "quadrupole",
+      "step": 1e-06
+    }
+  ]
+}

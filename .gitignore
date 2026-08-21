@@ -10,3 +10,18 @@ PROJECT_MEMORY.md
 # Generated Tao control-response artifacts.
 *.npy
 *.init
+
+# Local manuscript workspace and generated paper artifacts. Keep the maintained
+# experiment entry points and scope/result documentation visible to version
+# control while ignoring the local TeX build workspace.
+dataset_benchmark/orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/*
+!dataset_benchmark/orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/README.md
+!dataset_benchmark/orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/README_archived.md
+!dataset_benchmark/orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/run_latest_cesr_experiments.ps1
+!dataset_benchmark/orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_analysis/validate_latest_cesr_results.py
+
+# Large generated optics data tables. Keep analysis code and compact summaries
+# under version control, but regenerate these high-volume detector/state dumps.
+dataset_benchmark/optics/sextupole_alignment_gtpsa/sextupole_excitation_validity_envelope/results/analysis/state_taylor_errors.csv
+dataset_benchmark/optics/results/**/bmad_detector_chromatic_twiss.csv
+dataset_benchmark/optics/results/**/scibmad_detector_chromatic_twiss.csv

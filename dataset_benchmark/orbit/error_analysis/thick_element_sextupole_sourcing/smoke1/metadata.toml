@@ -1,0 +1,9 @@
+base_kick_rad = 5.0e-6
+date = "2026-08-07"
+format = "cesr-thick-element-hessian-sourcing-v1"
+local_source = "exact complete-element Hessian source g_j = S_exit - A_j*S_entrance"
+projection = "ensemble dot(C_j,Q)/ensemble norm(Q)^2"
+seed = 20260804
+source_coordinates = "six-dimensional canonical state at element exit"
+target = "Q_x = Q_hh,x + Q_hv,x + Q_vv,x at 99 detectors"
+trials = 1

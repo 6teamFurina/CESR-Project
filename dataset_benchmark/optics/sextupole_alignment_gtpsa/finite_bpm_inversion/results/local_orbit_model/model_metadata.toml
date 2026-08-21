@@ -1,0 +1,14 @@
+bpm_count = 111
+closed_orbit_seconds = 13.1881599
+coordinate_order = "x, px, y, py, z, pz"
+corrector_count = 62
+date = "2026-08-18"
+engine = "SciBmad latest-lattice nominal RF-on response and transport"
+format = "cesr-finite-bpm-local-orbit-model-v1"
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+location_convention = "first element-entry occurrence by base name"
+response_descriptor = "Descriptor(6, 2, 62, 1)"
+response_seconds = 95.7705561
+target_count = 76
+transport_descriptor = "Descriptor(6, 1)"
+transport_seconds = 23.3467933

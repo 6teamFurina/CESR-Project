@@ -29,8 +29,8 @@ def read_samples(path: Path) -> tuple[list[int], list[str], list[list[float]]]:
     if len(rows) < 2 or rows[0][0] != "sample_id":
         raise RuntimeError(f"Invalid sample CSV: {path}")
     names = rows[0][1:]
-    if len(names) != 119 or len(set(names)) != 119:
-        raise RuntimeError(f"Expected 119 unique controls, found {len(names)}")
+    if not names or len(set(names)) != len(names):
+        raise RuntimeError(f"Control names are empty or duplicated in {path}")
 
     sample_ids: list[int] = []
     values: list[list[float]] = []
@@ -45,24 +45,30 @@ def read_samples(path: Path) -> tuple[list[int], list[str], list[list[float]]]:
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--ring",
+        choices=("latest", "legacy"),
+        default="latest",
+        help="Select the latest Bmad reference lattice, or explicitly reproduce the archived CESR lattice",
+    )
+    parser.add_argument(
         "--inputs",
         type=Path,
-        default=HERE / "inputs" / "cesr_corrector_samples_1000.csv",
+        default=None,
     )
     parser.add_argument(
         "--lattice",
         type=Path,
-        default=ORBIT_ROOT / "reference" / "cesr_bmad_compatible.bmad",
+        default=None,
     )
     parser.add_argument(
         "--output",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "bmad" / "bmad_rf_on_samples.csv",
+        default=None,
     )
     parser.add_argument(
         "--metadata",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "bmad" / "bmad_rf_on_metadata.json",
+        default=None,
     )
     parser.add_argument("--mode", choices=("rf_on",), default="rf_on")
     parser.add_argument("--warmup-samples", type=int, default=2)
@@ -143,15 +149,41 @@ def write_outputs(
 
 def main() -> int:
     args = make_parser().parse_args()
-    inputs = args.inputs.expanduser().resolve()
-    lattice = args.lattice.expanduser().resolve()
-    output = args.output.expanduser().resolve()
-    metadata_path = args.metadata.expanduser().resolve()
+    latest = args.ring == "latest"
+    defaults = {
+        "inputs": (
+            HERE / "inputs" / "latest_cesr" / "corrector_samples.csv"
+            if latest
+            else HERE / "inputs" / "cesr_corrector_samples_1000.csv"
+        ),
+        "lattice": (
+            PROJECT_ROOT / "Latest_Lattice" / "lat.bmad"
+            if latest
+            else ORBIT_ROOT / "reference" / "cesr_bmad_compatible.bmad"
+        ),
+        "output": HERE / "results" / ("latest_cesr" if latest else "legacy") / "bmad_reference" / "bmad_rf_on_samples.csv",
+        "metadata": HERE / "results" / ("latest_cesr" if latest else "legacy") / "bmad_reference" / "bmad_rf_on_metadata.json",
+    }
+    inputs = (args.inputs or defaults["inputs"]).expanduser().resolve()
+    lattice = (args.lattice or defaults["lattice"]).expanduser().resolve()
+    output = (args.output or defaults["output"]).expanduser().resolve()
+    metadata_path = (args.metadata or defaults["metadata"]).expanduser().resolve()
     sample_ids, names, samples = read_samples(inputs)
     detectors, horizontal, vertical = response_tools.parse_cesr_layout(lattice)
     expected_names = horizontal + vertical
-    if names != expected_names:
-        raise RuntimeError("Input control order differs from the Bmad lattice order")
+    input_names = list(names)
+    if set(input_names) != set(expected_names):
+        missing = sorted(set(expected_names).difference(input_names))
+        extra = sorted(set(input_names).difference(expected_names))
+        raise RuntimeError(
+            f"Input controls do not match the Bmad lattice; missing={missing}, extra={extra}"
+        )
+    input_indices = {name: index for index, name in enumerate(input_names)}
+    samples = [
+        [sample[input_indices[name]] for name in expected_names]
+        for sample in samples
+    ]
+    names = expected_names
     references = variable_references(horizontal, vertical)
 
     init_path = output.parent / "tao_dataset_benchmark_rf_on.init"
@@ -187,9 +219,6 @@ def main() -> int:
     ] + [
         f"{row['ele_name'].upper()}:y" for row in y_rows
     ]
-    if len(labels) != 198:
-        raise RuntimeError(f"Expected 198 observables, found {len(labels)}")
-
     warmup_count = min(args.warmup_samples, len(samples))
     if warmup_count < 1:
         raise ValueError("--warmup-samples must be positive")
@@ -226,9 +255,10 @@ def main() -> int:
 
     raw_version = tao.cmd("show version", raises=False)
     metadata = {
-        "format": "cesr-dataset-benchmark-v1",
+        "format": "ring-bmad-reference-benchmark-v2",
         "engine": "Bmad/Tao/PyTao",
         "mode": args.mode,
+        "ring": "latest_cesr" if latest else "legacy",
         "input_csv": str(inputs),
         "lattice": str(lattice),
         "output_csv": str(output),
@@ -236,6 +266,10 @@ def main() -> int:
         "control_count": len(names),
         "observable_count": len(labels),
         "detector_count": len(detectors),
+        "control_names": names,
+        "input_control_names": input_names,
+        "detector_names": detectors,
+        "observable_labels": labels,
         "converged_count": sum(converged),
         "failed_count": len(converged) - sum(converged),
         "initialization_seconds": initialization_seconds,
@@ -250,7 +284,7 @@ def main() -> int:
         "platform": platform.platform(),
         "tao_version_raw": raw_version,
         "execution_model": (
-            "one persistent Tao instance; 119 variable commands batched with "
+            f"one persistent Tao instance; {len(names)} variable commands batched with "
             "suppress_lattice_calc=True; one model recalculation per sample"
         ),
         "timed_region": "variable update + lattice recalculation + observable read",

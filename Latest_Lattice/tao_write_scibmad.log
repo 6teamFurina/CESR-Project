@@ -1,0 +1,334 @@
+[MESSAGE | 2026-AUG-16 13:40:53] tao_init:
+    OpenMP active with number of threads: 16
+[MESSAGE | 2026-AUG-16 13:40:54] bmad_parser:
+    Lattice parse time (min): 0.00
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (1>>0)
+    Using Twiss from fork element: LS_4B (0>>6)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (2>>0)
+    Using Twiss from fork element: LS_7A (0>>154)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (3>>0)
+    Using Twiss from fork element: LS_7B1_7B2 (0>>162)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (4>>0)
+    Using Twiss from fork element: LS_1A1_1A2_1A3 (0>>1000)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (5>>0)
+    Using Twiss from fork element: FORK_S1A1 (4>>4)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (6>>0)
+    Using Twiss from fork element: FORK_S1A2_S1A3 (4>>5)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (7>>0)
+    Using Twiss from fork element: LS_2A (0>>1050)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (8>>0)
+    Using Twiss from fork element: LS_2B (0>>1058)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (9>>0)
+    Using Twiss from fork element: LS_3A (0>>1110)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (10>>0)
+    Using Twiss from fork element: LS_3B (0>>1120)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (11>>0)
+    Using Twiss from fork element: LS_4A (0>>1172)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (5>>0)
+    Using Twiss from fork element: FORK_S1A1 (4>>4)
+[INFO] tao_inject_particle:
+    Twiss not set for: BEGINNING (6>>0)
+    Using Twiss from fork element: FORK_S1A2_S1A3 (4>>5)
+
+Tao> write scibmad latest_cesr_scibmad.jl
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GIRDER ELEMENTS CANNOT YET BE TRANSLATED!
+ GROUP ELEMENTS CANNOT YET BE TRANSLATED!
+ GROUP ELEMENTS CANNOT YET BE TRANSLATED!
+ GROUP ELEMENTS CANNOT YET BE TRANSLATED!
+ GROUP ELEMENTS CANNOT YET BE TRANSLATED!
+ GROUP ELEMENTS CANNOT YET BE TRANSLATED!
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+ Attribute not yet coded for translation: VKICK
+ Please report this.
+ Attribute not yet coded for translation: HKICK
+ Please report this.
+[INFO] tao_write_cmd:
+    Written: latest_cesr_scibmad.jl
+
+Tao> quit
+[INFO 2026-AUG-16 13:40:54] tao_command:
+    Stopping.

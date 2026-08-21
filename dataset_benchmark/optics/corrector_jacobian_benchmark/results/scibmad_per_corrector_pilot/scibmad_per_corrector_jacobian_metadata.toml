@@ -1,0 +1,52 @@
+GTPSA_descriptor = "Descriptor(6, 2, 1, 1)"
+baseline_closed_orbit_residual = 3.5752650839881994e-15
+baseline_closed_orbit_seconds = 53.6510848
+closed_orbit_jacobian_shape = [6, 1]
+control_count = 1
+controls = ["H01W"]
+corrector_parameter_order = 1
+detector_count = 99
+detector_jacobian_shape = [1782, 1]
+detector_quantity_count = 18
+engine = "SciBmad/GTPSA"
+extraction_allocated_bytes = 1074591
+extraction_seconds_per_corrector = [0.0010428]
+extraction_warmup_seconds = 0.5175599
+format = "cesr-per-corrector-optics-jacobian-v1"
+implicit_response_allocated_bytes = 360145704
+implicit_response_max_abs_residual = 2.220446049250313e-16
+implicit_response_seconds = 0.4676199
+implicit_response_seconds_per_corrector = [0.4676199]
+implicit_response_warmup_seconds = 40.9074465
+input_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\Orbit_Calculation\\inputs\\cesr_corrector_samples_1000.csv"
+jacobian_extraction_seconds = 0.0010428
+julia_threads = 1
+julia_version = "1.12.6"
+loop_wall_seconds = 2.1271651
+method = "one Descriptor(6,2,1,1) parameterized Twiss per corrector"
+model_setup_seconds = 0.2446181
+optics_only_seconds = 1.3595443
+parameter_activation_seconds = 2.42e-5
+parameterized_twiss_seconds = 1.3584773
+phase_space_order = 2
+physics_seconds_with_separate_start_orbit_response = 1.8271642
+rf_mode = "off (4D coasting)"
+ring_tune_jacobian_shape = [3, 1]
+timed_region = "119 serial P=1 parameter activations, implicit responses, Twiss calls, and coefficient extractions"
+twiss_allocated_bytes = 738616819
+twiss_seconds_per_corrector = [1.3584773]
+twiss_warmup_seconds = 46.3550978
+warmup_enabled = true
+write_seconds = 0.0274667
+
+[implicit_response_seconds_distribution]
+maximum = 0.4676199
+mean = 0.4676199
+median = 0.4676199
+minimum = 0.4676199
+
+[twiss_seconds_distribution]
+maximum = 1.3584773
+mean = 1.3584773
+median = 1.3584773
+minimum = 1.3584773

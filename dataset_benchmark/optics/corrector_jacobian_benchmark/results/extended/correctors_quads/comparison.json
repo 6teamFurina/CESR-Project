@@ -1,0 +1,470 @@
+{
+  "detector_optics": {
+    "shape": [
+      1782,
+      225
+    ],
+    "overall": {
+      "relative_frobenius": 0.020731374536162424,
+      "cosine_correlation": 0.999888005276572,
+      "maximum_absolute_difference": 2530.483038652528,
+      "reference_maximum_absolute": 125576.87696846643
+    },
+    "by_parameter_family": {
+      "corrector": {
+        "relative_frobenius": 0.020866695460625174,
+        "cosine_correlation": 0.9998871037185187,
+        "maximum_absolute_difference": 2530.483038652528,
+        "reference_maximum_absolute": 125576.87696846643
+      },
+      "quadrupole": {
+        "relative_frobenius": 0.010622519292765798,
+        "cosine_correlation": 0.9999675935762666,
+        "maximum_absolute_difference": 112.67943573819139,
+        "reference_maximum_absolute": 6327.525478241114
+      }
+    },
+    "by_quantity": {
+      "phi_1": {
+        "relative_frobenius": 0.017116651734310952,
+        "cosine_correlation": 0.99985965558025,
+        "maximum_absolute_difference": 0.5009507428609621,
+        "reference_maximum_absolute": 35.965576421048695
+      },
+      "beta_1": {
+        "relative_frobenius": 0.0175257626631975,
+        "cosine_correlation": 0.9998801825641026,
+        "maximum_absolute_difference": 899.1984515496515,
+        "reference_maximum_absolute": 57347.931418922475
+      },
+      "alpha_1": {
+        "relative_frobenius": 0.017393651867033635,
+        "cosine_correlation": 0.9999101631425967,
+        "maximum_absolute_difference": 629.3025548391961,
+        "reference_maximum_absolute": 39534.759245034584
+      },
+      "phi_2": {
+        "relative_frobenius": 0.014394028021018506,
+        "cosine_correlation": 0.9999067267089108,
+        "maximum_absolute_difference": 0.6888930858201974,
+        "reference_maximum_absolute": 49.30545861991931
+      },
+      "beta_2": {
+        "relative_frobenius": 0.022786202543711113,
+        "cosine_correlation": 0.9999032466178494,
+        "maximum_absolute_difference": 2530.483038652528,
+        "reference_maximum_absolute": 125576.87696846643
+      },
+      "alpha_2": {
+        "relative_frobenius": 0.022580996539045918,
+        "cosine_correlation": 0.9999056803003508,
+        "maximum_absolute_difference": 954.6429735894199,
+        "reference_maximum_absolute": 47868.07634878443
+      },
+      "phi_3": {
+        "relative_frobenius": null,
+        "cosine_correlation": null,
+        "maximum_absolute_difference": 3.6857170949759377,
+        "reference_maximum_absolute": 0.0
+      },
+      "gamma_c": {
+        "relative_frobenius": 0.017678120621416365,
+        "cosine_correlation": 0.9999150073207866,
+        "maximum_absolute_difference": 16.731019122435782,
+        "reference_maximum_absolute": 1056.1811666323085
+      },
+      "c11": {
+        "relative_frobenius": 0.017207872784399492,
+        "cosine_correlation": 0.9999033372596204,
+        "maximum_absolute_difference": 130.97855537980195,
+        "reference_maximum_absolute": 8455.834488394341
+      },
+      "c12": {
+        "relative_frobenius": 0.016483503039142408,
+        "cosine_correlation": 0.9998974752697888,
+        "maximum_absolute_difference": 349.79919023689035,
+        "reference_maximum_absolute": 22194.657514938655
+      },
+      "c21": {
+        "relative_frobenius": 0.01699690689818621,
+        "cosine_correlation": 0.9999065415820242,
+        "maximum_absolute_difference": 92.65864573208728,
+        "reference_maximum_absolute": 5892.809216186346
+      },
+      "c22": {
+        "relative_frobenius": 0.017088500397168957,
+        "cosine_correlation": 0.9999071958632728,
+        "maximum_absolute_difference": 243.4467466563492,
+        "reference_maximum_absolute": 15225.688385083648
+      },
+      "orbit_x": {
+        "relative_frobenius": 0.00047862494026246926,
+        "cosine_correlation": 0.9999998870498352,
+        "maximum_absolute_difference": 0.009642708518364351,
+        "reference_maximum_absolute": 20.669309634289633
+      },
+      "orbit_px": {
+        "relative_frobenius": 0.00045576115335295344,
+        "cosine_correlation": 0.9999999128700937,
+        "maximum_absolute_difference": 0.0050439021531936135,
+        "reference_maximum_absolute": 11.237039450317457
+      },
+      "orbit_y": {
+        "relative_frobenius": 0.0024715573864046584,
+        "cosine_correlation": 0.9999970623243315,
+        "maximum_absolute_difference": 0.06725871840069697,
+        "reference_maximum_absolute": 23.5131223549973
+      },
+      "orbit_py": {
+        "relative_frobenius": 0.0014284234710209452,
+        "cosine_correlation": 0.9999994528990372,
+        "maximum_absolute_difference": 0.025613201699290045,
+        "reference_maximum_absolute": 22.33493382372445
+      },
+      "orbit_z": {
+        "relative_frobenius": 0.9975582492691841,
+        "cosine_correlation": 0.07076867822049376,
+        "maximum_absolute_difference": 3.9043875953545513,
+        "reference_maximum_absolute": 3.6859290070812403
+      },
+      "orbit_pz": {
+        "relative_frobenius": 1.0,
+        "cosine_correlation": null,
+        "maximum_absolute_difference": 3.1763735522036263e-15,
+        "reference_maximum_absolute": 3.1763735522036263e-15
+      }
+    },
+    "by_quantity_and_parameter_family": {
+      "phi_1": {
+        "corrector": {
+          "relative_frobenius": 0.019541689803234008,
+          "cosine_correlation": 0.9998138319236205,
+          "maximum_absolute_difference": 0.5009507428609621,
+          "reference_maximum_absolute": 35.965576421048695
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.005146384858076477,
+          "cosine_correlation": 0.9999980476718446,
+          "maximum_absolute_difference": 0.1468580478963588,
+          "reference_maximum_absolute": 29.089985411401287
+        }
+      },
+      "beta_1": {
+        "corrector": {
+          "relative_frobenius": 0.0181405506663205,
+          "cosine_correlation": 0.9998718813910616,
+          "maximum_absolute_difference": 899.1984515496515,
+          "reference_maximum_absolute": 57347.931418922475
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.005351679000804737,
+          "cosine_correlation": 0.9999944885742822,
+          "maximum_absolute_difference": 43.08106737673643,
+          "reference_maximum_absolute": 6327.525478241114
+        }
+      },
+      "alpha_1": {
+        "corrector": {
+          "relative_frobenius": 0.017440671600239915,
+          "cosine_correlation": 0.999909775196192,
+          "maximum_absolute_difference": 629.3025548391961,
+          "reference_maximum_absolute": 39534.759245034584
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.007174955965375335,
+          "cosine_correlation": 0.9999876301429451,
+          "maximum_absolute_difference": 22.389410270852068,
+          "reference_maximum_absolute": 3226.6174072947965
+        }
+      },
+      "phi_2": {
+        "corrector": {
+          "relative_frobenius": 0.014673317394375097,
+          "cosine_correlation": 0.999901454891214,
+          "maximum_absolute_difference": 0.6888930858201974,
+          "reference_maximum_absolute": 49.30545861991931
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.009995864581940194,
+          "cosine_correlation": 0.9999836055069438,
+          "maximum_absolute_difference": 0.24124976171924928,
+          "reference_maximum_absolute": 21.825271605990793
+        }
+      },
+      "beta_2": {
+        "corrector": {
+          "relative_frobenius": 0.022819381998920047,
+          "cosine_correlation": 0.9999031011609547,
+          "maximum_absolute_difference": 2530.483038652528,
+          "reference_maximum_absolute": 125576.87696846643
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.018195955604098226,
+          "cosine_correlation": 0.9999304997734451,
+          "maximum_absolute_difference": 112.67943573819139,
+          "reference_maximum_absolute": 5374.843303584953
+        }
+      },
+      "alpha_2": {
+        "corrector": {
+          "relative_frobenius": 0.022588033371911516,
+          "cosine_correlation": 0.9999053863533865,
+          "maximum_absolute_difference": 954.6429735894199,
+          "reference_maximum_absolute": 47868.07634878443
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.021106340156853885,
+          "cosine_correlation": 0.9999664746498506,
+          "maximum_absolute_difference": 78.9692148623144,
+          "reference_maximum_absolute": 3438.1923511652703
+        }
+      },
+      "phi_3": {
+        "corrector": {
+          "relative_frobenius": null,
+          "cosine_correlation": null,
+          "maximum_absolute_difference": 3.6857170949759377,
+          "reference_maximum_absolute": 0.0
+        },
+        "quadrupole": {
+          "relative_frobenius": null,
+          "cosine_correlation": null,
+          "maximum_absolute_difference": 0.049110155060239455,
+          "reference_maximum_absolute": 0.0
+        }
+      },
+      "gamma_c": {
+        "corrector": {
+          "relative_frobenius": 0.017678531637360315,
+          "cosine_correlation": 0.9999149675873683,
+          "maximum_absolute_difference": 16.731019122435782,
+          "reference_maximum_absolute": 1056.1811666323085
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.01693621441000512,
+          "cosine_correlation": 0.9999971656273919,
+          "maximum_absolute_difference": 0.6581132430480352,
+          "reference_maximum_absolute": 39.2777416903245
+        }
+      },
+      "c11": {
+        "corrector": {
+          "relative_frobenius": 0.017208218392707766,
+          "cosine_correlation": 0.999903298905515,
+          "maximum_absolute_difference": 130.97855537980195,
+          "reference_maximum_absolute": 8455.834488394341
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.016525763672168816,
+          "cosine_correlation": 0.9999972926656348,
+          "maximum_absolute_difference": 5.115694814158019,
+          "reference_maximum_absolute": 310.98482676712723
+        }
+      },
+      "c12": {
+        "corrector": {
+          "relative_frobenius": 0.01648347419795273,
+          "cosine_correlation": 0.9998974464815198,
+          "maximum_absolute_difference": 349.79919023689035,
+          "reference_maximum_absolute": 22194.657514938655
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.016548766251406947,
+          "cosine_correlation": 0.9999968832568955,
+          "maximum_absolute_difference": 13.684397081608608,
+          "reference_maximum_absolute": 830.2922024056026
+        }
+      },
+      "c21": {
+        "corrector": {
+          "relative_frobenius": 0.016996842255830712,
+          "cosine_correlation": 0.9999065081105434,
+          "maximum_absolute_difference": 92.65864573208728,
+          "reference_maximum_absolute": 5892.809216186346
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.017123968765803157,
+          "cosine_correlation": 0.9999961824536577,
+          "maximum_absolute_difference": 3.5367893997294573,
+          "reference_maximum_absolute": 213.71472176837105
+        }
+      },
+      "c22": {
+        "corrector": {
+          "relative_frobenius": 0.017088682144965023,
+          "cosine_correlation": 0.9999071599473519,
+          "maximum_absolute_difference": 243.4467466563492,
+          "reference_maximum_absolute": 15225.688385083648
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.0167312717796925,
+          "cosine_correlation": 0.9999968355715924,
+          "maximum_absolute_difference": 9.305407290785865,
+          "reference_maximum_absolute": 562.217991732325
+        }
+      },
+      "orbit_x": {
+        "corrector": {
+          "relative_frobenius": 0.00047860786180298697,
+          "cosine_correlation": 0.9999998870587727,
+          "maximum_absolute_difference": 0.009642708518364351,
+          "reference_maximum_absolute": 20.669309634289633
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.0005948614066954508,
+          "cosine_correlation": 0.999999824170491,
+          "maximum_absolute_difference": 0.00020828379773984995,
+          "reference_maximum_absolute": 0.36683728910427704
+        }
+      },
+      "orbit_px": {
+        "corrector": {
+          "relative_frobenius": 0.0004557597453112424,
+          "cosine_correlation": 0.9999999128750141,
+          "maximum_absolute_difference": 0.0050439021531936135,
+          "reference_maximum_absolute": 11.237039450317457
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.00046657666146764207,
+          "cosine_correlation": 0.9999998911536998,
+          "maximum_absolute_difference": 9.779511747358763e-05,
+          "reference_maximum_absolute": 0.2020278204784877
+        }
+      },
+      "orbit_y": {
+        "corrector": {
+          "relative_frobenius": 0.002471558781169645,
+          "cosine_correlation": 0.9999970623207248,
+          "maximum_absolute_difference": 0.06725871840069697,
+          "reference_maximum_absolute": 23.5131223549973
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.001114627271493424,
+          "cosine_correlation": 0.9999996347943159,
+          "maximum_absolute_difference": 7.293051829333763e-05,
+          "reference_maximum_absolute": 0.061035638642402315
+        }
+      },
+      "orbit_py": {
+        "corrector": {
+          "relative_frobenius": 0.001428423692991431,
+          "cosine_correlation": 0.9999994528988859,
+          "maximum_absolute_difference": 0.025613201699290045,
+          "reference_maximum_absolute": 22.33493382372445
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.0009952558753584177,
+          "cosine_correlation": 0.9999997429363313,
+          "maximum_absolute_difference": 3.604515689175844e-05,
+          "reference_maximum_absolute": 0.026617972301019692
+        }
+      },
+      "orbit_z": {
+        "corrector": {
+          "relative_frobenius": 0.9975592228088203,
+          "cosine_correlation": 0.07072905493789859,
+          "maximum_absolute_difference": 3.9043875953545513,
+          "reference_maximum_absolute": 3.6859290070812403
+        },
+        "quadrupole": {
+          "relative_frobenius": 0.9892827855412699,
+          "cosine_correlation": 0.28741256113744806,
+          "maximum_absolute_difference": 0.05135767676391666,
+          "reference_maximum_absolute": 0.04909462378147912
+        }
+      },
+      "orbit_pz": {
+        "corrector": {
+          "relative_frobenius": 1.0,
+          "cosine_correlation": null,
+          "maximum_absolute_difference": 2.964615315390051e-15,
+          "reference_maximum_absolute": 2.964615315390051e-15
+        },
+        "quadrupole": {
+          "relative_frobenius": 1.0,
+          "cosine_correlation": null,
+          "maximum_absolute_difference": 3.1763735522036263e-15,
+          "reference_maximum_absolute": 3.1763735522036263e-15
+        }
+      }
+    },
+    "phase_origin_aligned_overall": {
+      "relative_frobenius": 0.020731376003170706,
+      "cosine_correlation": 0.9998880051589639,
+      "maximum_absolute_difference": 2530.483038652528,
+      "reference_maximum_absolute": 125576.87696846643
+    },
+    "transverse_detector_orbit": {
+      "relative_frobenius": 0.0019798133090467903,
+      "cosine_correlation": 0.9999981049002893,
+      "maximum_absolute_difference": 0.06725871840069697,
+      "reference_maximum_absolute": 23.5131223549973
+    },
+    "transverse_detector_orbit_by_parameter_family": {
+      "corrector": {
+        "relative_frobenius": 0.0019798542944136155,
+        "cosine_correlation": 0.9999981048255588,
+        "maximum_absolute_difference": 0.06725871840069697,
+        "reference_maximum_absolute": 23.5131223549973
+      },
+      "quadrupole": {
+        "relative_frobenius": 0.0006059449890578854,
+        "cosine_correlation": 0.999999816881882,
+        "maximum_absolute_difference": 0.00020828379773984995,
+        "reference_maximum_absolute": 0.36683728910427704
+      }
+    }
+  },
+  "closed_orbit": {
+    "shape": [
+      6,
+      225
+    ],
+    "overall": {
+      "relative_frobenius": 0.0010406646440404715,
+      "cosine_correlation": 0.9999999676275367,
+      "maximum_absolute_difference": 0.02563091822483443,
+      "reference_maximum_absolute": 22.350105546249672
+    },
+    "by_parameter_family": {
+      "corrector": {
+        "relative_frobenius": 0.0010406660532126517,
+        "cosine_correlation": 0.9999999676293799,
+        "maximum_absolute_difference": 0.02563091822483443,
+        "reference_maximum_absolute": 22.350105546249672
+      },
+      "quadrupole": {
+        "relative_frobenius": 0.00044434451083043134,
+        "cosine_correlation": 0.9999999014377581,
+        "maximum_absolute_difference": 3.6059556056889513e-05,
+        "reference_maximum_absolute": 0.050561387485685096
+      }
+    }
+  },
+  "ring_tunes": {
+    "shape": [
+      2,
+      225
+    ],
+    "overall": {
+      "relative_frobenius": 0.011118695665422106,
+      "cosine_correlation": 0.9999410405988373,
+      "maximum_absolute_difference": 0.19581005400875906,
+      "reference_maximum_absolute": 26.511676689544572
+    },
+    "by_parameter_family": {
+      "corrector": {
+        "relative_frobenius": 0.011424126504997245,
+        "cosine_correlation": 0.9999385261900546,
+        "maximum_absolute_difference": 0.19581005400875906,
+        "reference_maximum_absolute": 26.511676689544572
+      },
+      "quadrupole": {
+        "relative_frobenius": 0.005172648853936658,
+        "cosine_correlation": 0.9999903207412879,
+        "maximum_absolute_difference": 0.05862019611705804,
+        "reference_maximum_absolute": 8.396020635181856
+      }
+    }
+  }
+}

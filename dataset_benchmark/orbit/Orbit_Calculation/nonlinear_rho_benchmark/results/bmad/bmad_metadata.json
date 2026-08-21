@@ -1,0 +1,22 @@
+{
+  "format": "cesr-nonlinear-rho-bmad-v1",
+  "engine": "Bmad/Tao/PyTao",
+  "input_csv": "/mnt/d/Onedrive/Cornell/Accelerator Physics/Ring_Design_Development/CESR Project/dataset_benchmark/orbit/Orbit_Calculation/nonlinear_rho_benchmark/shared_input/nonlinear_rho_correctors.csv",
+  "lattice": "/mnt/d/Onedrive/Cornell/Accelerator Physics/Ring_Design_Development/CESR Project/dataset_benchmark/orbit/reference/cesr_bmad_compatible.bmad",
+  "sample_count": 9001,
+  "converged_count": 9001,
+  "failed_count": 0,
+  "initialization_seconds": 0.52299210599449,
+  "warmup_seconds": 0.03590154700214043,
+  "physics_seconds": 102.94985948000976,
+  "samples_per_second": 87.43091098388302,
+  "python_version": "3.14.6",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "tao_version_raw": [
+    "Version: 20260801-1"
+  ],
+  "maximum_resident_set_kib": 427808,
+  "execution_model": "one persistent Tao instance; 119 variable commands batched with suppress_lattice_calc=True; one model recalculation per sample",
+  "timed_region": "variable update + Tao lattice recalculation + observable read",
+  "convergence_indicator": "PyTao orbit data good_model flags and finite model values; Tao does not expose SciBmad's explicit one-turn closure norm in this path"
+}

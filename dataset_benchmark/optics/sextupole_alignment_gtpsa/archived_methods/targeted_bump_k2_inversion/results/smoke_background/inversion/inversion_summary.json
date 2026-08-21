@@ -1,0 +1,23 @@
+{
+  "format": "cesr-targeted-sextupole-inversion-v1",
+  "target_sextupole": "SEX_08W",
+  "truth_m": {
+    "x": 0.00035,
+    "y": -0.00025
+  },
+  "best_case": {
+    "target_sextupole": "SEX_08W",
+    "observable_ablation": "orbit_only",
+    "input_representation": "full_slopes",
+    "observable_count": 198,
+    "true_x_offset_m": 0.00035,
+    "true_y_offset_m": -0.00025,
+    "estimated_x_offset_m": 0.00036092706738857154,
+    "estimated_y_offset_m": -0.0002234098792573047,
+    "error_x_m": 1.0927067388571542e-05,
+    "error_y_m": 2.6590120742695303e-05,
+    "absolute_error_2d_m": 2.8747788137968087e-05,
+    "whitened_residual_rms": 5.215558307850433e-05
+  },
+  "interpretation_boundary": "observable_rms scaling is structural; experimental precision requires measured covariance"
+}

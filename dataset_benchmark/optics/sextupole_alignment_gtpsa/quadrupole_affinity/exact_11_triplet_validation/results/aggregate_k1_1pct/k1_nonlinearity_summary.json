@@ -1,0 +1,43 @@
+{
+  "format": "cesr-repaired-lattice-k1-symmetric-nonlinearity-v1",
+  "target_count": 76,
+  "target_candidate_count": 380,
+  "quadrupole_fraction": 0.01,
+  "definition": {
+    "odd": "0.5 * (K1_plus_response - K1_minus_response)",
+    "even": "0.5 * (K1_plus_response + K1_minus_response) - nominal_response",
+    "response": "five-point K2 slope of the 9-bump by 111-BPM by 2-plane closed orbit"
+  },
+  "even_to_odd_rms_ratio": {
+    "minimum": 0.0026158935558863125,
+    "median": 0.008292351123523323,
+    "p90": 0.021804985132469746,
+    "maximum": 0.05045867465282903
+  },
+  "odd_response_rms_snr": {
+    "minimum": 1.085638764471498e-05,
+    "median": 8.492886953975737e-05,
+    "p90": 0.0001354608771649708,
+    "maximum": 0.00043601229694039426
+  },
+  "even_response_rms_snr": {
+    "minimum": 4.657612104227107e-08,
+    "median": 3.8987510570776207e-07,
+    "p90": 1.662715378463529e-06,
+    "maximum": 1.2081067590913118e-05
+  },
+  "material_even_to_odd_threshold": 0.05,
+  "detectable_even_snr_threshold": 1.0,
+  "material_and_detectable_count": 0,
+  "maximum_ratio_pair": {
+    "sextupole": "SEX_47W",
+    "quadrupole": "Q43W",
+    "even_to_odd_rms_ratio": 0.05045867465282903,
+    "even_response_rms_snr": 6.851062040863532e-06
+  },
+  "limitations": [
+    "The SNR calculation uses provisional independent 5 um raw BPM-plane noise.",
+    "Only the symmetric three-point K1 curvature is tested; cubic K1 dependence requires additional amplitudes.",
+    "Closed-orbit K2 slopes are tested here; direct launch-trajectory phase/coupling channels are not yet included."
+  ]
+}

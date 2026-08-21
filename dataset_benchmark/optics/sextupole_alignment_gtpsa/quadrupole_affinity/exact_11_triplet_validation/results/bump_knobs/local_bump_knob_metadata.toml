@@ -1,0 +1,14 @@
+bpm_count = 111
+closed_orbit_seconds = 13.431477
+corrector_count = 62
+corrector_policy = "unambiguous horizontal/vertical Kicker elements; ambiguous bump and pinger elements excluded"
+date = "2026-08-17"
+descriptor = "Descriptor(6, 2, 62, 1)"
+design_amplitude_m = 0.0005
+engine = "SciBmad exact RF-on batch closed orbit and tracking"
+format = "cesr-repaired-lattice-local-bump-knobs-v1"
+interpretation_boundary = "model-based local-bump design; machine use requires hardware calibration, limits, and operator validation"
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+parameterized_twiss_seconds = 97.1668044
+ridge_fraction = 1.0e-6
+target_count = 76

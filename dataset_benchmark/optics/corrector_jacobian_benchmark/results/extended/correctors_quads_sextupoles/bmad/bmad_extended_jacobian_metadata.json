@@ -1,0 +1,2808 @@
+{
+  "format": "cesr-extended-optics-jacobian-v1",
+  "engine": "Bmad/Tao/PyTao",
+  "method": "symmetric finite differences of exact scalar periodic optics",
+  "rf_mode": "off (4D coasting)",
+  "parameter_count": 301,
+  "family_counts": {
+    "corrector": 119,
+    "quadrupole": 106,
+    "sextupole": 76
+  },
+  "detector_count": 99,
+  "detector_quantity_count": 18,
+  "detector_jacobian_shape": [
+    1782,
+    301
+  ],
+  "exact_optics_solve_count": 602,
+  "initialization_seconds": 0.6290631659999999,
+  "warmup_seconds": 0.13161110400000098,
+  "physics_seconds": 26.558109365,
+  "seconds_per_parameter": [
+    0.09781565999999842,
+    0.09768409300000158,
+    0.09911128999999974,
+    0.0981590489999995,
+    0.0837448990000027,
+    0.0927875450000002,
+    0.09837361800000011,
+    0.09649199800000119,
+    0.09777336599999842,
+    0.10109134200000014,
+    0.0902563239999985,
+    0.09514774000000159,
+    0.08699920000000105,
+    0.08949841500000133,
+    0.08473039799999782,
+    0.08744464399999785,
+    0.09343825299999864,
+    0.09314444099999974,
+    0.10408978500000288,
+    0.10497029600000118,
+    0.09422822500000194,
+    0.08986121999999952,
+    0.0900285640000007,
+    0.09358109300000095,
+    0.09021865000000062,
+    0.08962103800000065,
+    0.09663044200000215,
+    0.08818414100000282,
+    0.08995170200000047,
+    0.08622679799999844,
+    0.08653273599999878,
+    0.09334344199999833,
+    0.08779432400000076,
+    0.09140128900000022,
+    0.0937879730000013,
+    0.09002961999999926,
+    0.08672134900000117,
+    0.089975582000001,
+    0.0920850179999988,
+    0.09005864099999883,
+    0.09001271300000013,
+    0.08653081699999987,
+    0.08828185600000182,
+    0.08840897400000358,
+    0.08776382199999944,
+    0.0830026559999979,
+    0.07995129300000059,
+    0.09556264300000095,
+    0.08226436599999687,
+    0.08802200800000293,
+    0.08641758399999588,
+    0.08666126600000013,
+    0.08094255399999639,
+    0.08703212500000035,
+    0.09049358800000107,
+    0.07806075299999549,
+    0.07753678000000264,
+    0.07718601900000266,
+    0.08389880600000055,
+    0.0810001480000011,
+    0.07748690900000099,
+    0.08473372799999623,
+    0.09256067900000176,
+    0.080647852999995,
+    0.08268731900000148,
+    0.09083602499999444,
+    0.10620360899999781,
+    0.09763430699999986,
+    0.09002142199999952,
+    0.09520191100000375,
+    0.08535803899999905,
+    0.07989782599999984,
+    0.1089802779999971,
+    0.08875527800000071,
+    0.08904555200000175,
+    0.1005355599999973,
+    0.0889774110000019,
+    0.08925931699999978,
+    0.0895710120000004,
+    0.08673606500000375,
+    0.08558638499999915,
+    0.08806181099999577,
+    0.08228945700000168,
+    0.07989295400000174,
+    0.08346387000000277,
+    0.08096747199999754,
+    0.08067587000000032,
+    0.08248116299999708,
+    0.08070032500000224,
+    0.09082078300000518,
+    0.08442014799999953,
+    0.09117770199999597,
+    0.08026037599999825,
+    0.0824756489999956,
+    0.07944169099999954,
+    0.0827292540000002,
+    0.09963589699999886,
+    0.08021672899999999,
+    0.08036584000000602,
+    0.07904928300000336,
+    0.08027944999999903,
+    0.08216027099999934,
+    0.08290330900000242,
+    0.08222780200000557,
+    0.07904643499999509,
+    0.07940961500000299,
+    0.09797502100000344,
+    0.08162814100000304,
+    0.0928211129999994,
+    0.0815223199999977,
+    0.08113628000000261,
+    0.08972312600000265,
+    0.0917062549999983,
+    0.08863354599999695,
+    0.08695894600000287,
+    0.09007138700000183,
+    0.08759635100000196,
+    0.08755531799999972,
+    0.08865035600000226,
+    0.08993110200000132,
+    0.08886859700000116,
+    0.0903431260000005,
+    0.09402132499999993,
+    0.09896034899999506,
+    0.09999375299999969,
+    0.09948951200000522,
+    0.09648961999999983,
+    0.09717190199999948,
+    0.08804133699999994,
+    0.09021229699999367,
+    0.08702967400000006,
+    0.08716859900000173,
+    0.08587425300000007,
+    0.08693501399999803,
+    0.09112088499999516,
+    0.08690154800000016,
+    0.08765855800000111,
+    0.08576642100000242,
+    0.0881456870000008,
+    0.09224359400000282,
+    0.09250480200000055,
+    0.08800492000000304,
+    0.10183527799999581,
+    0.08421315800000428,
+    0.09005980199999897,
+    0.08636745200000462,
+    0.08508568799999949,
+    0.08689218100000318,
+    0.08673449599999827,
+    0.08846575599999795,
+    0.08319968600000038,
+    0.0865390239999968,
+    0.0901465700000017,
+    0.08711995900000602,
+    0.08931166400000023,
+    0.08558751099999995,
+    0.09063986299999982,
+    0.08847453999999999,
+    0.08535409299999941,
+    0.08830893000000373,
+    0.08525212099999635,
+    0.08746042399999965,
+    0.10246163999999425,
+    0.08715023300000269,
+    0.0848539609999932,
+    0.09560785799999394,
+    0.08892257599999454,
+    0.08532394200000226,
+    0.09197016600000296,
+    0.08620868900000289,
+    0.08694220100000649,
+    0.08794038199999932,
+    0.0855228069999967,
+    0.08476092099999732,
+    0.08615230999999568,
+    0.08741562099999811,
+    0.08840472299999647,
+    0.08681557700000297,
+    0.09159524399999697,
+    0.08925677900000295,
+    0.08655243199999774,
+    0.08665452399999651,
+    0.08431744199999969,
+    0.08935486700000439,
+    0.09190277600000485,
+    0.09803434999999894,
+    0.09787328399999495,
+    0.09993771699999598,
+    0.09203724700000038,
+    0.08693862900000227,
+    0.08718485200000003,
+    0.10195856400000025,
+    0.08397123499999992,
+    0.08626461700000476,
+    0.08751669200000123,
+    0.09544707900000304,
+    0.08760330899999502,
+    0.08753460300000171,
+    0.08720607900000488,
+    0.08344854700000326,
+    0.08686952400000081,
+    0.08575042599999705,
+    0.08501104800000547,
+    0.08590984100000298,
+    0.08444835999999611,
+    0.08646891100000431,
+    0.087560725000003,
+    0.08438110600000215,
+    0.08470205399999742,
+    0.08652565100000231,
+    0.08561985400000083,
+    0.08541052400000382,
+    0.08501120399999706,
+    0.08743583900000118,
+    0.08890148700000111,
+    0.0854172009999985,
+    0.08717664600000319,
+    0.08762557600000065,
+    0.08999753999999882,
+    0.08767533500000013,
+    0.09538969300000133,
+    0.09164943499999367,
+    0.08773114600000298,
+    0.08683848300000108,
+    0.0841437830000018,
+    0.0858407200000002,
+    0.08912571200000485,
+    0.08533595200000121,
+    0.0871918679999979,
+    0.09800337799999426,
+    0.08365959000000345,
+    0.086761328999998,
+    0.0838920139999999,
+    0.08257027099999448,
+    0.0857424370000004,
+    0.08507701499999598,
+    0.09061173399999944,
+    0.09275422999999705,
+    0.08610761599999961,
+    0.08251042500000239,
+    0.08408396400000129,
+    0.08829460900000186,
+    0.08361770400000523,
+    0.08479602599999936,
+    0.08545472600000181,
+    0.09275634500000507,
+    0.1024917939999952,
+    0.09441596799999985,
+    0.10076150200000455,
+    0.09512036800000345,
+    0.08540179300000261,
+    0.08621815000000055,
+    0.08596333699999548,
+    0.09325806599999709,
+    0.09099843599999957,
+    0.08603614599999787,
+    0.0831796020000013,
+    0.0845282929999982,
+    0.08312429499999752,
+    0.0824185479999997,
+    0.08418621199999876,
+    0.08495039000000304,
+    0.08657648199999812,
+    0.08906279900000413,
+    0.08713148300000029,
+    0.09031072399999829,
+    0.08778015899999758,
+    0.08635993200000058,
+    0.08314421200000055,
+    0.08801205999999695,
+    0.09562523600000361,
+    0.08461834299999538,
+    0.08657700700000248,
+    0.08861305099999583,
+    0.09624866100000418,
+    0.0851835730000019,
+    0.0910857670000027,
+    0.08547176999999806,
+    0.08534906899999584,
+    0.08420890900000444,
+    0.08519030899999791,
+    0.08419083799999783,
+    0.08615780800000294,
+    0.08647447299999556,
+    0.08531108599999726,
+    0.08527455899999836,
+    0.08343586299999828,
+    0.08454756400000463,
+    0.08550578499999517,
+    0.08392260000000107,
+    0.08631203899999917,
+    0.08340439300000213,
+    0.0838910100000021,
+    0.084896140000005,
+    0.083315841000001,
+    0.08417121600000144,
+    0.09024484400000432,
+    0.08877751600000039,
+    0.08881132300000161,
+    0.08374986900000181,
+    0.08409935699999949
+  ],
+  "variable_update_seconds": 4.3617907950001396,
+  "lattice_recalculation_seconds": 0.17594147099997315,
+  "output_query_seconds": 19.082513566000063,
+  "write_seconds": 0.5471071569999992,
+  "lattice": "/mnt/d/Ring_Design_Development/CESR Project/dataset_benchmark/orbit/reference/cesr_bmad_compatible.bmad",
+  "python_version": "3.14.6",
+  "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.39",
+  "tao_version_raw": [
+    "Version: 20260801-1"
+  ],
+  "parameters": [
+    {
+      "label": "COR:H01W",
+      "family": "corrector",
+      "reference": "h_steer[0]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB01",
+      "family": "corrector",
+      "reference": "h_steer[1]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H02W",
+      "family": "corrector",
+      "reference": "h_steer[2]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB02",
+      "family": "corrector",
+      "reference": "h_steer[3]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H03W",
+      "family": "corrector",
+      "reference": "h_steer[4]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB03",
+      "family": "corrector",
+      "reference": "h_steer[5]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H04W",
+      "family": "corrector",
+      "reference": "h_steer[6]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB04",
+      "family": "corrector",
+      "reference": "h_steer[7]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB05",
+      "family": "corrector",
+      "reference": "h_steer[8]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:HB06",
+      "family": "corrector",
+      "reference": "h_steer[9]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H08W",
+      "family": "corrector",
+      "reference": "h_steer[10]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H10W",
+      "family": "corrector",
+      "reference": "h_steer[11]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H12W",
+      "family": "corrector",
+      "reference": "h_steer[12]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H14W",
+      "family": "corrector",
+      "reference": "h_steer[13]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H16W",
+      "family": "corrector",
+      "reference": "h_steer[14]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H18W",
+      "family": "corrector",
+      "reference": "h_steer[15]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H20W",
+      "family": "corrector",
+      "reference": "h_steer[16]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H22W",
+      "family": "corrector",
+      "reference": "h_steer[17]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H24W",
+      "family": "corrector",
+      "reference": "h_steer[18]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H26W",
+      "family": "corrector",
+      "reference": "h_steer[19]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H28W",
+      "family": "corrector",
+      "reference": "h_steer[20]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H30W",
+      "family": "corrector",
+      "reference": "h_steer[21]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H32W",
+      "family": "corrector",
+      "reference": "h_steer[22]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H34W",
+      "family": "corrector",
+      "reference": "h_steer[23]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H36W",
+      "family": "corrector",
+      "reference": "h_steer[24]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H38W",
+      "family": "corrector",
+      "reference": "h_steer[25]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H40W",
+      "family": "corrector",
+      "reference": "h_steer[26]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H42W",
+      "family": "corrector",
+      "reference": "h_steer[27]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H44W",
+      "family": "corrector",
+      "reference": "h_steer[28]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H46W",
+      "family": "corrector",
+      "reference": "h_steer[29]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H47W",
+      "family": "corrector",
+      "reference": "h_steer[30]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H49W",
+      "family": "corrector",
+      "reference": "h_steer[31]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H49E",
+      "family": "corrector",
+      "reference": "h_steer[32]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H47E",
+      "family": "corrector",
+      "reference": "h_steer[33]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H46E",
+      "family": "corrector",
+      "reference": "h_steer[34]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H44E",
+      "family": "corrector",
+      "reference": "h_steer[35]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H42E",
+      "family": "corrector",
+      "reference": "h_steer[36]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H40E",
+      "family": "corrector",
+      "reference": "h_steer[37]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H38E",
+      "family": "corrector",
+      "reference": "h_steer[38]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H36E",
+      "family": "corrector",
+      "reference": "h_steer[39]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H34E",
+      "family": "corrector",
+      "reference": "h_steer[40]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H32E",
+      "family": "corrector",
+      "reference": "h_steer[41]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H30E",
+      "family": "corrector",
+      "reference": "h_steer[42]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H28E",
+      "family": "corrector",
+      "reference": "h_steer[43]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H26E",
+      "family": "corrector",
+      "reference": "h_steer[44]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H24E",
+      "family": "corrector",
+      "reference": "h_steer[45]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H22E",
+      "family": "corrector",
+      "reference": "h_steer[46]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H20E",
+      "family": "corrector",
+      "reference": "h_steer[47]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H18E",
+      "family": "corrector",
+      "reference": "h_steer[48]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H16E",
+      "family": "corrector",
+      "reference": "h_steer[49]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H14E",
+      "family": "corrector",
+      "reference": "h_steer[50]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H12E",
+      "family": "corrector",
+      "reference": "h_steer[51]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H10E",
+      "family": "corrector",
+      "reference": "h_steer[52]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H08E",
+      "family": "corrector",
+      "reference": "h_steer[53]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H04E",
+      "family": "corrector",
+      "reference": "h_steer[54]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H03E",
+      "family": "corrector",
+      "reference": "h_steer[55]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H02E",
+      "family": "corrector",
+      "reference": "h_steer[56]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:H01E",
+      "family": "corrector",
+      "reference": "h_steer[57]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V01W",
+      "family": "corrector",
+      "reference": "v_steer[0]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V02W",
+      "family": "corrector",
+      "reference": "v_steer[1]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V04W",
+      "family": "corrector",
+      "reference": "v_steer[2]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V05W",
+      "family": "corrector",
+      "reference": "v_steer[3]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V06W",
+      "family": "corrector",
+      "reference": "v_steer[4]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V07W",
+      "family": "corrector",
+      "reference": "v_steer[5]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V08W",
+      "family": "corrector",
+      "reference": "v_steer[6]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V09W",
+      "family": "corrector",
+      "reference": "v_steer[7]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V10W",
+      "family": "corrector",
+      "reference": "v_steer[8]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V11W",
+      "family": "corrector",
+      "reference": "v_steer[9]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V13W",
+      "family": "corrector",
+      "reference": "v_steer[10]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V15W",
+      "family": "corrector",
+      "reference": "v_steer[11]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V16W",
+      "family": "corrector",
+      "reference": "v_steer[12]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V17W",
+      "family": "corrector",
+      "reference": "v_steer[13]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V19W",
+      "family": "corrector",
+      "reference": "v_steer[14]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V21W",
+      "family": "corrector",
+      "reference": "v_steer[15]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V23W",
+      "family": "corrector",
+      "reference": "v_steer[16]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V25W",
+      "family": "corrector",
+      "reference": "v_steer[17]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V27W",
+      "family": "corrector",
+      "reference": "v_steer[18]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V29W",
+      "family": "corrector",
+      "reference": "v_steer[19]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V31W",
+      "family": "corrector",
+      "reference": "v_steer[20]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V33W",
+      "family": "corrector",
+      "reference": "v_steer[21]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V35W",
+      "family": "corrector",
+      "reference": "v_steer[22]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V37W",
+      "family": "corrector",
+      "reference": "v_steer[23]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V39W",
+      "family": "corrector",
+      "reference": "v_steer[24]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V41W",
+      "family": "corrector",
+      "reference": "v_steer[25]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V43W",
+      "family": "corrector",
+      "reference": "v_steer[26]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V45W",
+      "family": "corrector",
+      "reference": "v_steer[27]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V47W",
+      "family": "corrector",
+      "reference": "v_steer[28]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V48W",
+      "family": "corrector",
+      "reference": "v_steer[29]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V49W",
+      "family": "corrector",
+      "reference": "v_steer[30]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V49E",
+      "family": "corrector",
+      "reference": "v_steer[31]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V48E",
+      "family": "corrector",
+      "reference": "v_steer[32]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V47E",
+      "family": "corrector",
+      "reference": "v_steer[33]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V45E",
+      "family": "corrector",
+      "reference": "v_steer[34]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V43E",
+      "family": "corrector",
+      "reference": "v_steer[35]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V41E",
+      "family": "corrector",
+      "reference": "v_steer[36]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V39E",
+      "family": "corrector",
+      "reference": "v_steer[37]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V37E",
+      "family": "corrector",
+      "reference": "v_steer[38]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V35E",
+      "family": "corrector",
+      "reference": "v_steer[39]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V34E",
+      "family": "corrector",
+      "reference": "v_steer[40]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V33E",
+      "family": "corrector",
+      "reference": "v_steer[41]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V31E",
+      "family": "corrector",
+      "reference": "v_steer[42]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V29E",
+      "family": "corrector",
+      "reference": "v_steer[43]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V27E",
+      "family": "corrector",
+      "reference": "v_steer[44]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V25E",
+      "family": "corrector",
+      "reference": "v_steer[45]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V23E",
+      "family": "corrector",
+      "reference": "v_steer[46]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V21E",
+      "family": "corrector",
+      "reference": "v_steer[47]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V19E",
+      "family": "corrector",
+      "reference": "v_steer[48]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V17E",
+      "family": "corrector",
+      "reference": "v_steer[49]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V15E",
+      "family": "corrector",
+      "reference": "v_steer[50]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V13E",
+      "family": "corrector",
+      "reference": "v_steer[51]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V11E",
+      "family": "corrector",
+      "reference": "v_steer[52]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V09E",
+      "family": "corrector",
+      "reference": "v_steer[53]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V08E",
+      "family": "corrector",
+      "reference": "v_steer[54]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V07E",
+      "family": "corrector",
+      "reference": "v_steer[55]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V06E",
+      "family": "corrector",
+      "reference": "v_steer[56]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V05E",
+      "family": "corrector",
+      "reference": "v_steer[57]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V04E",
+      "family": "corrector",
+      "reference": "v_steer[58]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V02E",
+      "family": "corrector",
+      "reference": "v_steer[59]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "label": "COR:V01E",
+      "family": "corrector",
+      "reference": "v_steer[60]",
+      "baseline": 0.0,
+      "step": 1e-06
+    },
+    {
+      "name": "Q00E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.84178483645302,
+      "label": "K1:Q00E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q00W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.84178483645302,
+      "label": "K1:Q00W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q01E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.639155,
+      "label": "K1:Q01E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q01W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.639155,
+      "label": "K1:Q01W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q02E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.206328,
+      "label": "K1:Q02E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q02W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.206328,
+      "label": "K1:Q02W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q03E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.128947,
+      "label": "K1:Q03E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q03W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.128947,
+      "label": "K1:Q03W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q04E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.420143,
+      "label": "K1:Q04E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q04W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.420143,
+      "label": "K1:Q04W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q05E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.373608,
+      "label": "K1:Q05E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q05W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.373608,
+      "label": "K1:Q05W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q06E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.421931,
+      "label": "K1:Q06E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q06W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.421931,
+      "label": "K1:Q06W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q07E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.246488,
+      "label": "K1:Q07E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q07W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.246488,
+      "label": "K1:Q07W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q08E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.144685,
+      "label": "K1:Q08E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q08W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.144685,
+      "label": "K1:Q08W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q09E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.190367,
+      "label": "K1:Q09E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q09W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.19165,
+      "label": "K1:Q09W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q10E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.266253,
+      "label": "K1:Q10E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q10W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.265126,
+      "label": "K1:Q10W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q11E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.20311,
+      "label": "K1:Q11E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q11W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.203919,
+      "label": "K1:Q11W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q12E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.263148,
+      "label": "K1:Q12E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q12W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.267546,
+      "label": "K1:Q12W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q13E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.212727,
+      "label": "K1:Q13E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q13W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.21212,
+      "label": "K1:Q13W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q14E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.27781,
+      "label": "K1:Q14E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q14W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.27781,
+      "label": "K1:Q14W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q15E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225322,
+      "label": "K1:Q15E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q15W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225322,
+      "label": "K1:Q15W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q16E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.272512,
+      "label": "K1:Q16E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q16W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.272512,
+      "label": "K1:Q16W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q17E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.270314,
+      "label": "K1:Q17E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q17W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.270314,
+      "label": "K1:Q17W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q18E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228205,
+      "label": "K1:Q18E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q18W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228205,
+      "label": "K1:Q18W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q19E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.321716,
+      "label": "K1:Q19E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q19W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.321716,
+      "label": "K1:Q19W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q20E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234421,
+      "label": "K1:Q20E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q20W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234421,
+      "label": "K1:Q20W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q21E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.277998,
+      "label": "K1:Q21E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q21W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.277998,
+      "label": "K1:Q21W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q22E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.255022,
+      "label": "K1:Q22E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q22W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.255022,
+      "label": "K1:Q22W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q23E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.25753,
+      "label": "K1:Q23E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q23W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.25753,
+      "label": "K1:Q23W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q24E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247642,
+      "label": "K1:Q24E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q24W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247642,
+      "label": "K1:Q24W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q25E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.31703,
+      "label": "K1:Q25E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q25W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.31703,
+      "label": "K1:Q25W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q26E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247656,
+      "label": "K1:Q26E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q26W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.247656,
+      "label": "K1:Q26W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q27E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.306087,
+      "label": "K1:Q27E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q27W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.306087,
+      "label": "K1:Q27W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q28E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.250556,
+      "label": "K1:Q28E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q28W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.250556,
+      "label": "K1:Q28W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q29E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225074,
+      "label": "K1:Q29E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q29W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225074,
+      "label": "K1:Q29W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q30E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.24048,
+      "label": "K1:Q30E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q30W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.24048,
+      "label": "K1:Q30W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q31E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.204765,
+      "label": "K1:Q31E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q31W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.204765,
+      "label": "K1:Q31W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q32E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.19573,
+      "label": "K1:Q32E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q32W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.19573,
+      "label": "K1:Q32W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q33E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.192521,
+      "label": "K1:Q33E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q33W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.192521,
+      "label": "K1:Q33W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q34E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.231217,
+      "label": "K1:Q34E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q34W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.231217,
+      "label": "K1:Q34W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q35E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.161904,
+      "label": "K1:Q35E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q35W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.161904,
+      "label": "K1:Q35W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q36E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.208172,
+      "label": "K1:Q36E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q36W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.208172,
+      "label": "K1:Q36W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q37E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.220991,
+      "label": "K1:Q37E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q37W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.220991,
+      "label": "K1:Q37W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q38E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.236366,
+      "label": "K1:Q38E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q38W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.236366,
+      "label": "K1:Q38W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q39E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.207659,
+      "label": "K1:Q39E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q39W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.207659,
+      "label": "K1:Q39W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q40E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228319,
+      "label": "K1:Q40E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q40W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.228319,
+      "label": "K1:Q40W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q41E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.226064,
+      "label": "K1:Q41E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q41W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.226064,
+      "label": "K1:Q41W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q42E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.22907,
+      "label": "K1:Q42E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q42W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.22907,
+      "label": "K1:Q42W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43AE",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234224,
+      "label": "K1:Q43AE",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43AW",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.234224,
+      "label": "K1:Q43AW",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.237661,
+      "label": "K1:Q43E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q43W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.237661,
+      "label": "K1:Q43W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q44E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225715,
+      "label": "K1:Q44E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q44W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.225715,
+      "label": "K1:Q44W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q45E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.305287,
+      "label": "K1:Q45E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q45W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.305287,
+      "label": "K1:Q45W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q46E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.235653,
+      "label": "K1:Q46E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q46W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.235653,
+      "label": "K1:Q46W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47AE",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.356866,
+      "label": "K1:Q47AE",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47AW",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.356866,
+      "label": "K1:Q47AW",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.405364,
+      "label": "K1:Q47E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q47W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.405364,
+      "label": "K1:Q47W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q48E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.555738,
+      "label": "K1:Q48E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q48W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.555738,
+      "label": "K1:Q48W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49AE",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.0930455,
+      "label": "K1:Q49AE",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49AW",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": 0.0930455,
+      "label": "K1:Q49AW",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49E",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.317601,
+      "label": "K1:Q49E",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "Q49W",
+      "kind": "quadrupole",
+      "attribute": "K1",
+      "baseline": -0.317601,
+      "label": "K1:Q49W",
+      "family": "quadrupole",
+      "step": 1e-06
+    },
+    {
+      "name": "SEX_08E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.159613,
+      "label": "K2:SEX_08E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_08W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.159531,
+      "label": "K2:SEX_08W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_09E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.890179,
+      "label": "K2:SEX_09E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_09W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.889647,
+      "label": "K2:SEX_09W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_10E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.192999,
+      "label": "K2:SEX_10E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_10W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.193131,
+      "label": "K2:SEX_10W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_11E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.726323,
+      "label": "K2:SEX_11E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_11W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.726198,
+      "label": "K2:SEX_11W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_12E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.454707,
+      "label": "K2:SEX_12E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_12W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.454635,
+      "label": "K2:SEX_12W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_13E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 1.19854,
+      "label": "K2:SEX_13E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_13W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 1.19794,
+      "label": "K2:SEX_13W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_14E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.012608,
+      "label": "K2:SEX_14E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_14W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.0126336,
+      "label": "K2:SEX_14W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_15E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.26883,
+      "label": "K2:SEX_15E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_15W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.26869,
+      "label": "K2:SEX_15W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_16E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.406769,
+      "label": "K2:SEX_16E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_16W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.406183,
+      "label": "K2:SEX_16W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_17E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.462863,
+      "label": "K2:SEX_17E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_17W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.462656,
+      "label": "K2:SEX_17W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_18E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.28969,
+      "label": "K2:SEX_18E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_18W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.288855,
+      "label": "K2:SEX_18W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_19E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.803519,
+      "label": "K2:SEX_19E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_19W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.803206,
+      "label": "K2:SEX_19W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_20E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.122784,
+      "label": "K2:SEX_20E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_20W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.122751,
+      "label": "K2:SEX_20W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_21E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.855388,
+      "label": "K2:SEX_21E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_21W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.855365,
+      "label": "K2:SEX_21W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_22E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.959514,
+      "label": "K2:SEX_22E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_22W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.959604,
+      "label": "K2:SEX_22W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_23E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.92386,
+      "label": "K2:SEX_23E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_23W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.92428,
+      "label": "K2:SEX_23W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_24E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.501983,
+      "label": "K2:SEX_24E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_24W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.502286,
+      "label": "K2:SEX_24W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_25E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.46284,
+      "label": "K2:SEX_25E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_25W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.46302,
+      "label": "K2:SEX_25W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_26E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.880866,
+      "label": "K2:SEX_26E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_26W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.881305,
+      "label": "K2:SEX_26W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_27E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.48334,
+      "label": "K2:SEX_27E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_27W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.483,
+      "label": "K2:SEX_27W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_28E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.525996,
+      "label": "K2:SEX_28E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_28W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.525159,
+      "label": "K2:SEX_28W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_29E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.534017,
+      "label": "K2:SEX_29E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_29W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.533664,
+      "label": "K2:SEX_29W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_30E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 1.04785,
+      "label": "K2:SEX_30E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_30W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 1.04801,
+      "label": "K2:SEX_30W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_31E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.85376,
+      "label": "K2:SEX_31E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_31W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.85395,
+      "label": "K2:SEX_31W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_32E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 1.12629,
+      "label": "K2:SEX_32E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_32W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 1.12602,
+      "label": "K2:SEX_32W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_33E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.81588,
+      "label": "K2:SEX_33E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_33W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.81672,
+      "label": "K2:SEX_33W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_34E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.64074,
+      "label": "K2:SEX_34E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_34W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.640563,
+      "label": "K2:SEX_34W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_35E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.607139,
+      "label": "K2:SEX_35E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_35W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.607619,
+      "label": "K2:SEX_35W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_36E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.624373,
+      "label": "K2:SEX_36E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_36W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.624704,
+      "label": "K2:SEX_36W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_37E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.138838,
+      "label": "K2:SEX_37E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_37W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.1384,
+      "label": "K2:SEX_37W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_38E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.754972,
+      "label": "K2:SEX_38E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_38W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.754352,
+      "label": "K2:SEX_38W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_39E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.68119,
+      "label": "K2:SEX_39E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_39W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.68088,
+      "label": "K2:SEX_39W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_40E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.901447,
+      "label": "K2:SEX_40E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_40W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.901445,
+      "label": "K2:SEX_40W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_41E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.82578,
+      "label": "K2:SEX_41E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_41W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -1.82571,
+      "label": "K2:SEX_41W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_42E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.407242,
+      "label": "K2:SEX_42E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_42W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.40729,
+      "label": "K2:SEX_42W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_43E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.0826257,
+      "label": "K2:SEX_43E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_43W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.0831341,
+      "label": "K2:SEX_43W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_44E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.382596,
+      "label": "K2:SEX_44E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_44W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": -0.383087,
+      "label": "K2:SEX_44W",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_45E",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.144127,
+      "label": "K2:SEX_45E",
+      "family": "sextupole",
+      "step": 0.0001
+    },
+    {
+      "name": "SEX_45W",
+      "kind": "sextupole",
+      "attribute": "K2",
+      "baseline": 0.144602,
+      "label": "K2:SEX_45W",
+      "family": "sextupole",
+      "step": 0.0001
+    }
+  ]
+}

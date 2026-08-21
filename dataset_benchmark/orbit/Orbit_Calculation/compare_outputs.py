@@ -45,37 +45,75 @@ def correlation(left: list[float], right: list[float]) -> float:
 def make_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--ring",
+        choices=("latest", "legacy"),
+        default="latest",
+        help="Compare latest ring-scoped outputs, or explicitly compare archived legacy outputs",
+    )
+    parser.add_argument(
         "--bmad",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "bmad" / "bmad_rf_on_samples.csv",
+        default=None,
     )
     parser.add_argument(
         "--scibmad",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "scibmad" / "scibmad_rf_on_samples.csv",
+        default=None,
     )
     parser.add_argument(
         "--bmad-metadata",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "bmad" / "bmad_rf_on_metadata.json",
+        default=None,
     )
     parser.add_argument(
         "--scibmad-metadata",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "scibmad" / "scibmad_rf_on_metadata.toml",
+        default=None,
     )
     parser.add_argument(
         "--report",
         type=Path,
-        default=HERE / "results" / "formal_1000" / "bmad_scibmad_cross_machine_comparison.md",
+        default=None,
     )
     return parser
 
 
 def main() -> int:
     args = make_parser().parse_args()
-    labels_b, ids_b, good_b, values_b = read_output(args.bmad.resolve())
-    labels_s, ids_s, good_s, values_s = read_output(args.scibmad.resolve())
+    latest = args.ring == "latest"
+    default_dir = HERE / "results" / ("latest_cesr" if latest else "formal_1000")
+    defaults = {
+        "bmad": (
+            HERE / "results" / "latest_cesr" / "bmad_reference" / "bmad_rf_on_samples.csv"
+            if latest
+            else default_dir / "bmad" / "bmad_rf_on_samples.csv"
+        ),
+        "scibmad": (
+            default_dir
+            / "formal_1000" if latest else default_dir
+        )
+        / "scibmad_response_initial_frozen_fallback_bmad_tolerance"
+        / "scibmad_rf_on_samples.csv",
+        "bmad_metadata": (
+            HERE / "results" / "latest_cesr" / "bmad_reference" / "bmad_rf_on_metadata.json"
+            if latest
+            else default_dir / "bmad" / "bmad_rf_on_metadata.json"
+        ),
+        "scibmad_metadata": (
+            default_dir
+            / "formal_1000" if latest else default_dir
+        )
+        / "scibmad_response_initial_frozen_fallback_bmad_tolerance"
+        / "scibmad_rf_on_metadata.toml",
+        "report": HERE / "results" / ("latest_cesr" if latest else "formal_1000") / "bmad_scibmad_cross_machine_comparison.md",
+    }
+    bmad_path = (args.bmad or defaults["bmad"]).resolve()
+    scibmad_path = (args.scibmad or defaults["scibmad"]).resolve()
+    bmad_metadata_path = (args.bmad_metadata or defaults["bmad_metadata"]).resolve()
+    scibmad_metadata_path = (args.scibmad_metadata or defaults["scibmad_metadata"]).resolve()
+    report_path = (args.report or defaults["report"]).resolve()
+    labels_b, ids_b, good_b, values_b = read_output(bmad_path)
+    labels_s, ids_s, good_s, values_s = read_output(scibmad_path)
     if labels_b != labels_s:
         raise RuntimeError("Observable labels differ")
     if ids_b != ids_s:
@@ -104,8 +142,8 @@ def main() -> int:
         flat_s.extend(candidate)
 
     difference_flat = [sci - bmad for bmad, sci in zip(flat_b, flat_s)]
-    bmad_metadata = json.loads(args.bmad_metadata.read_text(encoding="utf-8"))
-    with args.scibmad_metadata.open("rb") as stream:
+    bmad_metadata = json.loads(bmad_metadata_path.read_text(encoding="utf-8"))
+    with scibmad_metadata_path.open("rb") as stream:
         scibmad_metadata = tomllib.load(stream)
     bmad_rate = float(bmad_metadata["samples_per_second"])
     scibmad_rate = float(scibmad_metadata["samples_per_second"])
@@ -157,10 +195,10 @@ CPU thread count, convergence tolerances, input file, and output schema. The
 present Bmad and SciBmad results were measured on different machines and must
 not be presented as a controlled same-hardware speedup.
 """
-    args.report.parent.mkdir(parents=True, exist_ok=True)
-    args.report.write_text(report, encoding="utf-8")
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(report, encoding="utf-8")
     print(report)
-    print(f"Report: {args.report.resolve()}")
+    print(f"Report: {report_path}")
     return 0
 
 

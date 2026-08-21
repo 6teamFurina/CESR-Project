@@ -1,0 +1,148 @@
+{
+  "detector_optics": {
+    "overall": {
+      "relative_frobenius": 0.02086669546074435,
+      "cosine_correlation": 0.9998871037185183,
+      "maximum_absolute_difference": 2530.483038664257,
+      "reference_maximum_absolute": 125576.87696846643
+    },
+    "by_quantity": {
+      "phi_1": {
+        "relative_frobenius": 0.019541689803234057,
+        "cosine_correlation": 0.9998138319236207,
+        "maximum_absolute_difference": 0.5009507428609821,
+        "reference_maximum_absolute": 35.965576421048695
+      },
+      "beta_1": {
+        "relative_frobenius": 0.018140550666372404,
+        "cosine_correlation": 0.9998718813910613,
+        "maximum_absolute_difference": 899.1984515537333,
+        "reference_maximum_absolute": 57347.931418922475
+      },
+      "alpha_1": {
+        "relative_frobenius": 0.01744067160031849,
+        "cosine_correlation": 0.9999097751961921,
+        "maximum_absolute_difference": 629.3025548420592,
+        "reference_maximum_absolute": 39534.759245034584
+      },
+      "phi_2": {
+        "relative_frobenius": 0.014673317394438102,
+        "cosine_correlation": 0.9999014548912134,
+        "maximum_absolute_difference": 0.6888930858228619,
+        "reference_maximum_absolute": 49.30545861991931
+      },
+      "beta_2": {
+        "relative_frobenius": 0.02281938199906435,
+        "cosine_correlation": 0.9999031011609543,
+        "maximum_absolute_difference": 2530.483038664257,
+        "reference_maximum_absolute": 125576.87696846643
+      },
+      "alpha_2": {
+        "relative_frobenius": 0.022588033372055564,
+        "cosine_correlation": 0.9999053863533863,
+        "maximum_absolute_difference": 954.6429735938145,
+        "reference_maximum_absolute": 47868.07634878443
+      },
+      "phi_3": {
+        "relative_frobenius": null,
+        "cosine_correlation": null,
+        "maximum_absolute_difference": 3.685717094975919,
+        "reference_maximum_absolute": 0.0
+      },
+      "gamma_c": {
+        "relative_frobenius": 0.017678531637469047,
+        "cosine_correlation": 0.9999149675873681,
+        "maximum_absolute_difference": 16.7310191225439,
+        "reference_maximum_absolute": 1056.1811666323085
+      },
+      "c11": {
+        "relative_frobenius": 0.017208218392800893,
+        "cosine_correlation": 0.9999032989055144,
+        "maximum_absolute_difference": 130.97855538054955,
+        "reference_maximum_absolute": 8455.834488394341
+      },
+      "c12": {
+        "relative_frobenius": 0.016483474198036648,
+        "cosine_correlation": 0.9998974464815191,
+        "maximum_absolute_difference": 349.7991902388949,
+        "reference_maximum_absolute": 22194.657514938655
+      },
+      "c21": {
+        "relative_frobenius": 0.01699684225591798,
+        "cosine_correlation": 0.9999065081105433,
+        "maximum_absolute_difference": 92.6586457326166,
+        "reference_maximum_absolute": 5892.809216186346
+      },
+      "c22": {
+        "relative_frobenius": 0.017088682145056135,
+        "cosine_correlation": 0.9999071599473516,
+        "maximum_absolute_difference": 243.446746657748,
+        "reference_maximum_absolute": 15225.688385083648
+      },
+      "orbit_x": {
+        "relative_frobenius": 0.0004786078618024276,
+        "cosine_correlation": 0.9999998870587729,
+        "maximum_absolute_difference": 0.00964270851836968,
+        "reference_maximum_absolute": 20.669309634289633
+      },
+      "orbit_px": {
+        "relative_frobenius": 0.00045575974531040223,
+        "cosine_correlation": 0.9999999128750141,
+        "maximum_absolute_difference": 0.0050439021531938355,
+        "reference_maximum_absolute": 11.237039450317457
+      },
+      "orbit_y": {
+        "relative_frobenius": 0.0024715587811519417,
+        "cosine_correlation": 0.9999970623207248,
+        "maximum_absolute_difference": 0.06725871840022357,
+        "reference_maximum_absolute": 23.5131223549973
+      },
+      "orbit_py": {
+        "relative_frobenius": 0.0014284236929809945,
+        "cosine_correlation": 0.9999994528988859,
+        "maximum_absolute_difference": 0.02561320169937531,
+        "reference_maximum_absolute": 22.33493382372445
+      },
+      "orbit_z": {
+        "relative_frobenius": 0.99755922280882,
+        "cosine_correlation": 0.07072905493789904,
+        "maximum_absolute_difference": 3.9043875953545486,
+        "reference_maximum_absolute": 3.6859290070812403
+      },
+      "orbit_pz": {
+        "relative_frobenius": 1.0,
+        "cosine_correlation": null,
+        "maximum_absolute_difference": 2.964615315390051e-15,
+        "reference_maximum_absolute": 2.964615315390051e-15
+      }
+    },
+    "phase_origin_aligned_overall": {
+      "relative_frobenius": 0.020866695854764687,
+      "cosine_correlation": 0.9998871036079864,
+      "maximum_absolute_difference": 2530.483038664257,
+      "reference_maximum_absolute": 125576.87696846643
+    },
+    "transverse_detector_orbit": {
+      "relative_frobenius": 0.001979854294399663,
+      "cosine_correlation": 0.9999981048255592,
+      "maximum_absolute_difference": 0.06725871840022357,
+      "reference_maximum_absolute": 23.5131223549973
+    }
+  },
+  "closed_orbit_6x119": {
+    "overall": {
+      "relative_frobenius": 0.0010406660532169534,
+      "cosine_correlation": 0.9999999676293798,
+      "maximum_absolute_difference": 0.025630918224916144,
+      "reference_maximum_absolute": 22.350105546249672
+    }
+  },
+  "ring_tunes": {
+    "overall": {
+      "relative_frobenius": 0.01142412650500594,
+      "cosine_correlation": 0.9999385261900544,
+      "maximum_absolute_difference": 0.19581005400923335,
+      "reference_maximum_absolute": 26.511676689544572
+    }
+  }
+}

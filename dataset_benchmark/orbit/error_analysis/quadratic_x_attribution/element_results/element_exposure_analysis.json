@@ -1,0 +1,16 @@
+{
+  "format": "cesr-x-quadratic-element-exposure-v1",
+  "date": "2026-08-06",
+  "element_direction_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\element_exposure_directions.csv",
+  "direction_csv": "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\direction_attribution.csv",
+  "active_normal_sextupoles": 76,
+  "direction_pairs": 100,
+  "max_element_sum_relative_closure": 7.329840473212169e-16,
+  "pearson_signed_k2l_vs_mean_excess": -0.8273935708348339,
+  "opposite_sign_site_count": 66,
+  "figure_files": [
+    "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\top15_sextupole_exposure_differences.svg",
+    "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\top15_sextupole_exposure_differences_compact.svg",
+    "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\quadratic_x_attribution\\element_results\\sextupole_exposures_strengths_ring.svg"
+  ]
+}

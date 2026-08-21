@@ -1,0 +1,8 @@
+base_kick_rad = 5.0e-6
+date = "2026-08-07"
+format = "cesr-signed-sextupole-detector-contributions-v1"
+local_source = "signed thin normal-sextupole quadratic kick split equally between element entrance and exit"
+projection = "ensemble dot(C_j,Q)/ensemble norm(Q)^2"
+seed = 20260804
+target = "Q_x = Q_hh,x + Q_hv,x + Q_vv,x at 99 detectors"
+trials = 100

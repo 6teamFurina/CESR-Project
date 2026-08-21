@@ -1,0 +1,5 @@
+nuisance_count = 150
+nuisance_definition = "Own Kn2--offset responses of all other active sextupoles"
+observation_count = 1110
+sextupole_s_m = 102.26329400000003
+target = "SEX_15W"

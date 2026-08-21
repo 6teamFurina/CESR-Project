@@ -1,0 +1,324 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="410" viewBox="0 0 1120 410">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#172033}.axis{stroke:#334155;stroke-width:1}.grid{stroke:#dbe3ec;stroke-width:1}.point{fill-opacity:.68}</style>
+<text x="560.0" y="31" text-anchor="middle" font-size="21" font-weight="600">Total detector-y contribution versus source/Green-function predictor</text>
+<line class="grid" x1="75.00" y1="72" x2="75.00" y2="352"/>
+<line class="grid" x1="75" y1="352.00" x2="375" y2="352.00"/>
+<text x="75.00" y="371" text-anchor="middle" font-size="11">10^-5</text>
+<text x="67" y="356.00" text-anchor="end" font-size="11">10^-5</text>
+<line class="grid" x1="135.00" y1="72" x2="135.00" y2="352"/>
+<line class="grid" x1="75" y1="296.00" x2="375" y2="296.00"/>
+<text x="135.00" y="371" text-anchor="middle" font-size="11">10^-4</text>
+<text x="67" y="300.00" text-anchor="end" font-size="11">10^-4</text>
+<line class="grid" x1="195.00" y1="72" x2="195.00" y2="352"/>
+<line class="grid" x1="75" y1="240.00" x2="375" y2="240.00"/>
+<text x="195.00" y="371" text-anchor="middle" font-size="11">10^-3</text>
+<text x="67" y="244.00" text-anchor="end" font-size="11">10^-3</text>
+<line class="grid" x1="255.00" y1="72" x2="255.00" y2="352"/>
+<line class="grid" x1="75" y1="184.00" x2="375" y2="184.00"/>
+<text x="255.00" y="371" text-anchor="middle" font-size="11">10^-2</text>
+<text x="67" y="188.00" text-anchor="end" font-size="11">10^-2</text>
+<line class="grid" x1="315.00" y1="72" x2="315.00" y2="352"/>
+<line class="grid" x1="75" y1="128.00" x2="375" y2="128.00"/>
+<text x="315.00" y="371" text-anchor="middle" font-size="11">10^-1</text>
+<text x="67" y="132.00" text-anchor="end" font-size="11">10^-1</text>
+<line class="grid" x1="375.00" y1="72" x2="375.00" y2="352"/>
+<line class="grid" x1="75" y1="72.00" x2="375" y2="72.00"/>
+<text x="375.00" y="371" text-anchor="middle" font-size="11">10^0</text>
+<text x="67" y="76.00" text-anchor="end" font-size="11">10^0</text>
+<line class="axis" x1="75" y1="352" x2="375" y2="352"/>
+<line class="axis" x1="75" y1="72" x2="75" y2="352"/>
+<line x1="75" y1="352" x2="375" y2="72" stroke="#94a3b8" stroke-dasharray="4 4"/>
+<text x="225.0" y="49" text-anchor="middle" font-size="15" font-weight="600">Source only</text>
+<text x="225.0" y="398" text-anchor="middle" font-size="12">Predicted element magnitude share</text>
+<text x="83" y="90" font-size="12">Spearman ρ = 0.893</text>
+<circle class="point" cx="277.89" cy="159.52" r="3.2" fill="#d946ef"><title>sex_09aw</title></circle>
+<circle class="point" cx="257.85" cy="172.13" r="3.2" fill="#d946ef"><title>sex_10w</title></circle>
+<circle class="point" cx="227.49" cy="212.02" r="3.2" fill="#d946ef"><title>sex_10aw</title></circle>
+<circle class="point" cx="217.95" cy="226.35" r="3.2" fill="#d946ef"><title>sex_12w</title></circle>
+<circle class="point" cx="281.54" cy="151.34" r="3.2" fill="#d946ef"><title>sex_13w</title></circle>
+<circle class="point" cx="279.59" cy="169.31" r="3.2" fill="#d946ef"><title>sex_14w</title></circle>
+<circle class="point" cx="249.94" cy="184.95" r="3.2" fill="#d946ef"><title>sex_15w</title></circle>
+<circle class="point" cx="268.37" cy="178.56" r="3.2" fill="#d946ef"><title>sex_16w</title></circle>
+<circle class="point" cx="275.37" cy="155.26" r="3.2" fill="#d946ef"><title>sex_17w</title></circle>
+<circle class="point" cx="225.60" cy="242.96" r="3.2" fill="#d946ef"><title>sex_18w</title></circle>
+<circle class="point" cx="257.30" cy="174.11" r="3.2" fill="#d946ef"><title>sex_19w</title></circle>
+<circle class="point" cx="256.22" cy="187.40" r="3.2" fill="#d946ef"><title>sex_20w</title></circle>
+<circle class="point" cx="234.01" cy="194.90" r="3.2" fill="#d946ef"><title>sex_21w</title></circle>
+<circle class="point" cx="275.57" cy="175.48" r="3.2" fill="#d946ef"><title>sex_22w</title></circle>
+<circle class="point" cx="263.79" cy="175.21" r="3.2" fill="#d946ef"><title>sex_23w</title></circle>
+<circle class="point" cx="295.58" cy="163.52" r="3.2" fill="#d946ef"><title>sex_24w</title></circle>
+<circle class="point" cx="249.77" cy="178.47" r="3.2" fill="#d946ef"><title>sex_25w</title></circle>
+<circle class="point" cx="183.43" cy="267.93" r="3.2" fill="#d946ef"><title>sex_26w</title></circle>
+<circle class="point" cx="287.11" cy="158.83" r="3.2" fill="#d946ef"><title>sex_27w</title></circle>
+<circle class="point" cx="268.20" cy="182.53" r="3.2" fill="#d946ef"><title>sex_28w</title></circle>
+<circle class="point" cx="278.99" cy="150.28" r="3.2" fill="#d946ef"><title>sex_29w</title></circle>
+<circle class="point" cx="163.38" cy="281.13" r="3.2" fill="#d946ef"><title>sex_30w</title></circle>
+<circle class="point" cx="264.43" cy="177.41" r="3.2" fill="#d946ef"><title>sex_31w</title></circle>
+<circle class="point" cx="221.93" cy="223.57" r="3.2" fill="#d946ef"><title>sex_32w</title></circle>
+<circle class="point" cx="239.87" cy="190.27" r="3.2" fill="#d946ef"><title>sex_33w</title></circle>
+<circle class="point" cx="227.61" cy="210.77" r="3.2" fill="#d946ef"><title>sex_34w</title></circle>
+<circle class="point" cx="238.59" cy="189.68" r="3.2" fill="#d946ef"><title>sex_35w</title></circle>
+<circle class="point" cx="239.80" cy="206.16" r="3.2" fill="#d946ef"><title>sex_36w</title></circle>
+<circle class="point" cx="215.62" cy="216.70" r="3.2" fill="#d946ef"><title>sex_37w</title></circle>
+<circle class="point" cx="160.54" cy="287.33" r="3.2" fill="#d946ef"><title>sex_38w</title></circle>
+<circle class="point" cx="242.69" cy="193.51" r="3.2" fill="#d946ef"><title>sex_39w</title></circle>
+<circle class="point" cx="183.79" cy="269.47" r="3.2" fill="#d946ef"><title>sex_40w</title></circle>
+<circle class="point" cx="255.26" cy="179.37" r="3.2" fill="#d946ef"><title>sex_41w</title></circle>
+<circle class="point" cx="218.74" cy="223.17" r="3.2" fill="#d946ef"><title>sex_42w</title></circle>
+<circle class="point" cx="243.90" cy="183.93" r="3.2" fill="#d946ef"><title>sex_43w</title></circle>
+<circle class="point" cx="244.75" cy="186.88" r="3.2" fill="#d946ef"><title>sex_44w</title></circle>
+<circle class="point" cx="260.98" cy="194.13" r="3.2" fill="#d946ef"><title>sex_45w</title></circle>
+<circle class="point" cx="212.99" cy="230.54" r="3.2" fill="#d946ef"><title>sex_47w</title></circle>
+<circle class="point" cx="255.10" cy="189.99" r="3.2" fill="#d946ef"><title>sex_47e</title></circle>
+<circle class="point" cx="277.98" cy="178.87" r="3.2" fill="#d946ef"><title>sex_45e</title></circle>
+<circle class="point" cx="259.46" cy="170.52" r="3.2" fill="#d946ef"><title>sex_44e</title></circle>
+<circle class="point" cx="300.58" cy="127.09" r="3.2" fill="#d946ef"><title>sex_43e</title></circle>
+<circle class="point" cx="288.60" cy="155.15" r="3.2" fill="#d946ef"><title>sex_42e</title></circle>
+<circle class="point" cx="223.93" cy="209.03" r="3.2" fill="#d946ef"><title>sex_41e</title></circle>
+<circle class="point" cx="108.94" cy="336.20" r="3.2" fill="#d946ef"><title>sex_40e</title></circle>
+<circle class="point" cx="271.14" cy="164.10" r="3.2" fill="#d946ef"><title>sex_39e</title></circle>
+<circle class="point" cx="251.20" cy="198.30" r="3.2" fill="#d946ef"><title>sex_38e</title></circle>
+<circle class="point" cx="254.67" cy="179.83" r="3.2" fill="#d946ef"><title>sex_37e</title></circle>
+<circle class="point" cx="227.89" cy="223.82" r="3.2" fill="#d946ef"><title>sex_36e</title></circle>
+<circle class="point" cx="238.29" cy="196.03" r="3.2" fill="#d946ef"><title>sex_35e</title></circle>
+<circle class="point" cx="200.13" cy="239.04" r="3.2" fill="#d946ef"><title>sex_34e</title></circle>
+<circle class="point" cx="247.48" cy="181.94" r="3.2" fill="#d946ef"><title>sex_33e</title></circle>
+<circle class="point" cx="258.16" cy="188.68" r="3.2" fill="#d946ef"><title>sex_32e</title></circle>
+<circle class="point" cx="258.60" cy="181.10" r="3.2" fill="#d946ef"><title>sex_31e</title></circle>
+<circle class="point" cx="210.72" cy="240.62" r="3.2" fill="#d946ef"><title>sex_30e</title></circle>
+<circle class="point" cx="280.27" cy="152.19" r="3.2" fill="#d946ef"><title>sex_29e</title></circle>
+<circle class="point" cx="260.53" cy="200.35" r="3.2" fill="#d946ef"><title>sex_28e</title></circle>
+<circle class="point" cx="274.31" cy="166.02" r="3.2" fill="#d946ef"><title>sex_27e</title></circle>
+<circle class="point" cx="222.65" cy="232.22" r="3.2" fill="#d946ef"><title>sex_26e</title></circle>
+<circle class="point" cx="257.96" cy="175.76" r="3.2" fill="#d946ef"><title>sex_25e</title></circle>
+<circle class="point" cx="270.78" cy="192.57" r="3.2" fill="#d946ef"><title>sex_24e</title></circle>
+<circle class="point" cx="251.25" cy="180.29" r="3.2" fill="#d946ef"><title>sex_23e</title></circle>
+<circle class="point" cx="311.81" cy="140.79" r="3.2" fill="#d946ef"><title>sex_22e</title></circle>
+<circle class="point" cx="298.43" cy="140.22" r="3.2" fill="#d946ef"><title>sex_21e</title></circle>
+<circle class="point" cx="241.61" cy="209.17" r="3.2" fill="#d946ef"><title>sex_20e</title></circle>
+<circle class="point" cx="259.88" cy="176.56" r="3.2" fill="#d946ef"><title>sex_19e</title></circle>
+<circle class="point" cx="249.44" cy="219.38" r="3.2" fill="#d946ef"><title>sex_18e</title></circle>
+<circle class="point" cx="259.38" cy="171.40" r="3.2" fill="#d946ef"><title>sex_17e</title></circle>
+<circle class="point" cx="257.74" cy="193.65" r="3.2" fill="#d946ef"><title>sex_16e</title></circle>
+<circle class="point" cx="253.50" cy="187.55" r="3.2" fill="#d946ef"><title>sex_15e</title></circle>
+<circle class="point" cx="263.74" cy="190.57" r="3.2" fill="#d946ef"><title>sex_14e</title></circle>
+<circle class="point" cx="250.37" cy="181.18" r="3.2" fill="#d946ef"><title>sex_13e</title></circle>
+<circle class="point" cx="243.10" cy="202.72" r="3.2" fill="#d946ef"><title>sex_12e</title></circle>
+<circle class="point" cx="239.31" cy="189.38" r="3.2" fill="#d946ef"><title>sex_11e</title></circle>
+<circle class="point" cx="250.89" cy="185.24" r="3.2" fill="#d946ef"><title>sex_10ae</title></circle>
+<circle class="point" cx="250.63" cy="186.77" r="3.2" fill="#d946ef"><title>sex_09ae</title></circle>
+<line class="grid" x1="430.00" y1="72" x2="430.00" y2="352"/>
+<line class="grid" x1="430" y1="352.00" x2="730" y2="352.00"/>
+<text x="430.00" y="371" text-anchor="middle" font-size="11">10^-5</text>
+<text x="422" y="356.00" text-anchor="end" font-size="11">10^-5</text>
+<line class="grid" x1="490.00" y1="72" x2="490.00" y2="352"/>
+<line class="grid" x1="430" y1="296.00" x2="730" y2="296.00"/>
+<text x="490.00" y="371" text-anchor="middle" font-size="11">10^-4</text>
+<text x="422" y="300.00" text-anchor="end" font-size="11">10^-4</text>
+<line class="grid" x1="550.00" y1="72" x2="550.00" y2="352"/>
+<line class="grid" x1="430" y1="240.00" x2="730" y2="240.00"/>
+<text x="550.00" y="371" text-anchor="middle" font-size="11">10^-3</text>
+<text x="422" y="244.00" text-anchor="end" font-size="11">10^-3</text>
+<line class="grid" x1="610.00" y1="72" x2="610.00" y2="352"/>
+<line class="grid" x1="430" y1="184.00" x2="730" y2="184.00"/>
+<text x="610.00" y="371" text-anchor="middle" font-size="11">10^-2</text>
+<text x="422" y="188.00" text-anchor="end" font-size="11">10^-2</text>
+<line class="grid" x1="670.00" y1="72" x2="670.00" y2="352"/>
+<line class="grid" x1="430" y1="128.00" x2="730" y2="128.00"/>
+<text x="670.00" y="371" text-anchor="middle" font-size="11">10^-1</text>
+<text x="422" y="132.00" text-anchor="end" font-size="11">10^-1</text>
+<line class="grid" x1="730.00" y1="72" x2="730.00" y2="352"/>
+<line class="grid" x1="430" y1="72.00" x2="730" y2="72.00"/>
+<text x="730.00" y="371" text-anchor="middle" font-size="11">10^0</text>
+<text x="422" y="76.00" text-anchor="end" font-size="11">10^0</text>
+<line class="axis" x1="430" y1="352" x2="730" y2="352"/>
+<line class="axis" x1="430" y1="72" x2="430" y2="352"/>
+<line x1="430" y1="352" x2="730" y2="72" stroke="#94a3b8" stroke-dasharray="4 4"/>
+<text x="580.0" y="49" text-anchor="middle" font-size="15" font-weight="600">Source × direction β Green envelope</text>
+<text x="580.0" y="398" text-anchor="middle" font-size="12">Predicted element magnitude share</text>
+<text x="438" y="90" font-size="12">Spearman ρ = 0.997</text>
+<circle class="point" cx="637.34" cy="159.52" r="3.2" fill="#d946ef"><title>sex_09aw</title></circle>
+<circle class="point" cx="622.73" cy="172.13" r="3.2" fill="#d946ef"><title>sex_10w</title></circle>
+<circle class="point" cx="581.18" cy="212.02" r="3.2" fill="#d946ef"><title>sex_10aw</title></circle>
+<circle class="point" cx="567.05" cy="226.35" r="3.2" fill="#d946ef"><title>sex_12w</title></circle>
+<circle class="point" cx="646.34" cy="151.34" r="3.2" fill="#d946ef"><title>sex_13w</title></circle>
+<circle class="point" cx="626.53" cy="169.31" r="3.2" fill="#d946ef"><title>sex_14w</title></circle>
+<circle class="point" cx="607.56" cy="184.95" r="3.2" fill="#d946ef"><title>sex_15w</title></circle>
+<circle class="point" cx="614.67" cy="178.56" r="3.2" fill="#d946ef"><title>sex_16w</title></circle>
+<circle class="point" cx="639.27" cy="155.26" r="3.2" fill="#d946ef"><title>sex_17w</title></circle>
+<circle class="point" cx="548.95" cy="242.96" r="3.2" fill="#d946ef"><title>sex_18w</title></circle>
+<circle class="point" cx="618.48" cy="174.11" r="3.2" fill="#d946ef"><title>sex_19w</title></circle>
+<circle class="point" cx="605.28" cy="187.40" r="3.2" fill="#d946ef"><title>sex_20w</title></circle>
+<circle class="point" cx="597.67" cy="194.90" r="3.2" fill="#d946ef"><title>sex_21w</title></circle>
+<circle class="point" cx="620.94" cy="175.48" r="3.2" fill="#d946ef"><title>sex_22w</title></circle>
+<circle class="point" cx="621.54" cy="175.21" r="3.2" fill="#d946ef"><title>sex_23w</title></circle>
+<circle class="point" cx="630.60" cy="163.52" r="3.2" fill="#d946ef"><title>sex_24w</title></circle>
+<circle class="point" cx="613.96" cy="178.47" r="3.2" fill="#d946ef"><title>sex_25w</title></circle>
+<circle class="point" cx="521.30" cy="267.93" r="3.2" fill="#d946ef"><title>sex_26w</title></circle>
+<circle class="point" cx="638.81" cy="158.83" r="3.2" fill="#d946ef"><title>sex_27w</title></circle>
+<circle class="point" cx="610.27" cy="182.53" r="3.2" fill="#d946ef"><title>sex_28w</title></circle>
+<circle class="point" cx="643.43" cy="150.28" r="3.2" fill="#d946ef"><title>sex_29w</title></circle>
+<circle class="point" cx="505.28" cy="281.13" r="3.2" fill="#d946ef"><title>sex_30w</title></circle>
+<circle class="point" cx="619.20" cy="177.41" r="3.2" fill="#d946ef"><title>sex_31w</title></circle>
+<circle class="point" cx="570.48" cy="223.57" r="3.2" fill="#d946ef"><title>sex_32w</title></circle>
+<circle class="point" cx="604.14" cy="190.27" r="3.2" fill="#d946ef"><title>sex_33w</title></circle>
+<circle class="point" cx="581.73" cy="210.77" r="3.2" fill="#d946ef"><title>sex_34w</title></circle>
+<circle class="point" cx="602.88" cy="189.68" r="3.2" fill="#d946ef"><title>sex_35w</title></circle>
+<circle class="point" cx="584.73" cy="206.16" r="3.2" fill="#d946ef"><title>sex_36w</title></circle>
+<circle class="point" cx="573.73" cy="216.70" r="3.2" fill="#d946ef"><title>sex_37w</title></circle>
+<circle class="point" cx="501.26" cy="287.33" r="3.2" fill="#d946ef"><title>sex_38w</title></circle>
+<circle class="point" cx="601.31" cy="193.51" r="3.2" fill="#d946ef"><title>sex_39w</title></circle>
+<circle class="point" cx="517.60" cy="269.47" r="3.2" fill="#d946ef"><title>sex_40w</title></circle>
+<circle class="point" cx="613.10" cy="179.37" r="3.2" fill="#d946ef"><title>sex_41w</title></circle>
+<circle class="point" cx="568.40" cy="223.17" r="3.2" fill="#d946ef"><title>sex_42w</title></circle>
+<circle class="point" cx="610.61" cy="183.93" r="3.2" fill="#d946ef"><title>sex_43w</title></circle>
+<circle class="point" cx="608.87" cy="186.88" r="3.2" fill="#d946ef"><title>sex_44w</title></circle>
+<circle class="point" cx="602.28" cy="194.13" r="3.2" fill="#d946ef"><title>sex_45w</title></circle>
+<circle class="point" cx="558.14" cy="230.54" r="3.2" fill="#d946ef"><title>sex_47w</title></circle>
+<circle class="point" cx="601.08" cy="189.99" r="3.2" fill="#d946ef"><title>sex_47e</title></circle>
+<circle class="point" cx="617.69" cy="178.87" r="3.2" fill="#d946ef"><title>sex_45e</title></circle>
+<circle class="point" cx="624.43" cy="170.52" r="3.2" fill="#d946ef"><title>sex_44e</title></circle>
+<circle class="point" cx="669.74" cy="127.09" r="3.2" fill="#d946ef"><title>sex_43e</title></circle>
+<circle class="point" cx="638.34" cy="155.15" r="3.2" fill="#d946ef"><title>sex_42e</title></circle>
+<circle class="point" cx="581.88" cy="209.03" r="3.2" fill="#d946ef"><title>sex_41e</title></circle>
+<circle class="point" cx="439.18" cy="336.20" r="3.2" fill="#d946ef"><title>sex_40e</title></circle>
+<circle class="point" cx="631.55" cy="164.10" r="3.2" fill="#d946ef"><title>sex_39e</title></circle>
+<circle class="point" cx="592.57" cy="198.30" r="3.2" fill="#d946ef"><title>sex_38e</title></circle>
+<circle class="point" cx="613.20" cy="179.83" r="3.2" fill="#d946ef"><title>sex_37e</title></circle>
+<circle class="point" cx="567.41" cy="223.82" r="3.2" fill="#d946ef"><title>sex_36e</title></circle>
+<circle class="point" cx="599.25" cy="196.03" r="3.2" fill="#d946ef"><title>sex_35e</title></circle>
+<circle class="point" cx="551.81" cy="239.04" r="3.2" fill="#d946ef"><title>sex_34e</title></circle>
+<circle class="point" cx="612.61" cy="181.94" r="3.2" fill="#d946ef"><title>sex_33e</title></circle>
+<circle class="point" cx="603.81" cy="188.68" r="3.2" fill="#d946ef"><title>sex_32e</title></circle>
+<circle class="point" cx="611.93" cy="181.10" r="3.2" fill="#d946ef"><title>sex_31e</title></circle>
+<circle class="point" cx="549.61" cy="240.62" r="3.2" fill="#d946ef"><title>sex_30e</title></circle>
+<circle class="point" cx="645.67" cy="152.19" r="3.2" fill="#d946ef"><title>sex_29e</title></circle>
+<circle class="point" cx="592.22" cy="200.35" r="3.2" fill="#d946ef"><title>sex_28e</title></circle>
+<circle class="point" cx="628.57" cy="166.02" r="3.2" fill="#d946ef"><title>sex_27e</title></circle>
+<circle class="point" cx="559.19" cy="232.22" r="3.2" fill="#d946ef"><title>sex_26e</title></circle>
+<circle class="point" cx="620.26" cy="175.76" r="3.2" fill="#d946ef"><title>sex_25e</title></circle>
+<circle class="point" cx="599.35" cy="192.57" r="3.2" fill="#d946ef"><title>sex_24e</title></circle>
+<circle class="point" cx="614.40" cy="180.29" r="3.2" fill="#d946ef"><title>sex_23e</title></circle>
+<circle class="point" cx="657.05" cy="140.79" r="3.2" fill="#d946ef"><title>sex_22e</title></circle>
+<circle class="point" cx="658.80" cy="140.22" r="3.2" fill="#d946ef"><title>sex_21e</title></circle>
+<circle class="point" cx="583.26" cy="209.17" r="3.2" fill="#d946ef"><title>sex_20e</title></circle>
+<circle class="point" cx="616.89" cy="176.56" r="3.2" fill="#d946ef"><title>sex_19e</title></circle>
+<circle class="point" cx="571.46" cy="219.38" r="3.2" fill="#d946ef"><title>sex_18e</title></circle>
+<circle class="point" cx="624.63" cy="171.40" r="3.2" fill="#d946ef"><title>sex_17e</title></circle>
+<circle class="point" cx="598.77" cy="193.65" r="3.2" fill="#d946ef"><title>sex_16e</title></circle>
+<circle class="point" cx="605.22" cy="187.55" r="3.2" fill="#d946ef"><title>sex_15e</title></circle>
+<circle class="point" cx="603.76" cy="190.57" r="3.2" fill="#d946ef"><title>sex_14e</title></circle>
+<circle class="point" cx="614.60" cy="181.18" r="3.2" fill="#d946ef"><title>sex_13e</title></circle>
+<circle class="point" cx="590.74" cy="202.72" r="3.2" fill="#d946ef"><title>sex_12e</title></circle>
+<circle class="point" cx="604.74" cy="189.38" r="3.2" fill="#d946ef"><title>sex_11e</title></circle>
+<circle class="point" cx="608.40" cy="185.24" r="3.2" fill="#d946ef"><title>sex_10ae</title></circle>
+<circle class="point" cx="605.87" cy="186.77" r="3.2" fill="#d946ef"><title>sex_09ae</title></circle>
+<line class="grid" x1="785.00" y1="72" x2="785.00" y2="352"/>
+<line class="grid" x1="785" y1="352.00" x2="1085" y2="352.00"/>
+<text x="785.00" y="371" text-anchor="middle" font-size="11">10^-5</text>
+<text x="777" y="356.00" text-anchor="end" font-size="11">10^-5</text>
+<line class="grid" x1="845.00" y1="72" x2="845.00" y2="352"/>
+<line class="grid" x1="785" y1="296.00" x2="1085" y2="296.00"/>
+<text x="845.00" y="371" text-anchor="middle" font-size="11">10^-4</text>
+<text x="777" y="300.00" text-anchor="end" font-size="11">10^-4</text>
+<line class="grid" x1="905.00" y1="72" x2="905.00" y2="352"/>
+<line class="grid" x1="785" y1="240.00" x2="1085" y2="240.00"/>
+<text x="905.00" y="371" text-anchor="middle" font-size="11">10^-3</text>
+<text x="777" y="244.00" text-anchor="end" font-size="11">10^-3</text>
+<line class="grid" x1="965.00" y1="72" x2="965.00" y2="352"/>
+<line class="grid" x1="785" y1="184.00" x2="1085" y2="184.00"/>
+<text x="965.00" y="371" text-anchor="middle" font-size="11">10^-2</text>
+<text x="777" y="188.00" text-anchor="end" font-size="11">10^-2</text>
+<line class="grid" x1="1025.00" y1="72" x2="1025.00" y2="352"/>
+<line class="grid" x1="785" y1="128.00" x2="1085" y2="128.00"/>
+<text x="1025.00" y="371" text-anchor="middle" font-size="11">10^-1</text>
+<text x="777" y="132.00" text-anchor="end" font-size="11">10^-1</text>
+<line class="grid" x1="1085.00" y1="72" x2="1085.00" y2="352"/>
+<line class="grid" x1="785" y1="72.00" x2="1085" y2="72.00"/>
+<text x="1085.00" y="371" text-anchor="middle" font-size="11">10^0</text>
+<text x="777" y="76.00" text-anchor="end" font-size="11">10^0</text>
+<line class="axis" x1="785" y1="352" x2="1085" y2="352"/>
+<line class="axis" x1="785" y1="72" x2="785" y2="352"/>
+<line x1="785" y1="352" x2="1085" y2="72" stroke="#94a3b8" stroke-dasharray="4 4"/>
+<text x="935.0" y="49" text-anchor="middle" font-size="15" font-weight="600">Source × direction β/phase Green</text>
+<text x="935.0" y="398" text-anchor="middle" font-size="12">Predicted element magnitude share</text>
+<text x="793" y="90" font-size="12">Spearman ρ = 0.999</text>
+<circle class="point" cx="992.07" cy="159.52" r="3.2" fill="#d946ef"><title>sex_09aw</title></circle>
+<circle class="point" cx="977.41" cy="172.13" r="3.2" fill="#d946ef"><title>sex_10w</title></circle>
+<circle class="point" cx="935.15" cy="212.02" r="3.2" fill="#d946ef"><title>sex_10aw</title></circle>
+<circle class="point" cx="919.86" cy="226.35" r="3.2" fill="#d946ef"><title>sex_12w</title></circle>
+<circle class="point" cx="999.65" cy="151.34" r="3.2" fill="#d946ef"><title>sex_13w</title></circle>
+<circle class="point" cx="980.84" cy="169.31" r="3.2" fill="#d946ef"><title>sex_14w</title></circle>
+<circle class="point" cx="963.71" cy="184.95" r="3.2" fill="#d946ef"><title>sex_15w</title></circle>
+<circle class="point" cx="971.26" cy="178.56" r="3.2" fill="#d946ef"><title>sex_16w</title></circle>
+<circle class="point" cx="995.28" cy="155.26" r="3.2" fill="#d946ef"><title>sex_17w</title></circle>
+<circle class="point" cx="903.68" cy="242.96" r="3.2" fill="#d946ef"><title>sex_18w</title></circle>
+<circle class="point" cx="975.32" cy="174.11" r="3.2" fill="#d946ef"><title>sex_19w</title></circle>
+<circle class="point" cx="961.63" cy="187.40" r="3.2" fill="#d946ef"><title>sex_20w</title></circle>
+<circle class="point" cx="952.98" cy="194.90" r="3.2" fill="#d946ef"><title>sex_21w</title></circle>
+<circle class="point" cx="974.29" cy="175.48" r="3.2" fill="#d946ef"><title>sex_22w</title></circle>
+<circle class="point" cx="974.03" cy="175.21" r="3.2" fill="#d946ef"><title>sex_23w</title></circle>
+<circle class="point" cx="987.81" cy="163.52" r="3.2" fill="#d946ef"><title>sex_24w</title></circle>
+<circle class="point" cx="970.51" cy="178.47" r="3.2" fill="#d946ef"><title>sex_25w</title></circle>
+<circle class="point" cx="874.96" cy="267.93" r="3.2" fill="#d946ef"><title>sex_26w</title></circle>
+<circle class="point" cx="991.68" cy="158.83" r="3.2" fill="#d946ef"><title>sex_27w</title></circle>
+<circle class="point" cx="967.11" cy="182.53" r="3.2" fill="#d946ef"><title>sex_28w</title></circle>
+<circle class="point" cx="1000.81" cy="150.28" r="3.2" fill="#d946ef"><title>sex_29w</title></circle>
+<circle class="point" cx="860.97" cy="281.13" r="3.2" fill="#d946ef"><title>sex_30w</title></circle>
+<circle class="point" cx="971.81" cy="177.41" r="3.2" fill="#d946ef"><title>sex_31w</title></circle>
+<circle class="point" cx="922.97" cy="223.57" r="3.2" fill="#d946ef"><title>sex_32w</title></circle>
+<circle class="point" cx="957.99" cy="190.27" r="3.2" fill="#d946ef"><title>sex_33w</title></circle>
+<circle class="point" cx="936.52" cy="210.77" r="3.2" fill="#d946ef"><title>sex_34w</title></circle>
+<circle class="point" cx="958.67" cy="189.68" r="3.2" fill="#d946ef"><title>sex_35w</title></circle>
+<circle class="point" cx="941.46" cy="206.16" r="3.2" fill="#d946ef"><title>sex_36w</title></circle>
+<circle class="point" cx="929.66" cy="216.70" r="3.2" fill="#d946ef"><title>sex_37w</title></circle>
+<circle class="point" cx="854.73" cy="287.33" r="3.2" fill="#d946ef"><title>sex_38w</title></circle>
+<circle class="point" cx="954.42" cy="193.51" r="3.2" fill="#d946ef"><title>sex_39w</title></circle>
+<circle class="point" cx="873.77" cy="269.47" r="3.2" fill="#d946ef"><title>sex_40w</title></circle>
+<circle class="point" cx="969.70" cy="179.37" r="3.2" fill="#d946ef"><title>sex_41w</title></circle>
+<circle class="point" cx="923.44" cy="223.17" r="3.2" fill="#d946ef"><title>sex_42w</title></circle>
+<circle class="point" cx="964.55" cy="183.93" r="3.2" fill="#d946ef"><title>sex_43w</title></circle>
+<circle class="point" cx="961.46" cy="186.88" r="3.2" fill="#d946ef"><title>sex_44w</title></circle>
+<circle class="point" cx="954.14" cy="194.13" r="3.2" fill="#d946ef"><title>sex_45w</title></circle>
+<circle class="point" cx="915.61" cy="230.54" r="3.2" fill="#d946ef"><title>sex_47w</title></circle>
+<circle class="point" cx="957.76" cy="189.99" r="3.2" fill="#d946ef"><title>sex_47e</title></circle>
+<circle class="point" cx="970.62" cy="178.87" r="3.2" fill="#d946ef"><title>sex_45e</title></circle>
+<circle class="point" cx="979.80" cy="170.52" r="3.2" fill="#d946ef"><title>sex_44e</title></circle>
+<circle class="point" cx="1026.41" cy="127.09" r="3.2" fill="#d946ef"><title>sex_43e</title></circle>
+<circle class="point" cx="995.31" cy="155.15" r="3.2" fill="#d946ef"><title>sex_42e</title></circle>
+<circle class="point" cx="938.25" cy="209.03" r="3.2" fill="#d946ef"><title>sex_41e</title></circle>
+<circle class="point" cx="792.04" cy="336.20" r="3.2" fill="#d946ef"><title>sex_40e</title></circle>
+<circle class="point" cx="986.73" cy="164.10" r="3.2" fill="#d946ef"><title>sex_39e</title></circle>
+<circle class="point" cx="949.27" cy="198.30" r="3.2" fill="#d946ef"><title>sex_38e</title></circle>
+<circle class="point" cx="969.62" cy="179.83" r="3.2" fill="#d946ef"><title>sex_37e</title></circle>
+<circle class="point" cx="921.67" cy="223.82" r="3.2" fill="#d946ef"><title>sex_36e</title></circle>
+<circle class="point" cx="952.37" cy="196.03" r="3.2" fill="#d946ef"><title>sex_35e</title></circle>
+<circle class="point" cx="905.87" cy="239.04" r="3.2" fill="#d946ef"><title>sex_34e</title></circle>
+<circle class="point" cx="967.51" cy="181.94" r="3.2" fill="#d946ef"><title>sex_33e</title></circle>
+<circle class="point" cx="959.60" cy="188.68" r="3.2" fill="#d946ef"><title>sex_32e</title></circle>
+<circle class="point" cx="968.17" cy="181.10" r="3.2" fill="#d946ef"><title>sex_31e</title></circle>
+<circle class="point" cx="904.12" cy="240.62" r="3.2" fill="#d946ef"><title>sex_30e</title></circle>
+<circle class="point" cx="999.34" cy="152.19" r="3.2" fill="#d946ef"><title>sex_29e</title></circle>
+<circle class="point" cx="946.56" cy="200.35" r="3.2" fill="#d946ef"><title>sex_28e</title></circle>
+<circle class="point" cx="984.61" cy="166.02" r="3.2" fill="#d946ef"><title>sex_27e</title></circle>
+<circle class="point" cx="913.04" cy="232.22" r="3.2" fill="#d946ef"><title>sex_26e</title></circle>
+<circle class="point" cx="974.08" cy="175.76" r="3.2" fill="#d946ef"><title>sex_25e</title></circle>
+<circle class="point" cx="955.11" cy="192.57" r="3.2" fill="#d946ef"><title>sex_24e</title></circle>
+<circle class="point" cx="969.22" cy="180.29" r="3.2" fill="#d946ef"><title>sex_23e</title></circle>
+<circle class="point" cx="1010.78" cy="140.79" r="3.2" fill="#d946ef"><title>sex_22e</title></circle>
+<circle class="point" cx="1012.15" cy="140.22" r="3.2" fill="#d946ef"><title>sex_21e</title></circle>
+<circle class="point" cx="937.65" cy="209.17" r="3.2" fill="#d946ef"><title>sex_20e</title></circle>
+<circle class="point" cx="973.11" cy="176.56" r="3.2" fill="#d946ef"><title>sex_19e</title></circle>
+<circle class="point" cx="926.42" cy="219.38" r="3.2" fill="#d946ef"><title>sex_18e</title></circle>
+<circle class="point" cx="978.89" cy="171.40" r="3.2" fill="#d946ef"><title>sex_17e</title></circle>
+<circle class="point" cx="954.00" cy="193.65" r="3.2" fill="#d946ef"><title>sex_16e</title></circle>
+<circle class="point" cx="961.37" cy="187.55" r="3.2" fill="#d946ef"><title>sex_15e</title></circle>
+<circle class="point" cx="957.93" cy="190.57" r="3.2" fill="#d946ef"><title>sex_14e</title></circle>
+<circle class="point" cx="968.36" cy="181.18" r="3.2" fill="#d946ef"><title>sex_13e</title></circle>
+<circle class="point" cx="944.54" cy="202.72" r="3.2" fill="#d946ef"><title>sex_12e</title></circle>
+<circle class="point" cx="959.35" cy="189.38" r="3.2" fill="#d946ef"><title>sex_11e</title></circle>
+<circle class="point" cx="963.41" cy="185.24" r="3.2" fill="#d946ef"><title>sex_10ae</title></circle>
+<circle class="point" cx="961.11" cy="186.77" r="3.2" fill="#d946ef"><title>sex_09ae</title></circle>
+<text transform="translate(18 212.0) rotate(-90)" text-anchor="middle" font-size="12">Actual element magnitude share</text>
+</svg>

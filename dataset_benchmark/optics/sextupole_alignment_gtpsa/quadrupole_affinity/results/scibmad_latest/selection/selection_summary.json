@@ -1,0 +1,73 @@
+{
+  "target_count": 76,
+  "selection_row_count": 380,
+  "operational_union_quadrupole_count": 25,
+  "retained_union_quadrupole_count": 34,
+  "operational_information_gain_logdet": {
+    "minimum": 2.2338910898027784,
+    "median": 3.1221579829594113,
+    "maximum": 3.7565038872806937
+  },
+  "retained_information_gain_logdet": {
+    "minimum": 2.6134226149186297,
+    "median": 3.7296488668653076,
+    "maximum": 4.599881276599998
+  },
+  "operational_fraction_of_retained_information_gain": {
+    "minimum": 0.8166523571793821,
+    "median": 0.83538840779733,
+    "maximum": 0.8547760614952556
+  },
+  "operational_precision_improvement_worst_axis": {
+    "minimum": 1.807354863842747,
+    "median": 2.2039628867594816,
+    "maximum": 2.571491850996428
+  },
+  "retained_precision_improvement_worst_axis": {
+    "minimum": 1.9934298256318492,
+    "median": 2.5731718273768127,
+    "maximum": 3.18177675005311
+  },
+  "most_frequent_operational_quadrupoles": [
+    {
+      "quadrupole": "Q10W",
+      "target_count": 47
+    },
+    {
+      "quadrupole": "Q10AW",
+      "target_count": 19
+    },
+    {
+      "quadrupole": "QX4D",
+      "target_count": 18
+    },
+    {
+      "quadrupole": "QX6A",
+      "target_count": 17
+    },
+    {
+      "quadrupole": "Q17W",
+      "target_count": 16
+    },
+    {
+      "quadrupole": "Q43W",
+      "target_count": 13
+    },
+    {
+      "quadrupole": "Q34W",
+      "target_count": 12
+    },
+    {
+      "quadrupole": "Q18W",
+      "target_count": 10
+    },
+    {
+      "quadrupole": "Q43E",
+      "target_count": 9
+    },
+    {
+      "quadrupole": "Q22W",
+      "target_count": 9
+    }
+  ]
+}

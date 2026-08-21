@@ -1,0 +1,17 @@
+baseline_closed_orbit_seconds = 17.0400856
+baseline_twiss_seconds = 15.1843963
+candidate_count_per_target = 15
+date = "2026-08-17"
+detector_count = 111
+engine = "SciBmad exact scalar RF-on closed orbit and Twiss"
+format = "cesr-scibmad-quadrupole-affinity-screen-v1"
+julia_version = "1.12.6"
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+max_beta_beating = 0.2
+max_tune_shift = 0.01
+phase_reference = "DET_X4A"
+quadrupole_count = 113
+quadrupole_fraction = 0.01
+screen_seconds = 296.3529999256134
+sextupole_count = 76
+tracking_elements = 1177

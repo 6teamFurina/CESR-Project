@@ -1,0 +1,15 @@
+bpm_count = 111
+calculation_wall_seconds = 86.73999977111816
+channel_order = "BPM inventory order with x,y interleaved"
+date = "2026-08-19"
+derivative_semantics = "saved values are true derivatives d^(1+a+b)O/dKn2/dx^a/dy^b; divide by a!b! for Taylor evaluation"
+descriptor = "Descriptor(6, 4, 3, 4)"
+engine = "SciBmad/GTPSA parameterized periodic Twiss BPM orbit"
+format = "cesr-latest-gtpsa-k2-offset-high-order-map-v1"
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+maximum_offset_order = 3
+maximum_total_parameter_order = 4
+nominal_closed_orbit_seconds = 20.2805293
+parameters = ["delta_Kn2_m3", "delta_x_offset_m", "delta_y_offset_m"]
+target_count = 2
+target_inventory = ["SEX_09AW", "SEX_10W"]

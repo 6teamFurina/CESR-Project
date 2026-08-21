@@ -1,0 +1,1094 @@
+[
+  {
+    "name": "Q00E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.84178483645302
+  },
+  {
+    "name": "Q00W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.84178483645302
+  },
+  {
+    "name": "Q01E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.639155
+  },
+  {
+    "name": "Q01W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.639155
+  },
+  {
+    "name": "Q02E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.206328
+  },
+  {
+    "name": "Q02W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.206328
+  },
+  {
+    "name": "Q03E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.128947
+  },
+  {
+    "name": "Q03W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.128947
+  },
+  {
+    "name": "Q04E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.420143
+  },
+  {
+    "name": "Q04W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.420143
+  },
+  {
+    "name": "Q05E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.373608
+  },
+  {
+    "name": "Q05W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.373608
+  },
+  {
+    "name": "Q06E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.421931
+  },
+  {
+    "name": "Q06W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.421931
+  },
+  {
+    "name": "Q07E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.246488
+  },
+  {
+    "name": "Q07W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.246488
+  },
+  {
+    "name": "Q08E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.144685
+  },
+  {
+    "name": "Q08W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.144685
+  },
+  {
+    "name": "Q09E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.190367
+  },
+  {
+    "name": "Q09W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.19165
+  },
+  {
+    "name": "Q10E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.266253
+  },
+  {
+    "name": "Q10W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.265126
+  },
+  {
+    "name": "Q11E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.20311
+  },
+  {
+    "name": "Q11W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.203919
+  },
+  {
+    "name": "Q12E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.263148
+  },
+  {
+    "name": "Q12W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.267546
+  },
+  {
+    "name": "Q13E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.212727
+  },
+  {
+    "name": "Q13W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.21212
+  },
+  {
+    "name": "Q14E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.27781
+  },
+  {
+    "name": "Q14W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.27781
+  },
+  {
+    "name": "Q15E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.225322
+  },
+  {
+    "name": "Q15W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.225322
+  },
+  {
+    "name": "Q16E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.272512
+  },
+  {
+    "name": "Q16W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.272512
+  },
+  {
+    "name": "Q17E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.270314
+  },
+  {
+    "name": "Q17W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.270314
+  },
+  {
+    "name": "Q18E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.228205
+  },
+  {
+    "name": "Q18W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.228205
+  },
+  {
+    "name": "Q19E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.321716
+  },
+  {
+    "name": "Q19W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.321716
+  },
+  {
+    "name": "Q20E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.234421
+  },
+  {
+    "name": "Q20W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.234421
+  },
+  {
+    "name": "Q21E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.277998
+  },
+  {
+    "name": "Q21W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.277998
+  },
+  {
+    "name": "Q22E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.255022
+  },
+  {
+    "name": "Q22W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.255022
+  },
+  {
+    "name": "Q23E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.25753
+  },
+  {
+    "name": "Q23W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.25753
+  },
+  {
+    "name": "Q24E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.247642
+  },
+  {
+    "name": "Q24W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.247642
+  },
+  {
+    "name": "Q25E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.31703
+  },
+  {
+    "name": "Q25W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.31703
+  },
+  {
+    "name": "Q26E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.247656
+  },
+  {
+    "name": "Q26W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.247656
+  },
+  {
+    "name": "Q27E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.306087
+  },
+  {
+    "name": "Q27W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.306087
+  },
+  {
+    "name": "Q28E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.250556
+  },
+  {
+    "name": "Q28W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.250556
+  },
+  {
+    "name": "Q29E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.225074
+  },
+  {
+    "name": "Q29W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.225074
+  },
+  {
+    "name": "Q30E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.24048
+  },
+  {
+    "name": "Q30W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.24048
+  },
+  {
+    "name": "Q31E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.204765
+  },
+  {
+    "name": "Q31W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.204765
+  },
+  {
+    "name": "Q32E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.19573
+  },
+  {
+    "name": "Q32W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.19573
+  },
+  {
+    "name": "Q33E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.192521
+  },
+  {
+    "name": "Q33W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.192521
+  },
+  {
+    "name": "Q34E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.231217
+  },
+  {
+    "name": "Q34W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.231217
+  },
+  {
+    "name": "Q35E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.161904
+  },
+  {
+    "name": "Q35W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.161904
+  },
+  {
+    "name": "Q36E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.208172
+  },
+  {
+    "name": "Q36W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.208172
+  },
+  {
+    "name": "Q37E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.220991
+  },
+  {
+    "name": "Q37W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.220991
+  },
+  {
+    "name": "Q38E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.236366
+  },
+  {
+    "name": "Q38W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.236366
+  },
+  {
+    "name": "Q39E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.207659
+  },
+  {
+    "name": "Q39W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.207659
+  },
+  {
+    "name": "Q40E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.228319
+  },
+  {
+    "name": "Q40W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.228319
+  },
+  {
+    "name": "Q41E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.226064
+  },
+  {
+    "name": "Q41W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.226064
+  },
+  {
+    "name": "Q42E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.22907
+  },
+  {
+    "name": "Q42W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.22907
+  },
+  {
+    "name": "Q43AE",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.234224
+  },
+  {
+    "name": "Q43AW",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.234224
+  },
+  {
+    "name": "Q43E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.237661
+  },
+  {
+    "name": "Q43W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.237661
+  },
+  {
+    "name": "Q44E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.225715
+  },
+  {
+    "name": "Q44W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.225715
+  },
+  {
+    "name": "Q45E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.305287
+  },
+  {
+    "name": "Q45W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.305287
+  },
+  {
+    "name": "Q46E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.235653
+  },
+  {
+    "name": "Q46W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.235653
+  },
+  {
+    "name": "Q47AE",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.356866
+  },
+  {
+    "name": "Q47AW",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.356866
+  },
+  {
+    "name": "Q47E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.405364
+  },
+  {
+    "name": "Q47W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.405364
+  },
+  {
+    "name": "Q48E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.555738
+  },
+  {
+    "name": "Q48W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.555738
+  },
+  {
+    "name": "Q49AE",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.0930455
+  },
+  {
+    "name": "Q49AW",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": 0.0930455
+  },
+  {
+    "name": "Q49E",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.317601
+  },
+  {
+    "name": "Q49W",
+    "kind": "quadrupole",
+    "attribute": "K1",
+    "strength": -0.317601
+  },
+  {
+    "name": "SEX_08E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.159613
+  },
+  {
+    "name": "SEX_08W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.159531
+  },
+  {
+    "name": "SEX_09E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.890179
+  },
+  {
+    "name": "SEX_09W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.889647
+  },
+  {
+    "name": "SEX_10E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.192999
+  },
+  {
+    "name": "SEX_10W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.193131
+  },
+  {
+    "name": "SEX_11E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.726323
+  },
+  {
+    "name": "SEX_11W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.726198
+  },
+  {
+    "name": "SEX_12E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.454707
+  },
+  {
+    "name": "SEX_12W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.454635
+  },
+  {
+    "name": "SEX_13E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 1.19854
+  },
+  {
+    "name": "SEX_13W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 1.19794
+  },
+  {
+    "name": "SEX_14E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.012608
+  },
+  {
+    "name": "SEX_14W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.0126336
+  },
+  {
+    "name": "SEX_15E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.26883
+  },
+  {
+    "name": "SEX_15W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.26869
+  },
+  {
+    "name": "SEX_16E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.406769
+  },
+  {
+    "name": "SEX_16W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.406183
+  },
+  {
+    "name": "SEX_17E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.462863
+  },
+  {
+    "name": "SEX_17W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.462656
+  },
+  {
+    "name": "SEX_18E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.28969
+  },
+  {
+    "name": "SEX_18W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.288855
+  },
+  {
+    "name": "SEX_19E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.803519
+  },
+  {
+    "name": "SEX_19W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.803206
+  },
+  {
+    "name": "SEX_20E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.122784
+  },
+  {
+    "name": "SEX_20W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.122751
+  },
+  {
+    "name": "SEX_21E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.855388
+  },
+  {
+    "name": "SEX_21W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.855365
+  },
+  {
+    "name": "SEX_22E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.959514
+  },
+  {
+    "name": "SEX_22W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.959604
+  },
+  {
+    "name": "SEX_23E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.92386
+  },
+  {
+    "name": "SEX_23W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.92428
+  },
+  {
+    "name": "SEX_24E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.501983
+  },
+  {
+    "name": "SEX_24W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.502286
+  },
+  {
+    "name": "SEX_25E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.46284
+  },
+  {
+    "name": "SEX_25W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.46302
+  },
+  {
+    "name": "SEX_26E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.880866
+  },
+  {
+    "name": "SEX_26W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.881305
+  },
+  {
+    "name": "SEX_27E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.48334
+  },
+  {
+    "name": "SEX_27W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.483
+  },
+  {
+    "name": "SEX_28E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.525996
+  },
+  {
+    "name": "SEX_28W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.525159
+  },
+  {
+    "name": "SEX_29E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.534017
+  },
+  {
+    "name": "SEX_29W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.533664
+  },
+  {
+    "name": "SEX_30E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 1.04785
+  },
+  {
+    "name": "SEX_30W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 1.04801
+  },
+  {
+    "name": "SEX_31E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.85376
+  },
+  {
+    "name": "SEX_31W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.85395
+  },
+  {
+    "name": "SEX_32E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 1.12629
+  },
+  {
+    "name": "SEX_32W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 1.12602
+  },
+  {
+    "name": "SEX_33E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.81588
+  },
+  {
+    "name": "SEX_33W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.81672
+  },
+  {
+    "name": "SEX_34E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.64074
+  },
+  {
+    "name": "SEX_34W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.640563
+  },
+  {
+    "name": "SEX_35E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.607139
+  },
+  {
+    "name": "SEX_35W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.607619
+  },
+  {
+    "name": "SEX_36E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.624373
+  },
+  {
+    "name": "SEX_36W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.624704
+  },
+  {
+    "name": "SEX_37E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.138838
+  },
+  {
+    "name": "SEX_37W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.1384
+  },
+  {
+    "name": "SEX_38E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.754972
+  },
+  {
+    "name": "SEX_38W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.754352
+  },
+  {
+    "name": "SEX_39E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.68119
+  },
+  {
+    "name": "SEX_39W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.68088
+  },
+  {
+    "name": "SEX_40E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.901447
+  },
+  {
+    "name": "SEX_40W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.901445
+  },
+  {
+    "name": "SEX_41E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.82578
+  },
+  {
+    "name": "SEX_41W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -1.82571
+  },
+  {
+    "name": "SEX_42E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.407242
+  },
+  {
+    "name": "SEX_42W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.40729
+  },
+  {
+    "name": "SEX_43E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.0826257
+  },
+  {
+    "name": "SEX_43W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.0831341
+  },
+  {
+    "name": "SEX_44E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.382596
+  },
+  {
+    "name": "SEX_44W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": -0.383087
+  },
+  {
+    "name": "SEX_45E",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.144127
+  },
+  {
+    "name": "SEX_45W",
+    "kind": "sextupole",
+    "attribute": "K2",
+    "strength": 0.144602
+  }
+]

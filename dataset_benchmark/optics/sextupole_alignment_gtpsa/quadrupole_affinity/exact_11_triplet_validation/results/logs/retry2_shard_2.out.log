@@ -1,0 +1,236 @@
+Skip existing SEX_10W (1/19)
+Start SEX_14W (2/19) shard 2/4
+SEX_14W truth: 45/495 states, 24.0 s
+SEX_14W truth: 90/495 states, 28.1 s
+SEX_14W truth: 135/495 states, 31.5 s
+SEX_14W truth: 180/495 states, 35.1 s
+SEX_14W truth: 225/495 states, 38.3 s
+SEX_14W truth: 270/495 states, 41.7 s
+SEX_14W truth: 315/495 states, 44.7 s
+SEX_14W truth: 360/495 states, 48.1 s
+SEX_14W truth: 405/495 states, 51.2 s
+SEX_14W truth: 450/495 states, 54.5 s
+SEX_14W truth: 495/495 states, 57.7 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_14w
+Start SEX_18W (3/19) shard 2/4
+SEX_18W truth: 45/495 states, 3.6 s
+SEX_18W truth: 90/495 states, 7.2 s
+SEX_18W truth: 135/495 states, 10.4 s
+SEX_18W truth: 180/495 states, 13.7 s
+SEX_18W truth: 225/495 states, 17.2 s
+SEX_18W truth: 270/495 states, 20.7 s
+SEX_18W truth: 315/495 states, 24.3 s
+SEX_18W truth: 360/495 states, 27.7 s
+SEX_18W truth: 405/495 states, 31.0 s
+SEX_18W truth: 450/495 states, 34.6 s
+SEX_18W truth: 495/495 states, 38.0 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_18w
+Start SEX_22W (4/19) shard 2/4
+SEX_22W truth: 45/495 states, 3.2 s
+SEX_22W truth: 90/495 states, 6.7 s
+SEX_22W truth: 135/495 states, 9.7 s
+SEX_22W truth: 180/495 states, 12.8 s
+SEX_22W truth: 225/495 states, 16.4 s
+SEX_22W truth: 270/495 states, 19.8 s
+SEX_22W truth: 315/495 states, 23.7 s
+SEX_22W truth: 360/495 states, 27.7 s
+SEX_22W truth: 405/495 states, 31.5 s
+SEX_22W truth: 450/495 states, 35.0 s
+SEX_22W truth: 495/495 states, 38.3 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_22w
+Start SEX_26W (5/19) shard 2/4
+SEX_26W truth: 45/495 states, 3.2 s
+SEX_26W truth: 90/495 states, 6.5 s
+SEX_26W truth: 135/495 states, 9.8 s
+SEX_26W truth: 180/495 states, 13.0 s
+SEX_26W truth: 225/495 states, 16.3 s
+SEX_26W truth: 270/495 states, 19.6 s
+SEX_26W truth: 315/495 states, 22.5 s
+SEX_26W truth: 360/495 states, 26.0 s
+SEX_26W truth: 405/495 states, 29.2 s
+SEX_26W truth: 450/495 states, 32.6 s
+SEX_26W truth: 495/495 states, 35.8 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_26w
+Start SEX_30W (6/19) shard 2/4
+SEX_30W truth: 45/495 states, 7.0 s
+SEX_30W truth: 90/495 states, 10.1 s
+SEX_30W truth: 135/495 states, 13.1 s
+SEX_30W truth: 180/495 states, 16.2 s
+SEX_30W truth: 225/495 states, 19.4 s
+SEX_30W truth: 270/495 states, 22.9 s
+SEX_30W truth: 315/495 states, 26.5 s
+SEX_30W truth: 360/495 states, 30.2 s
+SEX_30W truth: 405/495 states, 34.1 s
+SEX_30W truth: 450/495 states, 37.3 s
+SEX_30W truth: 495/495 states, 40.4 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_30w
+Start SEX_34W (7/19) shard 2/4
+SEX_34W truth: 45/495 states, 3.4 s
+SEX_34W truth: 90/495 states, 6.8 s
+SEX_34W truth: 135/495 states, 10.1 s
+SEX_34W truth: 180/495 states, 13.5 s
+SEX_34W truth: 225/495 states, 17.2 s
+SEX_34W truth: 270/495 states, 20.4 s
+SEX_34W truth: 315/495 states, 23.9 s
+SEX_34W truth: 360/495 states, 27.6 s
+SEX_34W truth: 405/495 states, 30.9 s
+SEX_34W truth: 450/495 states, 34.4 s
+SEX_34W truth: 495/495 states, 37.6 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_34w
+Start SEX_38W (8/19) shard 2/4
+SEX_38W truth: 45/495 states, 3.0 s
+SEX_38W truth: 90/495 states, 5.9 s
+SEX_38W truth: 135/495 states, 9.0 s
+SEX_38W truth: 180/495 states, 12.0 s
+SEX_38W truth: 225/495 states, 15.2 s
+SEX_38W truth: 270/495 states, 18.3 s
+SEX_38W truth: 315/495 states, 21.6 s
+SEX_38W truth: 360/495 states, 24.9 s
+SEX_38W truth: 405/495 states, 28.1 s
+SEX_38W truth: 450/495 states, 31.6 s
+SEX_38W truth: 495/495 states, 34.8 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_38w
+Start SEX_42W (9/19) shard 2/4
+SEX_42W truth: 45/495 states, 3.4 s
+SEX_42W truth: 90/495 states, 6.8 s
+SEX_42W truth: 135/495 states, 10.0 s
+SEX_42W truth: 180/495 states, 13.1 s
+SEX_42W truth: 225/495 states, 16.1 s
+SEX_42W truth: 270/495 states, 19.1 s
+SEX_42W truth: 315/495 states, 22.1 s
+SEX_42W truth: 360/495 states, 24.9 s
+SEX_42W truth: 405/495 states, 28.1 s
+SEX_42W truth: 450/495 states, 31.3 s
+SEX_42W truth: 495/495 states, 34.3 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_42w
+Start SEX_47W (10/19) shard 2/4
+SEX_47W truth: 45/495 states, 6.9 s
+SEX_47W truth: 90/495 states, 10.0 s
+SEX_47W truth: 135/495 states, 13.6 s
+SEX_47W truth: 180/495 states, 16.6 s
+SEX_47W truth: 225/495 states, 19.3 s
+SEX_47W truth: 270/495 states, 22.2 s
+SEX_47W truth: 315/495 states, 25.4 s
+SEX_47W truth: 360/495 states, 28.4 s
+SEX_47W truth: 405/495 states, 31.4 s
+SEX_47W truth: 450/495 states, 34.0 s
+SEX_47W truth: 495/495 states, 37.3 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_47w
+Start SEX_43E (11/19) shard 2/4
+SEX_43E truth: 45/495 states, 3.5 s
+SEX_43E truth: 90/495 states, 6.6 s
+SEX_43E truth: 135/495 states, 9.7 s
+SEX_43E truth: 180/495 states, 13.7 s
+SEX_43E truth: 225/495 states, 16.7 s
+SEX_43E truth: 270/495 states, 20.0 s
+SEX_43E truth: 315/495 states, 24.3 s
+SEX_43E truth: 360/495 states, 31.1 s
+SEX_43E truth: 405/495 states, 34.6 s
+SEX_43E truth: 450/495 states, 37.9 s
+SEX_43E truth: 495/495 states, 41.0 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_43e
+Start SEX_39E (12/19) shard 2/4
+SEX_39E truth: 45/495 states, 3.6 s
+SEX_39E truth: 90/495 states, 7.0 s
+SEX_39E truth: 135/495 states, 10.3 s
+SEX_39E truth: 180/495 states, 14.3 s
+SEX_39E truth: 225/495 states, 19.7 s
+SEX_39E truth: 270/495 states, 23.5 s
+SEX_39E truth: 315/495 states, 28.4 s
+SEX_39E truth: 360/495 states, 32.4 s
+SEX_39E truth: 405/495 states, 36.3 s
+SEX_39E truth: 450/495 states, 40.3 s
+SEX_39E truth: 495/495 states, 44.3 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_39e
+Start SEX_35E (13/19) shard 2/4
+SEX_35E truth: 45/495 states, 3.5 s
+SEX_35E truth: 90/495 states, 6.9 s
+SEX_35E truth: 135/495 states, 10.1 s
+SEX_35E truth: 180/495 states, 13.3 s
+SEX_35E truth: 225/495 states, 16.6 s
+SEX_35E truth: 270/495 states, 20.8 s
+SEX_35E truth: 315/495 states, 24.7 s
+SEX_35E truth: 360/495 states, 29.0 s
+SEX_35E truth: 405/495 states, 32.2 s
+SEX_35E truth: 450/495 states, 36.1 s
+SEX_35E truth: 495/495 states, 39.6 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_35e
+Start SEX_31E (14/19) shard 2/4
+SEX_31E truth: 45/495 states, 3.2 s
+SEX_31E truth: 90/495 states, 6.7 s
+SEX_31E truth: 135/495 states, 10.1 s
+SEX_31E truth: 180/495 states, 13.4 s
+SEX_31E truth: 225/495 states, 16.7 s
+SEX_31E truth: 270/495 states, 20.0 s
+SEX_31E truth: 315/495 states, 23.0 s
+SEX_31E truth: 360/495 states, 28.4 s
+SEX_31E truth: 405/495 states, 32.2 s
+SEX_31E truth: 450/495 states, 35.8 s
+SEX_31E truth: 495/495 states, 39.7 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_31e
+Start SEX_27E (15/19) shard 2/4
+SEX_27E truth: 45/495 states, 4.2 s
+SEX_27E truth: 90/495 states, 9.2 s
+SEX_27E truth: 135/495 states, 13.2 s
+SEX_27E truth: 180/495 states, 16.8 s
+SEX_27E truth: 225/495 states, 20.4 s
+SEX_27E truth: 270/495 states, 24.4 s
+SEX_27E truth: 315/495 states, 28.2 s
+SEX_27E truth: 360/495 states, 32.3 s
+SEX_27E truth: 405/495 states, 36.1 s
+SEX_27E truth: 450/495 states, 39.6 s
+SEX_27E truth: 495/495 states, 42.8 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_27e
+Start SEX_23E (16/19) shard 2/4
+SEX_23E truth: 45/495 states, 2.9 s
+SEX_23E truth: 90/495 states, 6.1 s
+SEX_23E truth: 135/495 states, 9.2 s
+SEX_23E truth: 180/495 states, 12.4 s
+SEX_23E truth: 225/495 states, 15.7 s
+SEX_23E truth: 270/495 states, 18.9 s
+SEX_23E truth: 315/495 states, 22.0 s
+SEX_23E truth: 360/495 states, 24.9 s
+SEX_23E truth: 405/495 states, 28.2 s
+SEX_23E truth: 450/495 states, 31.3 s
+SEX_23E truth: 495/495 states, 34.4 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_23e
+Start SEX_19E (17/19) shard 2/4
+SEX_19E truth: 45/495 states, 3.7 s
+SEX_19E truth: 90/495 states, 8.1 s
+SEX_19E truth: 135/495 states, 11.9 s
+SEX_19E truth: 180/495 states, 15.6 s
+SEX_19E truth: 225/495 states, 19.0 s
+SEX_19E truth: 270/495 states, 22.5 s
+SEX_19E truth: 315/495 states, 26.4 s
+SEX_19E truth: 360/495 states, 30.3 s
+SEX_19E truth: 405/495 states, 34.1 s
+SEX_19E truth: 450/495 states, 38.3 s
+SEX_19E truth: 495/495 states, 42.7 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_19e
+Start SEX_15E (18/19) shard 2/4
+SEX_15E truth: 45/495 states, 3.2 s
+SEX_15E truth: 90/495 states, 6.6 s
+SEX_15E truth: 135/495 states, 10.0 s
+SEX_15E truth: 180/495 states, 13.8 s
+SEX_15E truth: 225/495 states, 17.1 s
+SEX_15E truth: 270/495 states, 20.2 s
+SEX_15E truth: 315/495 states, 23.2 s
+SEX_15E truth: 360/495 states, 26.1 s
+SEX_15E truth: 405/495 states, 29.2 s
+SEX_15E truth: 450/495 states, 32.2 s
+SEX_15E truth: 495/495 states, 35.2 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_15e
+Start SEX_11E (19/19) shard 2/4
+SEX_11E truth: 45/495 states, 3.1 s
+SEX_11E truth: 90/495 states, 5.9 s
+SEX_11E truth: 135/495 states, 10.8 s
+SEX_11E truth: 180/495 states, 14.2 s
+SEX_11E truth: 225/495 states, 17.4 s
+SEX_11E truth: 270/495 states, 20.4 s
+SEX_11E truth: 315/495 states, 23.6 s
+SEX_11E truth: 360/495 states, 26.7 s
+SEX_11E truth: 405/495 states, 29.6 s
+SEX_11E truth: 450/495 states, 32.6 s
+SEX_11E truth: 495/495 states, 36.2 s
+Output: D:\Ring_Design_Development\CESR Project\dataset_benchmark\optics\sextupole_alignment_gtpsa\quadrupole_affinity\exact_11_triplet_validation\results\scans\sex_11e
+Shard 2/4 complete: generated=18 skipped=1

@@ -1,0 +1,2 @@
+target,map_source,training_state_count,training_design_rank,training_condition_number,training_position_rmse_um,training_angle_rmse_urad,direct_vs_fit_coefficient_relative_l2
+SEX_09AW,direct_gtpsa,277,35,61.582681649861755,1.6233531665457192e-05,4.03141658141575e-06,4.064443633024815e-08

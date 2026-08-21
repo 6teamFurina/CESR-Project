@@ -1,0 +1,20 @@
+base_kick_rad = 5.0e-6
+control_order_source = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\reference\\closed_orbit_response_6x119.csv"
+control_planes = ["horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "horizontal", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical", "vertical"]
+direction_distribution = "Gaussian direction normalized to exact unit RMS over active controls"
+direction_reuse = "same 600 directions reused at every rho within each scenario"
+format = "ring-nonlinear-rho-shared-input-v2"
+input_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\Orbit_Calculation\\nonlinear_rho_benchmark\\shared_input\\legacy\\nonlinear_rho_correctors.csv"
+manifest_csv = "D:\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\Orbit_Calculation\\nonlinear_rho_benchmark\\shared_input\\legacy\\sample_manifest.csv"
+positive_sample_count = 9000
+rhos = [1.13, 3.2, 4.53, 6.4, 9.05]
+ring = "legacy"
+scenarios = ["all", "horizontal", "vertical"]
+seed = 20260803
+total_sample_count = 9001
+trials_per_scenario_rho = 600
+
+[scenario_seeds]
+all = 20260803
+horizontal = 20260804
+vertical = 20260805

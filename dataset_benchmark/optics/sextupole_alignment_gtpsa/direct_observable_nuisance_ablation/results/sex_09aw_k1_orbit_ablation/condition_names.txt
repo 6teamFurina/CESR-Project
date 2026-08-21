@@ -1,0 +1,7 @@
+nominal
+qx4d_plus
+qx4d_minus
+q18w_plus
+q18w_minus
+q24e_plus
+q24e_minus

@@ -1,0 +1,12 @@
+condition_index,condition_name,quadrupole,sign,delta_k1_m2
+1,nominal,nominal,0,0.0
+2,q43w_plus,Q43W,1,0.0031899658204
+3,q43w_minus,Q43W,-1,-0.0031899658204
+4,q17w_plus,Q17W,1,0.0032346534454
+5,q17w_minus,Q17W,-1,-0.0032346534454
+6,q25w_plus,Q25W,1,0.0030812564097
+7,q25w_minus,Q25W,-1,-0.0030812564097
+8,q47ae_plus,Q47AE,1,0.0034359605561000003
+9,q47ae_minus,Q47AE,-1,-0.0034359605561000003
+10,q47aw_plus,Q47AW,1,0.0034408893177
+11,q47aw_minus,Q47AW,-1,-0.0034408893177

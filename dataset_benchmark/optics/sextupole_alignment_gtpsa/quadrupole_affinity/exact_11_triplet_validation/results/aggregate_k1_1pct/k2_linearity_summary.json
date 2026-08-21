@@ -1,0 +1,50 @@
+{
+  "format": "cesr-repaired-lattice-exact-11-k2-linearity-v1",
+  "target_count": 76,
+  "k2_grid_m3": [
+    -0.02,
+    -0.01,
+    0.0,
+    0.01,
+    0.02
+  ],
+  "metrics": {
+    "linear_fit_relative_l2_residual": {
+      "minimum": 6.148723920730721e-06,
+      "median": 1.206326740846191e-05,
+      "p90": 2.7589638768970863e-05,
+      "maximum": 3.638066619011252e-05
+    },
+    "quadratic_fit_relative_l2_residual": {
+      "minimum": 6.184332351546615e-07,
+      "median": 1.042466768131616e-06,
+      "p90": 1.309868139703854e-06,
+      "maximum": 1.5922884511558705e-06
+    },
+    "inner_outer_slope_relative_l2_difference": {
+      "minimum": 1.023673626140091e-06,
+      "median": 1.925021051011609e-06,
+      "p90": 2.465853193569774e-06,
+      "maximum": 3.1206112200453877e-06
+    },
+    "five_point_inner_slope_relative_l2_difference": {
+      "minimum": 8.189388944423405e-07,
+      "median": 1.5400168382826483e-06,
+      "p90": 1.9726825562035103e-06,
+      "maximum": 2.496488978785198e-06
+    },
+    "five_point_outer_slope_relative_l2_difference": {
+      "minimum": 2.0473473169848202e-07,
+      "median": 3.8500421273035125e-07,
+      "p90": 4.931706373687843e-07,
+      "maximum": 6.241222412621623e-07
+    },
+    "k2_signal_rms_m": {
+      "minimum": 4.348589325809389e-09,
+      "median": 5.74074315049487e-09,
+      "p90": 8.094044468982248e-09,
+      "maximum": 9.795433713337365e-09
+    }
+  },
+  "interpretation": "The inner-versus-outer symmetric slope difference isolates odd higher-order K2 contamination; the linear-fit residual also includes even K2 curvature that cancels from a symmetric slope."
+}

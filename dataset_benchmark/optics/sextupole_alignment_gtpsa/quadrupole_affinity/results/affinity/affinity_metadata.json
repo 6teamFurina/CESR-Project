@@ -1,0 +1,36 @@
+{
+  "format": "cesr-sextupole-quadrupole-affinity-v1",
+  "target_count": 76,
+  "retained_pair_count": 1140,
+  "nuisance_model": "150 nominal other-sextupole K2-slope cross-response columns with independent Gaussian offset priors",
+  "nuisance_rms_m": 0.0003,
+  "information_definition": "logdet(F_nominal+candidate_plus+candidate_minus)-logdet(F_nominal), after Schur marginalization",
+  "precision_definition": "max(sigma_x_nominal,sigma_y_nominal)/max(sigma_x_candidate,sigma_y_candidate)",
+  "measurement_noise": {
+    "orbit_x": 5e-06,
+    "orbit_y": 5e-06,
+    "phi_1": 0.0002777777777777778,
+    "phi_2": 0.0002777777777777778,
+    "c11": 0.001,
+    "c12": 0.001,
+    "c21": 0.001,
+    "c22": 0.001,
+    "tune_1": 1e-05,
+    "tune_2": 1e-05
+  },
+  "k2_step_m3": 0.01,
+  "k2_levels": [
+    -2.0,
+    -1.0,
+    0.0,
+    1.0,
+    2.0
+  ],
+  "slope_variance": "sigma_observable^2 / sum(delta_K2_level^2)",
+  "bump_protocol": "nominal-orbit pre-screen; no 3x3 bump replication included",
+  "limitations": [
+    "Noise levels are provisional diagonal measured-style assumptions, not an archived CESR covariance matrix.",
+    "Nuisance response columns are calculated at nominal quadrupole optics and reused in candidate +/- blocks.",
+    "The heatmaps rank single quadrupoles; greedy multi-knob complementarity is a subsequent calculation."
+  ]
+}

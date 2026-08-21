@@ -1,0 +1,17 @@
+base_kick_rad = 5.0e-6
+date = "2026-08-05"
+definition = "two second-order GTPSA corrector parameters plus implicit differentiation of the RF-on closed-orbit fixed point"
+descriptor = "Descriptor(6, 2, 2, 2)"
+reporting_statistic = "median [P10, P90] across fixed directions"
+result_role = "adopted final quadratic response; four-sign finite differences are an independent validation"
+direction_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\mixed_terms\\gtpsa_results\\gtpsa_direction_q.csv"
+finite_difference_comparison_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\mixed_terms\\gtpsa_results\\gtpsa_finite_difference_comparison.csv"
+finite_difference_source_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\mixed_terms\\results\\mixed_term_directions.csv"
+format = "cesr-direction-gtpsa-mixed-term-v1"
+maximum_first_order_closure_residual = 4.336808689942018e-19
+maximum_second_order_closure_residual = 8.470329472543003e-22
+rhos = [0.1, 0.14, 0.2, 0.28, 0.4, 0.57, 0.8, 1.13]
+seed = 20260804
+solve_seconds = 120.0761089
+summary_csv = "D:\\Onedrive\\Cornell\\Accelerator Physics\\Ring_Design_Development\\CESR Project\\dataset_benchmark\\orbit\\error_analysis\\mixed_terms\\gtpsa_results\\gtpsa_summary.csv"
+trials = 100

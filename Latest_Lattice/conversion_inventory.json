@@ -1,0 +1,147 @@
+{
+  "bmad_version": "20260814-0",
+  "lattice": "/mnt/d/Ring_Design_Development/CESR Project/Latest_Lattice/lat.bmad",
+  "branch_count": 12,
+  "all_element_count": 1397,
+  "main_branch_element_count": 1331,
+  "main_branch_key_counts": {
+    "Beginning_Ele": 1,
+    "Drift": 562,
+    "Girder": 12,
+    "Group": 5,
+    "Kicker": 91,
+    "Marker": 213,
+    "Octupole": 2,
+    "Overlay": 119,
+    "Photon_Fork": 9,
+    "Quadrupole": 124,
+    "RFCavity": 4,
+    "SBend": 102,
+    "Sextupole": 82,
+    "VKicker": 1,
+    "Wiggler": 4
+  },
+  "control_lord_counts": {
+    "Girder": 12,
+    "Group": 5,
+    "Overlay": 119
+  },
+  "control_relation_count": 347,
+  "raw_export": {
+    "constructors": {
+      "Drift": 576,
+      "Fork": 11,
+      "Kicker": 82,
+      "LineElement": 3,
+      "Marker": 232,
+      "Mirror": 2,
+      "Octupole": 2,
+      "Quadrupole": 122,
+      "RFCavity": 4,
+      "SBend": 98,
+      "Sextupole": 82,
+      "Species": 3
+    },
+    "forward_forks": [
+      {
+        "fork": "ls_4b",
+        "fork_line": 11,
+        "target": "s4b_line",
+        "target_line": 1975,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_7a",
+        "fork_line": 177,
+        "target": "s7a_line",
+        "target_line": 1978,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_7b1_7b2",
+        "fork_line": 185,
+        "target": "s7b1_s7b2_line",
+        "target_line": 1982,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_1a1_1a2_1a3",
+        "fork_line": 1274,
+        "target": "s1a1_s1a2_s1a3_line",
+        "target_line": 1986,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_2a",
+        "fork_line": 1330,
+        "target": "s2a_line",
+        "target_line": 1995,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_2b",
+        "fork_line": 1338,
+        "target": "s2b_line",
+        "target_line": 1998,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_3a",
+        "fork_line": 1396,
+        "target": "s3a_line",
+        "target_line": 2001,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_3b",
+        "fork_line": 1406,
+        "target": "s3b_line",
+        "target_line": 2004,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "ls_4a",
+        "fork_line": 1464,
+        "target": "s4a_line",
+        "target_line": 2007,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "fork_s1a1",
+        "fork_line": 1485,
+        "target": "s1a1_line",
+        "target_line": 1989,
+        "is_forward_reference": true
+      },
+      {
+        "fork": "fork_s1a2_s1a3",
+        "fork_line": 1486,
+        "target": "s1a2_s1a3_line",
+        "target_line": 1992,
+        "is_forward_reference": true
+      }
+    ],
+    "line_element_placeholders": [
+      {
+        "line": 1271,
+        "name": "id_s1a!s1",
+        "constructor": "LineElement"
+      },
+      {
+        "line": 1273,
+        "name": "id_s1a!s2",
+        "constructor": "LineElement"
+      },
+      {
+        "line": 1275,
+        "name": "id_s1a!s3",
+        "constructor": "LineElement"
+      }
+    ],
+    "warning_counts": {
+      "wiggler_not_translated": 3,
+      "girder_not_translated": 12
+    },
+    "defexpr_assignment_count": 248
+  }
+}

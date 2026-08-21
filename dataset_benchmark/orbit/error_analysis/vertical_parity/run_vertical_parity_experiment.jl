@@ -26,25 +26,22 @@ using TOML
 
 function parse_parity_args(args)
     options = Dict{String,String}(
+        "ring" => "latest",
         "rhos" => "0.05,0.075,0.1,0.14,0.2,0.28,0.4,0.57,0.8,1.13,1.6,1.8,2.0,2.26,2.5,2.8,3.2,3.6,4.0,4.53,5.0,5.6,6.0,6.4,7.5,8.8,10.05",
         "trials" => "100",
         "seed" => "20260804",
         "base-kick-rad" => "5e-6",
-        "output-dir" => joinpath(PARITY_HERE, "results"),
-        "detector-response" => joinpath(
-            PROJECT_ROOT,
-            "bmad_comparison",
-            "bmad_control_response_rf_on",
-            "scibmad_control_response_rf_on.csv",
-        ),
-        "closed-orbit-response" => joinpath(
-            PARITY_ORBIT_ROOT,
-            "reference",
-            "closed_orbit_response_6x119.csv",
-        ),
+        "output-dir" => "",
+        "inputs" => "",
+        "detector-response" => "",
+        "closed-orbit-response" => "",
         "reltol" => "1e-12",
         "abstol" => "1e-13",
         "maxiter" => "100",
+        "response-method" => "gtpsa",
+        "recompute-response" => "false",
+        "response-step-rad" => "1e-7",
+        "response-controls-per-batch" => "8",
     )
     for argument in args
         startswith(argument, "--") ||
@@ -54,11 +51,25 @@ function parse_parity_args(args)
         haskey(options, fields[1]) || error("Unknown option: --$(fields[1])")
         options[fields[1]] = fields[2]
     end
+    ring = Symbol(lowercase(options["ring"]))
+    ring in (:latest, :latest_cesr, :repaired_latest, :legacy, :legacy_cesr, :historical) ||
+        error("--ring must be latest or legacy")
+    options["response-method"] = canonical_response_method(options["response-method"])
+    lowercase(options["recompute-response"]) in ("true", "false") ||
+        error("--recompute-response must be true or false")
+    paths = default_ring_paths(; ring, response_method=options["response-method"])
+    isempty(options["output-dir"]) &&
+        (options["output-dir"] = joinpath(PARITY_HERE, "results", ring_artifact_id(ring)))
+    isempty(options["inputs"]) && (options["inputs"] = paths.inputs)
+    isempty(options["detector-response"]) &&
+        (options["detector-response"] = paths.detector_response)
+    isempty(options["closed-orbit-response"]) &&
+        (options["closed-orbit-response"] = paths.closed_orbit_response)
     return options
 end
 
-function generate_vertical_pairs(names, rhos, trials, seed, base_kick)
-    active_indices = active_control_indices(names, "vertical")
+function generate_vertical_pairs(names, rhos, trials, seed, base_kick; config=nothing, model=nothing)
+    active_indices = active_control_indices(names, "vertical"; config, model)
     directions = gaussian_unit_rms_directions(
         MersenneTwister(seed),
         trials,
@@ -85,7 +96,7 @@ end
 
 vector_rmse(values) = sqrt(sum(abs2, values) / length(values))
 
-function paired_metrics(result, response, samples, rhos, base_kick)
+function paired_metrics(result, response, samples, rhos, base_kick; layout)
     baseline = vec(result.observables[1, :])
     rows = NamedTuple[]
     for (rho_index, rho) in enumerate(rhos), trial in axes(samples.directions, 1)
@@ -122,8 +133,8 @@ function paired_metrics(result, response, samples, rhos, base_kick)
         plus_residual = plus_delta .- linear
         minus_residual = minus_delta .+ linear
 
-        xcols = 1:99
-        ycols = 100:198
+        xcols = plane_indices(layout, :x)
+        ycols = plane_indices(layout, :y)
         push!(rows, (;
             rho,
             trial,
@@ -196,8 +207,10 @@ function summarize_pairs(rows, rhos)
     return summary
 end
 
-function main_parity(args=ARGS)
+function main_parity(args=ARGS; model_factory=nothing, config=nothing)
     options = parse_parity_args(args)
+    ring = Symbol(lowercase(options["ring"]))
+    model_factory, config = resolve_ring_model_factory(model_factory, config; ring)
     rhos = parse.(Float64, split(options["rhos"], ','))
     all(>(0), rhos) || error("All parity radii must be positive")
     issorted(rhos) || error("Parity radii must be sorted")
@@ -208,20 +221,62 @@ function main_parity(args=ARGS)
     reltol = parse(Float64, options["reltol"])
     abstol = parse(Float64, options["abstol"])
     maxiter = parse(Int, options["maxiter"])
+    requested_response_method = canonical_response_method(options["response-method"])
+    recompute_response = lowercase(options["recompute-response"]) == "true"
+    response_step_rad = parse(Float64, options["response-step-rad"])
+    response_controls_per_batch =
+        parse(Int, options["response-controls-per-batch"])
+    isfinite(response_step_rad) && response_step_rad > 0 ||
+        error("--response-step-rad must be finite and positive")
+    response_controls_per_batch >= 1 ||
+        error("--response-controls-per-batch must be at least 1")
     output_dir = abspath(options["output-dir"])
 
-    input_reference = read_samples(
-        joinpath(PARITY_CALCULATION_DIR, "inputs", "cesr_corrector_samples_1000.csv"),
-    )
+    input_path = abspath(options["inputs"])
+    input_reference = read_samples(input_path)
     names = input_reference.names
-    model = load_cesr_model(zero_value=0.0, rf_on=true)
-    detectors = detector_names(model.ring)
-    response = read_detector_response(
+    validate_control_names(names, config)
+    model = configured_model(model_factory, config; zero_value=0.0, rf_on=true)
+    detectors = configured_detector_names(model, config)
+    layout = observable_layout(detectors; config)
+    response = read_or_compute_detector_response(
+        read_detector_response,
         abspath(options["detector-response"]),
         names,
-        detectors,
+        detectors;
+        layout,
+        model_factory,
+        config,
+        closed_orbit_path=abspath(options["closed-orbit-response"]),
+        response_method=requested_response_method,
+        recompute_response,
+        response_step_rad,
+        controls_per_batch=response_controls_per_batch,
+        reltol,
+        abstol,
+        maxiter,
     )
-    samples = generate_vertical_pairs(names, rhos, trials, seed, base_kick)
+    response_metadata = detector_response_cache_metadata(
+        abspath(options["detector-response"]),
+    )
+    response_method = isnothing(response_metadata) ?
+        "cache-sidecar-missing-or-legacy" :
+        String(get(response_metadata, "response_method", "unspecified"))
+    actual_response_step_rad = isnothing(response_metadata) ? 0.0 :
+        Float64(get(response_metadata, "response_step_rad", 0.0))
+    actual_response_controls_per_batch = isnothing(response_metadata) ? 0 :
+        Int(get(response_metadata, "controls_per_batch", 0))
+    actual_response_reltol = isnothing(response_metadata) ? reltol :
+        Float64(get(response_metadata, "reltol", reltol))
+    actual_response_abstol = isnothing(response_metadata) ? abstol :
+        Float64(get(response_metadata, "abstol", abstol))
+    actual_response_maxiter = isnothing(response_metadata) ? maxiter :
+        Int(get(response_metadata, "maxiter", maxiter))
+    actual_response_pair_id = isnothing(response_metadata) ? "" :
+        String(get(response_metadata, "response_pair_id", ""))
+    actual_response_scibmad_version = isnothing(response_metadata) ? "" :
+        String(get(response_metadata, "scibmad_version", ""))
+    samples = generate_vertical_pairs(names, rhos, trials, seed, base_kick; config, model)
 
     @printf(
         "Vertical parity experiment: %d nonlinear states = baseline + 2 signs x %d radii x %d directions\n",
@@ -229,20 +284,26 @@ function main_parity(args=ARGS)
         length(rhos),
         trials,
     )
-    timed = @timed simulate_batch(
+    timed = @timed configured_simulate_batch(
+        simulate_batch,
         names,
         samples.values;
+        config,
+        model_factory,
         initial_guess_mode="response-linear",
         jacobian_mode="frozen-nominal",
         response_matrix_cache=abspath(options["closed-orbit-response"]),
         recompute_response=false,
+        response_method=requested_response_method,
+        response_step_rad,
+        response_controls_per_batch,
         reltol,
         abstol,
         maxiter,
     )
     result = timed.value
     result.converged[1] || error("Nominal baseline did not converge")
-    pairs = paired_metrics(result, response, samples, rhos, base_kick)
+    pairs = paired_metrics(result, response, samples, rhos, base_kick; layout)
     summary = summarize_pairs(pairs, rhos)
     pair_path = write_namedtuple_csv(joinpath(output_dir, "vertical_parity_pairs.csv"), pairs)
     summary_path = write_namedtuple_csv(joinpath(output_dir, "vertical_parity_summary.csv"), summary)
@@ -255,6 +316,13 @@ function main_parity(args=ARGS)
         "trials_per_rho" => trials,
         "seed" => seed,
         "base_kick_rad" => base_kick,
+        "input_csv" => input_path,
+        "control_count" => length(names),
+        "control_names" => names,
+        "vertical_control_count" => length(samples.active_indices),
+        "observable_count" => length(layout.labels),
+        "detector_count" => length(detectors),
+        "observable_labels" => layout.labels,
         "total_nonlinear_states" => size(samples.values, 1),
         "converged_states" => count(result.converged),
         "failed_states" => count(.!result.converged),
@@ -265,9 +333,19 @@ function main_parity(args=ARGS)
         "reltol" => reltol,
         "abstol" => abstol,
         "maxiter" => maxiter,
+        "response_method" => response_method,
+        "response_step_rad" => actual_response_step_rad,
+        "response_controls_per_batch" =>
+            actual_response_controls_per_batch,
+        "response_reltol" => actual_response_reltol,
+        "response_abstol" => actual_response_abstol,
+        "response_maxiter" => actual_response_maxiter,
+        "response_pair_id" => actual_response_pair_id,
+        "response_scibmad_version" => actual_response_scibmad_version,
         "pair_csv" => pair_path,
         "summary_csv" => summary_path,
     )
+    merge!(metadata, ring_metadata(config; ring))
     mkpath(output_dir)
     metadata_path = joinpath(output_dir, "vertical_parity_metadata.toml")
     open(metadata_path, "w") do io

@@ -5,25 +5,66 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import math
+import tomllib
 from html import escape
 from pathlib import Path
 
 
 HERE = Path(__file__).resolve().parent
 CALCULATION_DIR = HERE.parent / "Orbit_Calculation"
-DEFAULT_FIGURES = HERE / "response_rho_sweep_600" / "figures"
+DEFAULT_FIGURES = HERE / "response_rho_sweep_600" / "latest_cesr" / "figures"
 RESULT_CANDIDATES = (
-    HERE / "response_rho_sweep_600" / "combined",
-    CALCULATION_DIR / "results" / "response_rho_sweep_600" / "combined",
-    CALCULATION_DIR / "results" / "response_rho_sweep",
+    # Keep the no-argument renderer on the maintained ring.  The old
+    # unscoped/combined directories contain a 119-control historical export
+    # and must never win default-path discovery.
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "production",
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "merged",
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "gtpsa_smoke",
+    HERE / "response_rho_sweep_600" / "latest_cesr" / "smoke",
 )
 
 
 def default_results() -> Path:
-    return next(
-        (path for path in RESULT_CANDIDATES if (path / "rho_sweep_summary.csv").is_file()),
-        RESULT_CANDIDATES[0],
+    for path in RESULT_CANDIDATES:
+        summary = path / "rho_sweep_summary.csv"
+        if not summary.is_file():
+            continue
+        metadata = read_metadata(summary)
+        if str(metadata.get("ring_id", "")).lower() == "latest_cesr":
+            return path
+    return RESULT_CANDIDATES[0]
+
+
+def read_metadata(summary: Path) -> dict[str, object]:
+    """Read either a single-run TOML sidecar or a merged JSON sidecar.
+
+    Merged chunk output keeps the complete per-chunk metadata for auditability
+    and also promotes the common fields.  Older render code only looked for
+    TOML and consequently dropped dynamic control/detector labels for merged
+    production data.
+    """
+
+    toml_path = summary.with_name("rho_sweep_metadata.toml")
+    if toml_path.is_file():
+        with toml_path.open("rb") as stream:
+            return dict(tomllib.load(stream))
+    json_path = summary.with_name("rho_sweep_metadata.json")
+    if json_path.is_file():
+        raw = json.loads(json_path.read_text(encoding="utf-8"))
+        if not isinstance(raw, dict):
+            raise RuntimeError(f"Merged metadata is not an object: {json_path}")
+        metadata = dict(raw)
+        chunks = raw.get("chunk_metadata")
+        if isinstance(chunks, list) and chunks and isinstance(chunks[0], dict):
+            # The merger promotes common provenance fields.  The fallback
+            # keeps the renderer useful for a hand-created/older merged file.
+            for key, value in chunks[0].items():
+                metadata.setdefault(key, value)
+        return metadata
+    raise RuntimeError(
+        f"No rho_sweep_metadata.toml or rho_sweep_metadata.json beside {summary}"
     )
 
 
@@ -48,17 +89,35 @@ def arguments() -> argparse.Namespace:
     parser.add_argument(
         "--base-kick-urad",
         type=float,
-        default=5.0,
-        help="Active-corrector RMS kick represented by rho=1 (default: 5 microrad).",
+        default=None,
+        help="Active-corrector RMS kick represented by rho=1 (default: read from metadata).",
+    )
+    parser.add_argument(
+        "--layout",
+        choices=("side-by-side", "stacked"),
+        default="side-by-side",
+        help="Arrange detector-plane panels horizontally or vertically.",
     )
     args = parser.parse_args()
     if args.output is None:
-        filename = (
+        # Resolve the actual CLI-selected summary, rather than the directory
+        # discovered for the no-argument default.  Explicit smoke/production
+        # summaries must keep their figures beside that result.
+        selected_results = args.summary.expanduser().resolve().parent
+        stem = (
             "scibmad_orbit_response_error_rho2_normalized.svg"
             if args.normalize_rho_squared
             else "scibmad_orbit_response_error.svg"
         )
-        args.output = DEFAULT_FIGURES / filename
+        filename = (
+            stem.replace(".svg", "_stacked.svg")
+            if args.layout == "stacked"
+            else stem
+        )
+        # Keep a figure next to the selected latest-ring result.  This makes
+        # an explicit smoke/production summary self-contained and avoids
+        # writing a figure into an unrelated legacy directory.
+        args.output = selected_results / "figures" / filename
     return args
 
 
@@ -77,10 +136,29 @@ def text(x: float, y: float, value: str, **attributes: object) -> str:
     return f'<text x="{x:.2f}" y="{y:.2f}" {properties}>{escape(value)}</text>'
 
 
-def power_label(x: float, y: float, power: int) -> str:
-    return (
-        f'<text x="{x:.2f}" y="{y:.2f}" text-anchor="end" font-size="12" fill="#4A4A4A">'
-        f'10<tspan baseline-shift="super" font-size="9">{power}</tspan></text>'
+def power_label(x: float, y: float, power: int, font_size: float = 12) -> str:
+    exponent = str(power)
+    exponent_size = 0.72 * font_size
+    exponent_width = 0.58 * exponent_size * len(exponent)
+    return "\n".join(
+        (
+            text(
+                x - exponent_width,
+                y,
+                "10",
+                text_anchor="end",
+                font_size=f"{font_size:g}",
+                fill="#4A4A4A",
+            ),
+            text(
+                x,
+                y - 0.38 * font_size,
+                exponent,
+                text_anchor="end",
+                font_size=f"{exponent_size:g}",
+                fill="#4A4A4A",
+            ),
+        )
     )
 
 
@@ -140,11 +218,27 @@ def format_log_tick(value: float) -> str:
 
 def main() -> int:
     args = arguments()
-    if not math.isfinite(args.base_kick_urad) or args.base_kick_urad <= 0:
-        raise ValueError("--base-kick-urad must be finite and positive")
     summary = args.summary.expanduser().resolve()
     output = args.output.expanduser().resolve()
     rows = read_summary(summary)
+    metadata = read_metadata(summary)
+    ring_id = str(metadata.get("ring_id", "")).lower()
+    if ring_id != "latest_cesr":
+        raise RuntimeError(
+            f"The rho renderer accepts only ring-scoped latest_cesr metadata; got {ring_id or 'missing ring_id'}"
+        )
+    if str(metadata.get("engine", "SciBmad")) != "SciBmad":
+        raise RuntimeError("The primary rho figure must be generated from SciBmad output")
+    response_method = str(metadata.get("response_method", "")).lower()
+    if not response_method:
+        raise RuntimeError("Rho metadata is missing response_method provenance")
+    if not str(metadata.get("response_pair_id", "")):
+        raise RuntimeError("Rho metadata is missing response_pair_id provenance")
+    base_kick_urad = args.base_kick_urad
+    if base_kick_urad is None:
+        base_kick_urad = 1.0e6 * float(metadata.get("base_kick_rad", 5.0e-6))
+    if not math.isfinite(base_kick_urad) or base_kick_urad <= 0:
+        raise ValueError("--base-kick-urad must be finite and positive")
     trial_counts = sorted({int(row["trials"]) for row in rows})
     trial_note = (
         f"{trial_counts[0]} random directions per input scale"
@@ -168,17 +262,38 @@ def main() -> int:
             rho = float(row["rho"])
             return value / (rho * rho)
         return value
+    control_count = metadata.get("control_count")
+    horizontal_count = metadata.get("horizontal_control_count")
+    vertical_count = metadata.get("vertical_control_count")
+    def count_label(prefix: str, count: object) -> str:
+        return f"{prefix} ({int(count)})" if count is not None else prefix
     scenarios = (
-        ("all", "All correctors (119)", "#0072B2", "", "circle"),
-        ("horizontal", "Horizontal only (58)", "#D55E00", "9 4", "square"),
-        ("vertical", "Vertical only (61)", "#009E73", "2 3", "triangle"),
+        ("all", count_label("All controls", control_count), "#0072B2", "", "circle"),
+        ("horizontal", count_label("Horizontal only", horizontal_count), "#D55E00", "9 4", "square"),
+        ("vertical", count_label("Vertical only", vertical_count), "#009E73", "2 3", "triangle"),
     )
-    width, height = 1260, 620
-    top, bottom = 128, 132
-    panel_width, panel_gap = 530, 92
-    lefts = (94, 94 + panel_width + panel_gap)
-    plot_width = panel_width - 34
-    plot_height = height - top - bottom
+    stacked = args.layout == "stacked"
+    if stacked:
+        width, height = 620, 900
+        lefts = (88, 88)
+        panel_tops = (142, 510)
+        plot_width = 500
+        plot_height = 280
+    else:
+        width, height = 1260, 620
+        top, bottom = 128, 132
+        panel_width, panel_gap = 530, 92
+        lefts = (94, 94 + panel_width + panel_gap)
+        panel_tops = (top, top)
+        plot_width = panel_width - 34
+        plot_height = height - top - bottom
+    title_font = 20
+    subtitle_font = 14 if stacked else 12.5
+    legend_font = 15 if stacked else 12.5
+    tick_font = 15 if stacked else 12
+    panel_font = 18 if stacked else 15
+    axis_font = 16 if stacked else 13.5
+    footer_font = 14 if stacked else 11.5
     rho_values = sorted({float(row["rho"]) for row in rows})
     positive_rhos = [rho for rho in rho_values if rho > 0]
     if not positive_rhos:
@@ -210,13 +325,16 @@ def main() -> int:
         )
         return left + plot_width * fraction
 
-    def y_position(value_um: float) -> float:
+    def y_position(value_um: float, panel_top: float) -> float:
         fraction = (math.log10(value_um) - lower_power) / (upper_power - lower_power)
-        return top + plot_height * (1.0 - fraction)
+        return panel_top + plot_height * (1.0 - fraction)
 
     subtitle = (
-        f"CESR RF-on closed orbit; {trial_note}; ρ = 1 corresponds to "
-        f"{args.base_kick_urad:g} microrad active-corrector RMS"
+        f"CESR RF-on; {response_method} response; {trial_counts[0]} directions/scale; rho = 1: "
+        f"{base_kick_urad:g} microrad active-control RMS"
+        if stacked and len(trial_counts) == 1
+        else f"CESR RF-on closed orbit; {response_method} response; {trial_note}; rho = 1 corresponds to "
+        f"{base_kick_urad:g} microrad active-control RMS"
     )
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}" role="img" aria-labelledby="title description">',
@@ -224,35 +342,41 @@ def main() -> int:
         '<desc id="description">Horizontal and vertical detector-orbit response residuals versus normalized active-corrector RMS input radius. Curves show mean trial RMSE, upper whiskers show maximum trial RMSE, and crosses mark incomplete exact-reference samples.</desc>',
         '<rect width="100%" height="100%" fill="white"/>',
         '<g font-family="Arial, Helvetica, sans-serif" fill="#202020" stroke-linecap="round" stroke-linejoin="round">',
-        text(width / 2, 30, chart_title, text_anchor="middle", font_size="20", font_weight="600"),
-        text(width / 2, 54, subtitle, text_anchor="middle", font_size="12.5", fill="#555555"),
+        text(width / 2, 27 if stacked else 30, chart_title, text_anchor="middle", font_size=f"{title_font:g}", font_weight="600"),
+        text(width / 2, 49 if stacked else 54, subtitle, text_anchor="middle", font_size=f"{subtitle_font:g}", fill="#555555"),
     ]
 
-    legend_y = 88
-    for start, (_, label, color, dash, shape) in zip((70, 300, 535), scenarios):
+    legend_y = 75 if stacked else 88
+    legend_starts = (32, 224, 421) if stacked else (70, 300, 535)
+    for start, (_, label, color, dash, shape) in zip(legend_starts, scenarios):
         dash_attribute = f' stroke-dasharray="{dash}"' if dash else ""
         parts.append(f'<line x1="{start}" y1="{legend_y}" x2="{start + 34}" y2="{legend_y}" stroke="{color}" stroke-width="2.2"{dash_attribute}/>')
         parts.append(marker(shape, start + 17, legend_y, color))
-        parts.append(text(start + 43, legend_y + 4, label, font_size="12.5"))
-    guide_x = 770
-    parts.append(f'<line x1="{guide_x}" y1="{legend_y}" x2="{guide_x + 34}" y2="{legend_y}" stroke="#6B6B6B" stroke-width="1.5" stroke-dasharray="7 5" opacity="0.8"/>')
-    parts.append(text(guide_x + 43, legend_y + 4, "Pure quadratic-error reference", font_size="12.5"))
-    incomplete_x = 1030
-    parts.append(cross_marker(incomplete_x + 5, legend_y, "#555555"))
-    parts.append(text(incomplete_x + 18, legend_y + 4, "Incomplete exact reference", font_size="12.5"))
+        parts.append(text(start + 43, legend_y + 4, label, font_size=f"{legend_font:g}"))
+    if stacked:
+        guide_x, reference_legend_y = 102, 105
+        incomplete_x = 392
+    else:
+        guide_x, reference_legend_y = 770, legend_y
+        incomplete_x = 1030
+    parts.append(f'<line x1="{guide_x}" y1="{reference_legend_y}" x2="{guide_x + 34}" y2="{reference_legend_y}" stroke="#6B6B6B" stroke-width="1.5" stroke-dasharray="7 5" opacity="0.8"/>')
+    parts.append(text(guide_x + 43, reference_legend_y + 4, "Pure quadratic-error reference", font_size=f"{legend_font:g}"))
+    parts.append(cross_marker(incomplete_x + 5, reference_legend_y, "#555555"))
+    parts.append(text(incomplete_x + 18, reference_legend_y + 4, "Incomplete exact reference", font_size=f"{legend_font:g}"))
 
     for panel, (plane, title) in enumerate((("x", "Horizontal detector orbit"), ("y", "Vertical detector orbit"))):
         left = lefts[panel]
+        top = panel_tops[panel]
         right = left + plot_width
         bottom_y = top + plot_height
         for power in range(lower_power, upper_power + 1):
-            y = y_position(10.0**power)
+            y = y_position(10.0**power, top)
             parts.append(f'<line x1="{left}" y1="{y:.2f}" x2="{right}" y2="{y:.2f}" stroke="#D4D7DA" stroke-width="1"/>')
-            if panel == 0:
-                parts.append(power_label(left - 12, y + 4, power))
+            if stacked or panel == 0:
+                parts.append(power_label(left - 12, y + 4, power, tick_font))
         for power in range(lower_power, upper_power):
             for multiplier in (2.0, 5.0):
-                y = y_position(multiplier * 10.0**power)
+                y = y_position(multiplier * 10.0**power, top)
                 parts.append(f'<line x1="{left}" y1="{y:.2f}" x2="{right}" y2="{y:.2f}" stroke="#ECEEEF" stroke-width="0.8"/>')
         for rho in minor_x_ticks:
             x = x_position(rho, left)
@@ -260,11 +384,11 @@ def main() -> int:
         for rho in major_x_ticks:
             x = x_position(rho, left)
             parts.append(f'<line x1="{x:.2f}" y1="{top}" x2="{x:.2f}" y2="{bottom_y}" stroke="#E0E2E4" stroke-width="1"/>')
-            parts.append(text(x, bottom_y + 23, format_log_tick(rho), text_anchor="middle", font_size="12", fill="#4A4A4A"))
+            parts.append(text(x, bottom_y + 23, format_log_tick(rho), text_anchor="middle", font_size=f"{tick_font:g}", fill="#4A4A4A"))
         parts.extend((
             f'<rect x="{left}" y="{top}" width="{plot_width}" height="{plot_height}" fill="none" stroke="#333333" stroke-width="1.15"/>',
-            text(left, top - 17, f"({chr(97 + panel)})  {title}", font_size="15", font_weight="600"),
-            text((left + right) / 2, bottom_y + 52, "Normalized active-corrector input radius, ρ", text_anchor="middle", font_size="13.5"),
+            text(left, top - 17, f"({chr(97 + panel)})  {title}", font_size=f"{panel_font:g}", font_weight="600"),
+            text((left + right) / 2, bottom_y + 52, "Normalized active-corrector input radius, rho", text_anchor="middle", font_size=f"{axis_font:g}"),
         ))
 
         reference_rows = sorted(
@@ -281,7 +405,7 @@ def main() -> int:
                 if 10.0**lower_power <= value <= 10.0**upper_power:
                     guide.append((rho, value))
             if len(guide) >= 2:
-                guide_path = " ".join(("M" if index == 0 else "L") + f" {x_position(rho, left):.2f} {y_position(value):.2f}" for index, (rho, value) in enumerate(guide))
+                guide_path = " ".join(("M" if index == 0 else "L") + f" {x_position(rho, left):.2f} {y_position(value, top):.2f}" for index, (rho, value) in enumerate(guide))
                 parts.append(f'<path d="{guide_path}" fill="none" stroke="#6B6B6B" stroke-width="1.5" stroke-dasharray="7 5" opacity="0.8"/>')
 
         series_data: list[
@@ -310,7 +434,7 @@ def main() -> int:
             if len(points) >= 2:
                 path = " ".join(
                     ("M" if index == 0 else "L")
-                    + f" {x_position(rho, left):.2f} {y_position(mean_um):.2f}"
+                    + f" {x_position(rho, left):.2f} {y_position(mean_um, top):.2f}"
                     for index, (rho, mean_um, _, _) in enumerate(points)
                 )
                 dash_attribute = f' stroke-dasharray="{dash}"' if dash else ""
@@ -327,8 +451,8 @@ def main() -> int:
             cap_half_width = 5.5 if scenario == "horizontal" else 4.0
             for rho, mean_um, maximum_um, complete in points:
                 x = x_position(rho, left)
-                y_mean = y_position(mean_um)
-                y_maximum = y_position(maximum_um)
+                y_mean = y_position(mean_um, top)
+                y_maximum = y_position(maximum_um, top)
                 parts.append(f'<line x1="{x:.2f}" y1="{y_mean:.2f}" x2="{x:.2f}" y2="{y_maximum:.2f}" stroke="{color}" stroke-width="{whisker_width:g}" opacity="{whisker_opacity:g}"/>')
                 parts.append(f'<line x1="{x - cap_half_width:.2f}" y1="{y_maximum:.2f}" x2="{x + cap_half_width:.2f}" y2="{y_maximum:.2f}" stroke="{color}" stroke-width="{whisker_width:g}" opacity="{whisker_opacity:g}"/>')
 
@@ -337,15 +461,19 @@ def main() -> int:
         for _, color, _, shape, points in series_data:
             for rho, mean_um, _, complete in points:
                 x = x_position(rho, left)
-                y_mean = y_position(mean_um)
+                y_mean = y_position(mean_um, top)
                 if not complete:
                     parts.append(cross_marker(x, y_mean, color))
                 else:
                     parts.append(marker(shape, x, y_mean, color))
 
-    center_y = top + plot_height / 2
-    parts.append(f'<text x="24" y="{center_y:.2f}" transform="rotate(-90 24 {center_y:.2f})" text-anchor="middle" font-size="13.5">{escape(y_label)}</text>')
-    parts.append(text(width / 2, height - 29, "Markers and lines: mean over trials; one-sided whiskers: maximum over trials.", text_anchor="middle", font_size="11.5", fill="#555555"))
+        if stacked:
+            center_y = top + plot_height / 2
+            parts.append(f'<text x="19" y="{center_y:.2f}" transform="rotate(-90 19 {center_y:.2f})" text-anchor="middle" font-size="{axis_font:g}">Response residual RMSE [micrometre]</text>')
+    if not stacked:
+        center_y = panel_tops[0] + plot_height / 2
+        parts.append(f'<text x="24" y="{center_y:.2f}" transform="rotate(-90 24 {center_y:.2f})" text-anchor="middle" font-size="{axis_font:g}">{escape(y_label)}</text>')
+    parts.append(text(width / 2, height - 22 if stacked else height - 29, "Markers and lines: mean over trials; one-sided whiskers: maximum over trials.", text_anchor="middle", font_size=f"{footer_font:g}", fill="#555555"))
     parts.extend(("</g>", "</svg>"))
 
     output.parent.mkdir(parents=True, exist_ok=True)
