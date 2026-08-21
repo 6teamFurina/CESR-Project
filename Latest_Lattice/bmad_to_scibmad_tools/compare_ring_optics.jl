@@ -69,7 +69,7 @@ function main()
         println(io)
         println(io, "The remaining nominal discrepancy is dominated by the continuous-field " *
                     "wiggler map versus Bmad's faster standard-matrix approximation; " *
-                    "see `../support_codes/compare_wiggler_block.jl`.")
+                    "see `../bmad_to_scibmad_tools/compare_wiggler_block.jl`.")
     end
 
     println("Bmad starting orbit:    $bmad_orbit")

@@ -123,9 +123,10 @@ def main() -> None:
         text,
         "# Translated from Bmad lattice file: lat.bmad\n\nusing Beamlines\n",
         "# Repaired from the Tao 20260814-0 raw SciBmad export of lat.bmad.\n"
-        "# See support_codes/CONVERSION_REPORT.md and support_codes/build_repaired_lattice.py.\n\n"
+        "# See bmad_to_scibmad_tools/CONVERSION_REPORT.md and\n"
+        "# bmad_to_scibmad_tools/build_repaired_lattice.py.\n\n"
         "using Beamlines\n"
-        "include(joinpath(@__DIR__, \"support_codes\", \"latest_lattice_support.jl\"))\n",
+        "include(joinpath(@__DIR__, \"essential_supports\", \"latest_lattice_support.jl\"))\n",
         1,
     )
 

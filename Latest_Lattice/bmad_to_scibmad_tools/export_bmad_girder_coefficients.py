@@ -18,6 +18,7 @@ LATTICE = LATTICE_DIR / "lat.bmad"
 LORDS_CSV = INVENTORY_DIR / "bmad_control_lords.csv"
 INVENTORY_CSV = INVENTORY_DIR / "bmad_element_inventory.csv"
 OUTPUT_DIR = REFERENCE_DIR / "girder"
+ESSENTIAL_SUPPORTS_DIR = LATTICE_DIR / "essential_supports"
 
 GIRDER_PARAMETERS = (
     "X_OFFSET", "Y_OFFSET", "Z_OFFSET", "X_PITCH", "Y_PITCH", "TILT",
@@ -95,6 +96,7 @@ def sci_alignment(attributes: dict[str, object]) -> dict[str, float]:
 
 def main() -> None:
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    ESSENTIAL_SUPPORTS_DIR.mkdir(parents=True, exist_ok=True)
     girders = read_girders()
     tao = Tao(
         lattice_file=str(LATTICE),
@@ -165,7 +167,7 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(member_rows)
 
-    coefficient_path = OUTPUT_DIR / "alignment_coefficients.csv"
+    coefficient_path = ESSENTIAL_SUPPORTS_DIR / "alignment_coefficients.csv"
     with coefficient_path.open("w", encoding="utf-8", newline="") as stream:
         writer = csv.DictWriter(stream, fieldnames=list(coefficient_rows[0]))
         writer.writeheader()

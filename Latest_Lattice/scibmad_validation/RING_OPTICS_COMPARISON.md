@@ -10,4 +10,4 @@
 - SciBmad signed tunes: `[-0.44397880948323115, -0.36293244415462744, -0.033954505005652794]`.
 - SciBmad eigenphase magnitudes: `[0.033954505005652794, 0.36293244415462744, 0.44397880948323115]`.
 
-The remaining nominal discrepancy is dominated by the continuous-field wiggler map versus Bmad's faster standard-matrix approximation; see `../support_codes/compare_wiggler_block.jl`.
+The remaining nominal discrepancy is dominated by the continuous-field wiggler map versus Bmad's faster standard-matrix approximation; see `../bmad_to_scibmad_tools/compare_wiggler_block.jl`.

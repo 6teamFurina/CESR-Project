@@ -1,7 +1,7 @@
 """Bmad-linearized coherent alignment controls for the twelve CESR girders."""
 
 const LATEST_GIRDER_COEFFICIENT_PATH = joinpath(
-    @__DIR__, "..", "bmad_reference", "girder", "alignment_coefficients.csv",
+    @__DIR__, "alignment_coefficients.csv",
 )
 const LATEST_GIRDER_PARAMETER_NAMES = (
     :x_offset, :y_offset, :z_offset, :x_pitch, :y_pitch, :tilt,

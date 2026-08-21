@@ -62,7 +62,7 @@ length survives, but the oscillatory field, vertical focusing, path-length
 effect, and nonlinear map do not.
 
 The repaired file instantiates three phase-continuous segments from the
-validated `PlanarWiggler` implementation in `../wigglers/wiggler.jl`, with
+validated `PlanarWiggler` implementation in `../../wigglers/wiggler.jl`, with
 90/30/120 integration steps. A `6.54758669568665e-15 s` reference-time patch
 on the existing internal fork marker restores Bmad's design-particle `z=0`
 convention. The five-element block then agrees in affine vector and exit orbit
@@ -120,7 +120,8 @@ girder as not translatable. Their start/end markers remain, but the coherent
 alignment semantics of each girder do not.
 
 `export_bmad_girder_coefficients.py` expands the Bmad geometry response onto
-all 150 member tracking elements/slices. `latest_girder_support.jl` exposes
+all 150 member tracking elements/slices.
+`../essential_supports/latest_girder_support.jl` exposes
 `set_latest_girder!`, which applies any of the six Bmad offset/pitch/tilt
 parameters coherently and can reset them to zero. The full audit covers 12
 girders x 6 parameters and 972 tracking-response observations.

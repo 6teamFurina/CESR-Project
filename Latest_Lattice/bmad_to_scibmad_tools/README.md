@@ -1,4 +1,4 @@
-# Latest CESR lattice conversion workspace
+# Bmad-to-SciBmad conversion and validation tools
 
 This directory documents the current CHESS-U 6 GeV CESR lattice and its first
 reproducible Bmad-to-SciBmad conversion audit.
@@ -7,9 +7,11 @@ The concise acceptance table is in
 `../scibmad_validation/FINAL_VALIDATION_SUMMARY.md`; the detailed
 writer-defect and repair analysis is in `CONVERSION_REPORT.md`.
 
-The parent directory intentionally keeps only the current SciBmad lattice and
-the two-file Bmad lattice. This directory holds generators, exporters,
-diagnostics, validation programs, and their explanatory documentation.
+The parent directory keeps the current SciBmad lattice, its runtime support,
+and the two-file Bmad lattice. This directory holds generators, exporters,
+diagnostics, validation programs, and their explanatory documentation. None
+of these tools is required for an ordinary load of the repaired SciBmad
+lattice; runtime dependencies live in `../essential_supports/`.
 
 ## Inputs
 
@@ -72,9 +74,9 @@ To regenerate and smoke-test it from PowerShell:
 
 ```powershell
 & "C:/Users/JoeyN/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/python.exe" `
-  "CESR Project/Latest_Lattice/support_codes/build_repaired_lattice.py"
+  "CESR Project/Latest_Lattice/bmad_to_scibmad_tools/build_repaired_lattice.py"
 julia --startup-file=no --project="CESR Project" `
-  "CESR Project/Latest_Lattice/support_codes/load_repaired_lattice.jl"
+  "CESR Project/Latest_Lattice/bmad_to_scibmad_tools/load_repaired_lattice.jl"
 ```
 
 ## Numerical validation
@@ -117,7 +119,7 @@ From Windows PowerShell:
 ```powershell
 wsl.exe -d Ubuntu-Bmad -- `
   /home/joeyfurina/.cache/codex-bmad-20260814/bin/python `
-  "/mnt/d/Ring_Design_Development/CESR Project/Latest_Lattice/support_codes/diagnose_conversion.py"
+  "/mnt/d/Ring_Design_Development/CESR Project/Latest_Lattice/bmad_to_scibmad_tools/diagnose_conversion.py"
 ```
 
 This writes:
@@ -132,7 +134,7 @@ The raw SciBmad load smoke test is:
 
 ```powershell
 julia --startup-file=no --project="CESR Project" `
-  "CESR Project/Latest_Lattice/support_codes/load_raw_export.jl"
+  "CESR Project/Latest_Lattice/bmad_to_scibmad_tools/load_raw_export.jl"
 ```
 
 Its captured failure is in `../scibmad_validation/scibmad_raw_load.log`.

@@ -18,8 +18,10 @@ calculation.
 | `Latest_Lattice/lat.bmad` | Latest Bmad entry lattice used only for conversion/reference validation. |
 | `Latest_Lattice/chess-u_02.bmad` | Base Bmad layout loaded by `lat.bmad`; it is part of the same two-file Bmad lattice. |
 
-Support programs and their documentation are in
-`Latest_Lattice/support_codes/`, SciBmad validation outputs are in
+Runtime files loaded by the SciBmad lattice are in
+`Latest_Lattice/essential_supports/`. Bmad-to-SciBmad conversion, diagnostic,
+and validation programs are in `Latest_Lattice/bmad_to_scibmad_tools/`.
+Generated SciBmad validation outputs are in
 `Latest_Lattice/scibmad_validation/`, and Bmad reference/load outputs are in
 `Latest_Lattice/bmad_reference/`.
 

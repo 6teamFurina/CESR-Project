@@ -54,4 +54,4 @@
 
 ## Split-wiggler interpretation
 
-The three `ID_S1A` slices must not be interpreted independently: the continuous four-potential uses canonical boundary terms that cancel across the complete five-element block. Run `../support_codes/compare_wiggler_block.jl` for the physical block comparison. With the Bmad reference-time patch, the block affine/exit mismatch is about `7.12e-15`; the remaining `5.89e-6` `R12` difference is reproduced by Bmad Runge-Kutta field tracking and is absent only from Bmad's standard wiggler approximation.
+The three `ID_S1A` slices must not be interpreted independently: the continuous four-potential uses canonical boundary terms that cancel across the complete five-element block. Run `../bmad_to_scibmad_tools/compare_wiggler_block.jl` for the physical block comparison. With the Bmad reference-time patch, the block affine/exit mismatch is about `7.12e-15`; the remaining `5.89e-6` `R12` difference is reproduced by Bmad Runge-Kutta field tracking and is absent only from Bmad's standard wiggler approximation.
