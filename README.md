@@ -206,14 +206,23 @@ comparison between the Bmad and SciBmad models:
 - `bmad_optics_outputs/BMAD_REFERENCE_EXPORT.md` documents the Bmad export
   workflow.
 
-### `dataset_benchmark/`
+### `orbit/`
 
-This independent directory contains the matched RF-on dataset-throughput
-benchmark. Bmad and SciBmad consume the same deterministic 1000-sample,
-119-control input and produce the same 198 labeled detector coordinates. It
-contains the runners, shared inputs, archived source package, Bmad-compatible
-reference lattice, preliminary runs, formal 1000-sample results, and numerical
-comparison reports.
+This directory contains the closed-orbit calculation, nonlinear response,
+error-attribution, correction, reference-data, and orbit-paper workflows.
+
+### `optics/`
+
+This directory contains the RF-off chromatic-optics and corrector-Jacobian
+benchmarks. It reads shared corrector samples and reference files from
+`orbit/`; those inputs are not duplicated.
+
+### `sextupole_misalignment/`
+
+This directory contains the maintained and archived sextupole magnetic-center
+studies, including finite-BPM inversion, nuisance and acquisition-protocol
+ablations, quadrupole affinity, excitation-validity envelopes, and the
+stochastic GTPSA inverse.
 
 ### `older_ring_version/test_codes/`
 
@@ -342,7 +351,7 @@ validation and higher-order-contamination checks, while direct nonlinear
 solutions define the amplitude range in which a truncated response expansion
 is valid. The adopted quadratic mixed-block calculation and its four-sign
 validation are documented in
-`dataset_benchmark/orbit/error_analysis/mixed_terms/`.
+`orbit/error_analysis/mixed_terms/`.
 
 Each RF-mode output directory contains:
 
