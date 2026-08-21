@@ -42,7 +42,7 @@ lattice at `Latest_Lattice/latest_cesr_scibmad_repaired.jl`.
 ## `archived_methods/`
 
 This folder preserves the two historical studies built around the older
-`cesr_model.jl` lattice and nominal/conditioned response dictionaries:
+`older_ring_version/cesr_model.jl` lattice and nominal/conditioned response dictionaries:
 
 - `response_map/`: the 76-sextupole `Kn2`/offset GTPSA response map and local
   SVD baseline;

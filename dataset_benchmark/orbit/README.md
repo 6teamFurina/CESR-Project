@@ -110,5 +110,5 @@ The previous study descriptions remain at
 [`README_archived.md`](README_archived.md) in each study directory. Existing
 CSV, TOML, JSON, SVG, PDF, archive packages, and custom `RESULTS.md` reports
 have deliberately not been renamed in this documentation pass. They were
-generated from the older `cesr.jl`/Bmad-compatible export and are historical
+generated from the older `older_ring_version/cesr.jl`/Bmad-compatible export and are historical
 until a result README explicitly identifies them as a latest-ring artifact.

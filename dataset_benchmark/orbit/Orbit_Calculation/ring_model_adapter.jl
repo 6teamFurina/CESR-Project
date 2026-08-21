@@ -35,10 +35,15 @@ const ORBIT_ADAPTER_LATEST_LATTICE = joinpath(
 )
 const ORBIT_ADAPTER_LATEST_CONTROLS = joinpath(
     ORBIT_ADAPTER_LATEST_DIR,
-    "bmad_control_tracking_reference",
+    "bmad_reference",
+    "control_tracking",
     "controls.csv",
 )
-const ORBIT_ADAPTER_LEGACY_MODEL = joinpath(ORBIT_ADAPTER_PROJECT_ROOT, "cesr_model.jl")
+const ORBIT_ADAPTER_LEGACY_MODEL = joinpath(
+    ORBIT_ADAPTER_PROJECT_ROOT,
+    "older_ring_version",
+    "cesr_model.jl",
+)
 const ORBIT_ADAPTER_WIGGLER_SOURCE = joinpath(
     ORBIT_ADAPTER_PROJECT_ROOT,
     "wigglers",

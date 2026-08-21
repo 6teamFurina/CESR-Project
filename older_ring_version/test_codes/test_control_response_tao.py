@@ -1,0 +1,524 @@
+#!/usr/bin/env python3
+"""Generate and validate the CESR control-to-closed-orbit response in Tao.
+
+This script is intended to run in the Linux VM that has Bmad/Tao and PyTao.
+It reads the detector markers and HKICK/VKICK Overlay lords directly from the
+selected CESR Bmad lattice, writes a minimal temporary Tao init file, asks Tao
+for its native derivative matrix, and exports the result with explicit row and
+column labels.
+
+The response convention is
+
+    R[i, j] = d(closed-orbit coordinate i) / d(control variable j),
+
+with rows ordered as every DET_* orbit.x datum followed by every DET_* orbit.y
+datum, and columns ordered as all HKICK Overlay lords followed by all VKICK
+Overlay lords.  The selected lattice determines the matrix dimensions.
+
+Typical VM usage from /home/jn577/cesr_scibmad:
+
+    python older_ring_version/test_codes/test_control_response_tao.py
+
+For the RF-on lattice:
+
+    python older_ring_version/test_codes/test_control_response_tao.py --lattice /path/to/cesr_rf_on.bmad
+
+Use --audit-columns=N to independently check N representative columns with a
+manual central finite difference after Tao's native derivative is generated.
+"""
+
+from __future__ import annotations
+
+import argparse
+import csv
+import json
+import math
+import re
+import sys
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+
+
+DETECTOR_RE = re.compile(
+    r"(?im)^\s*(DET_[A-Za-z0-9_]+)\s*:\s*Marker\b"
+)
+CONTROL_DECL_RE = re.compile(
+    r"(?ims)^\s*([A-Za-z][A-Za-z0-9_]*)\s*:\s*overlay\s*=\s*"
+    r"(?P<body>.*?)(?=^\s*[A-Za-z][A-Za-z0-9_]*\s*:|\Z)"
+)
+CONTROL_ATTRIBUTE_RE = re.compile(
+    r"(?:^|,)\s*(?:var\s*=\s*\{\s*)?(HKICK|VKICK)\b",
+    re.IGNORECASE,
+)
+CALL_RE = re.compile(r"(?im)^\s*call\s*,\s*file\s*=\s*([^,\s!]+)")
+
+
+def strip_bmad_comments(text: str) -> str:
+    """Remove Bmad ! comments while preserving line boundaries."""
+    return "\n".join(line.split("!", 1)[0] for line in text.splitlines())
+
+
+def read_lattice_source(path: Path, seen: Optional[set[Path]] = None) -> str:
+    """Read a Bmad file and its relative ``call, file=...`` dependencies."""
+    seen = set() if seen is None else seen
+    path = path.resolve()
+    if path in seen:
+        return ""
+    seen.add(path)
+    text = strip_bmad_comments(path.read_text(encoding="utf-8"))
+    parts = [text]
+    for match in CALL_RE.finditer(text):
+        include_path = (path.parent / match.group(1).strip('"\'')).resolve()
+        if not include_path.is_file():
+            continue
+        parts.append(read_lattice_source(include_path, seen))
+    return "\n".join(parts)
+
+
+def unique_in_order(values: Iterable[str]) -> List[str]:
+    result: List[str] = []
+    seen = set()
+    for value in values:
+        key = value.upper()
+        if key not in seen:
+            seen.add(key)
+            result.append(key)
+    return result
+
+
+def parse_cesr_layout(lattice: Path) -> Tuple[List[str], List[str], List[str]]:
+    text = read_lattice_source(lattice)
+    detectors = unique_in_order(match.group(1) for match in DETECTOR_RE.finditer(text))
+
+    horizontal: List[str] = []
+    vertical: List[str] = []
+    for match in CONTROL_DECL_RE.finditer(text):
+        name = match.group(1).upper()
+        body = match.group("body")
+        closing_brace = body.find("}")
+        if closing_brace < 0:
+            continue
+        attribute_match = CONTROL_ATTRIBUTE_RE.search(body[closing_brace + 1 :])
+        if attribute_match is None:
+            continue
+        attribute = attribute_match.group(1).upper()
+        (horizontal if attribute == "HKICK" else vertical).append(name)
+
+    horizontal = unique_in_order(horizontal)
+    vertical = unique_in_order(vertical)
+
+    return detectors, horizontal, vertical
+
+
+def tao_quote(value: str) -> str:
+    """Quote a path or element name for a Tao/Fortran namelist."""
+    return '"' + value.replace('"', '""') + '"'
+
+
+def format_string_assignment(
+    target: str, values: Sequence[str], per_line: int = 6
+) -> str:
+    rows = []
+    for start in range(0, len(values), per_line):
+        chunk = values[start : start + per_line]
+        suffix = "," if start + per_line < len(values) else ""
+        rows.append("  " + ", ".join(tao_quote(value) for value in chunk) + suffix)
+    return f" {target} =\n" + "\n".join(rows)
+
+
+def build_tao_init(
+    lattice: Path,
+    detectors: Sequence[str],
+    horizontal: Sequence[str],
+    vertical: Sequence[str],
+    derivative_step: float,
+) -> str:
+    detector_assignment = format_string_assignment(
+        f"datum(0:{len(detectors) - 1})%ele_name", detectors
+    )
+    horizontal_assignment = format_string_assignment(
+        f"var(0:{len(horizontal) - 1})%ele_name", horizontal
+    )
+    vertical_assignment = format_string_assignment(
+        f"var(0:{len(vertical) - 1})%ele_name", vertical
+    )
+
+    return f"""! Generated by test_control_response_tao.py. Do not hand-edit.
+
+&tao_design_lattice
+ n_universes = 1
+ design_lattice(1) = {tao_quote(str(lattice))}
+/
+
+&tao_params
+ global%plot_on = F
+ global%derivative_uses_design = F
+ global%derivative_recalc = T
+/
+
+&tao_d2_data
+ d2_data%name = "orbit"
+ universe = '*'
+ n_d1_data = 2
+/
+
+&tao_d1_data
+ ix_d1_data = 1
+ d1_data%name = "x"
+ default_weight = 1.0
+ ix_min_data = 0
+ ix_max_data = {len(detectors) - 1}
+{detector_assignment}
+/
+
+&tao_d1_data
+ ix_d1_data = 2
+ d1_data%name = "y"
+ default_weight = 1.0
+ use_same_lat_eles_as = "orbit.x"
+/
+
+&tao_var
+ v1_var%name = "h_steer"
+ default_attribute = "HKICK"
+ default_weight = 1.0
+ default_step = {derivative_step:.17g}
+ ix_min_var = 0
+ ix_max_var = {len(horizontal) - 1}
+{horizontal_assignment}
+/
+
+&tao_var
+ v1_var%name = "v_steer"
+ default_attribute = "VKICK"
+ default_weight = 1.0
+ default_step = {derivative_step:.17g}
+ ix_min_var = 0
+ ix_max_var = {len(vertical) - 1}
+{vertical_assignment}
+/
+"""
+
+
+def jsonable(value: Any) -> Any:
+    if value is None or isinstance(value, (str, bool, int)):
+        return value
+    if isinstance(value, float):
+        return value if math.isfinite(value) else str(value)
+    if hasattr(value, "item"):
+        try:
+            return jsonable(value.item())
+        except (TypeError, ValueError):
+            pass
+    if hasattr(value, "tolist"):
+        return jsonable(value.tolist())
+    if isinstance(value, dict):
+        return {str(key): jsonable(item) for key, item in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [jsonable(item) for item in value]
+    return str(value)
+
+
+def active_data(tao: Any, d1_name: str) -> List[Dict[str, Any]]:
+    rows = tao.data_d_array("orbit", d1_name)
+    return [
+        row
+        for row in rows
+        if row.get("exists", True) and row.get("useit_opt", False)
+    ]
+
+
+def active_variables(tao: Any, v1_name: str) -> List[Dict[str, Any]]:
+    rows = tao.var_v_array(v1_name)
+    return [
+        row
+        for row in rows
+        if row.get("good_user", True) and row.get("useit_opt", False)
+    ]
+
+
+def model_orbit_vector(tao: Any) -> "Any":
+    import numpy as np
+
+    x_rows = active_data(tao, "x")
+    y_rows = active_data(tao, "y")
+    return np.asarray(
+        [row["model_value"] for row in x_rows + y_rows], dtype=float
+    )
+
+
+def set_variable_model_value(tao: Any, reference: str, value: float) -> None:
+    tao.cmd(f"set var {reference}|model = {value:.17g}")
+
+
+def representative_indices(count: int, requested: int) -> List[int]:
+    if requested <= 0:
+        return []
+    if requested >= count:
+        return list(range(count))
+    if requested == 1:
+        return [0]
+    return sorted(
+        {round(position * (count - 1) / (requested - 1)) for position in range(requested)}
+    )
+
+
+def audit_columns(
+    tao: Any,
+    response: "Any",
+    variable_refs: Sequence[str],
+    variable_values: Sequence[float],
+    count: int,
+    step: float,
+) -> List[Dict[str, Any]]:
+    import numpy as np
+
+    report: List[Dict[str, Any]] = []
+    for column in representative_indices(len(variable_refs), count):
+        reference = variable_refs[column]
+        baseline = variable_values[column]
+
+        set_variable_model_value(tao, reference, baseline + step)
+        plus = model_orbit_vector(tao)
+        set_variable_model_value(tao, reference, baseline - step)
+        minus = model_orbit_vector(tao)
+        set_variable_model_value(tao, reference, baseline)
+
+        finite_difference = (plus - minus) / (2.0 * step)
+        difference = finite_difference - response[:, column]
+        reference_norm = float(np.linalg.norm(response[:, column]))
+        difference_norm = float(np.linalg.norm(difference))
+        relative = difference_norm / reference_norm if reference_norm else math.inf
+        maximum = float(np.max(np.abs(difference)))
+        record = {
+            "column": column,
+            "variable": reference,
+            "baseline": baseline,
+            "step": step,
+            "difference_norm": difference_norm,
+            "reference_norm": reference_norm,
+            "relative_2norm": relative,
+            "max_abs_difference": maximum,
+        }
+        report.append(record)
+        print(
+            f"Audit {reference}: relative 2-norm={relative:.3e}, "
+            f"max abs difference={maximum:.3e}"
+        )
+    return report
+
+
+def write_matrix_csv(
+    path: Path,
+    response: "Any",
+    row_labels: Sequence[str],
+    column_labels: Sequence[str],
+) -> None:
+    with path.open("w", encoding="utf-8", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerow(["observable"] + list(column_labels))
+        for label, row in zip(row_labels, response):
+            writer.writerow([label] + [f"{float(value):.17g}" for value in row])
+
+
+def make_argument_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--lattice",
+        type=Path,
+        default=Path(__file__).resolve().parents[1] / "cesr.bmad",
+        help="Historical CESR Bmad lattice in older_ring_version",
+    )
+    parser.add_argument(
+        "--output",
+        type=Path,
+        default=None,
+        help="Output directory (default: bmad_control_response_<rf_off|rf_on>)",
+    )
+    parser.add_argument(
+        "--derivative-step",
+        type=float,
+        default=1.0e-6,
+        help="Tao variable derivative step in radians (default: 1e-6)",
+    )
+    parser.add_argument(
+        "--audit-columns",
+        type=int,
+        default=0,
+        help="Manually central-difference this many representative columns",
+    )
+    parser.add_argument(
+        "--audit-step",
+        type=float,
+        default=1.0e-6,
+        help="Central finite-difference audit step in radians (default: 1e-6)",
+    )
+    parser.add_argument(
+        "--generate-init-only",
+        action="store_true",
+        help="Generate and validate the Tao init file without starting PyTao",
+    )
+    return parser
+
+
+def main(argv: Optional[Sequence[str]] = None) -> int:
+    args = make_argument_parser().parse_args(argv)
+    lattice = args.lattice.expanduser().resolve()
+    if not lattice.is_file():
+        raise FileNotFoundError(f"Lattice does not exist: {lattice}")
+    if args.derivative_step <= 0 or args.audit_step <= 0:
+        raise ValueError("Derivative and audit steps must be positive")
+    if args.audit_columns < 0:
+        raise ValueError("--audit-columns cannot be negative")
+
+    detectors, horizontal, vertical = parse_cesr_layout(lattice)
+    mode = "rf_on" if "rf_on" in lattice.stem.lower() else "rf_off"
+    output = (
+        args.output.expanduser().resolve()
+        if args.output is not None
+        else (Path.cwd() / f"bmad_control_response_{mode}").resolve()
+    )
+    output.mkdir(parents=True, exist_ok=True)
+
+    init_path = output / f"tao_control_response_{mode}.init"
+    init_path.write_text(
+        build_tao_init(
+            lattice,
+            detectors,
+            horizontal,
+            vertical,
+            args.derivative_step,
+        ),
+        encoding="utf-8",
+    )
+    print(f"Lattice:            {lattice}")
+    print(f"Tao init:           {init_path}")
+    print(f"Detector markers:   {len(detectors)}")
+    print(f"Horizontal controls:{len(horizontal):5d}")
+    print(f"Vertical controls:  {len(vertical):5d}")
+
+    if args.generate_init_only:
+        print("Generated init only; PyTao was not started.")
+        return 0
+
+    try:
+        import numpy as np
+        from pytao import Tao
+    except ImportError as exc:
+        raise RuntimeError(
+            "This calculation must run in the VM environment containing PyTao"
+        ) from exc
+
+    tao = Tao(init_file=str(init_path), noplot=True)
+    raw_version = tao.cmd("show version", raises=False)
+
+    tracking_indices = tao.lat_list(
+        "*", "ele.ix_ele", which="model", flags="-array_out -track_only"
+    )
+    if not tracking_indices:
+        raise RuntimeError("Tao returned no tracking positions")
+
+    # Explicitly activate only the data and variables used in this matrix.
+    tao.cmd("veto var *; veto dat *")
+    tao.cmd("use var h_steer[*]")
+    tao.cmd("use var v_steer[*]")
+    tao.cmd("set dat orbit.x[*]|meas = 0")
+    tao.cmd("set dat orbit.y[*]|meas = 0")
+    tao.cmd("use dat orbit.x[*]")
+    tao.cmd("use dat orbit.y[*]")
+
+    x_data = active_data(tao, "x")
+    y_data = active_data(tao, "y")
+    h_vars = active_variables(tao, "h_steer")
+    v_vars = active_variables(tao, "v_steer")
+
+    if (len(x_data), len(y_data), len(h_vars), len(v_vars)) != (
+        len(detectors),
+        len(detectors),
+        len(horizontal),
+        len(vertical),
+    ):
+        raise RuntimeError(
+            "Unexpected active Tao inventory: "
+            f"x={len(x_data)}, y={len(y_data)}, "
+            f"H={len(h_vars)}, V={len(v_vars)}"
+        )
+
+    print("Computing Tao native derivative matrix...")
+    derivatives = tao.derivative()
+    if not derivatives:
+        raise RuntimeError("Tao returned an empty derivative result")
+    universe = min(derivatives)
+    response = np.asarray(derivatives[universe], dtype=float)
+
+    row_labels = [
+        f"{row['ele_name']}:x" for row in x_data
+    ] + [f"{row['ele_name']}:y" for row in y_data]
+    column_labels = horizontal + vertical
+    expected_shape = (len(row_labels), len(column_labels))
+    if response.shape != expected_shape:
+        raise RuntimeError(
+            f"Derivative shape is {response.shape}, expected {expected_shape}"
+        )
+    if not np.all(np.isfinite(response)):
+        raise RuntimeError("Derivative matrix contains NaN or infinite values")
+
+    variable_refs = [f"h_steer[{index}]" for index in range(len(horizontal))]
+    variable_refs += [f"v_steer[{index}]" for index in range(len(vertical))]
+    variable_values = [float(row["model_value"]) for row in h_vars + v_vars]
+
+    audit = audit_columns(
+        tao,
+        response,
+        variable_refs,
+        variable_values,
+        args.audit_columns,
+        args.audit_step,
+    )
+
+    matrix_path = output / f"bmad_control_response_{mode}.npy"
+    csv_path = output / f"bmad_control_response_{mode}.csv"
+    metadata_path = output / f"bmad_control_response_{mode}_metadata.json"
+    np.save(matrix_path, response)
+    write_matrix_csv(csv_path, response, row_labels, column_labels)
+
+    metadata = {
+        "format": "cesr-bmad-control-response-v1",
+        "lattice": str(lattice),
+        "mode": mode,
+        "tao_version_raw": jsonable(raw_version),
+        "universe": int(universe),
+        "tracking_position_count_including_beginning": len(tracking_indices),
+        "derivative_step_rad": args.derivative_step,
+        "response_units": "m/rad",
+        "matrix_shape": list(response.shape),
+        "row_order": "all DET orbit.x, then all DET orbit.y",
+        "column_order": "all HKICK overlays, then all VKICK overlays",
+        "row_labels": row_labels,
+        "column_labels": column_labels,
+        "detectors": detectors,
+        "horizontal_controls": horizontal,
+        "vertical_controls": vertical,
+        "matrix_frobenius_norm": float(np.linalg.norm(response)),
+        "matrix_max_abs": float(np.max(np.abs(response))),
+        "finite_difference_audit": audit,
+    }
+    metadata_path.write_text(
+        json.dumps(metadata, indent=2, allow_nan=False) + "\n", encoding="utf-8"
+    )
+
+    print(f"Response shape:     {response.shape}")
+    print(f"Maximum |R_ij|:     {np.max(np.abs(response)):.9e} m/rad")
+    print(f"Frobenius norm:     {np.linalg.norm(response):.9e} m/rad")
+    print(f"Matrix NPY:         {matrix_path}")
+    print(f"Labeled CSV:        {csv_path}")
+    print(f"Metadata JSON:      {metadata_path}")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except Exception as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        raise

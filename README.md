@@ -1,24 +1,36 @@
 # CESR Digital Twin in SciBmad
 
-This project creates a digital twin of the Cornell Electron Storage Ring
-(CESR) in SciBmad. The model preserves the physical structure and numerical
-settings of the real ring represented by the Bmad CESR lattice. It also
-reproduces the Bmad control structure with SciBmad deferred expressions
-(`DefExpr`), allowing control knobs to modify dependent element attributes
-without changing the static lattice definition.
+This project develops a SciBmad digital twin of the Cornell Electron Storage
+Ring (CESR). The default model is the validated latest CHESS-U 6 GeV lattice in
+`Latest_Lattice/latest_cesr_scibmad_repaired.jl`. The earlier maintained CESR
+ring, its controls, tests, and comparison artifacts are retained under
+`older_ring_version/` for historical reproduction.
 
 The project also implements a planar wiggler element for SciBmad. Its tracking
 model is based on the magnetic four-potential and supports GTPSA transport-map
 calculation.
 
-## Core Model Files
+## Current lattice files
 
 | Path | Purpose |
 |---|---|
-| `cesr.bmad` | Original Bmad CESR lattice and the source of the element settings, Overlay definitions, and Group control coefficients. |
-| `cesr.jl` | Static SciBmad lattice. It contains the physical ring elements, their baseline numerical settings, the consolidated solenoid model, the CESR wigglers, kicker strengths, and RF-cavity helpers. It does not contain mutable control settings. |
-| `cesr_controls.jl` | Deferred-expression control layer generated from `cesr.bmad`. It implements the Bmad-style Overlays and Groups and propagates their contributions to physical element attributes. |
-| `cesr_model.jl` | Main model entry point. `load_cesr_model()` creates an independent copy of the static ring and attaches the complete control layer. It can also explicitly enable or disable the RF cavities. |
+| `Latest_Lattice/latest_cesr_scibmad_repaired.jl` | Validated latest SciBmad lattice and the default for all new CESR calculations. |
+| `Latest_Lattice/lat.bmad` | Latest Bmad entry lattice used only for conversion/reference validation. |
+| `Latest_Lattice/chess-u_02.bmad` | Base Bmad layout loaded by `lat.bmad`; it is part of the same two-file Bmad lattice. |
+
+Support programs and their documentation are in
+`Latest_Lattice/support_codes/`, SciBmad validation outputs are in
+`Latest_Lattice/scibmad_validation/`, and Bmad reference/load outputs are in
+`Latest_Lattice/bmad_reference/`.
+
+## Historical ring files
+
+| Path | Purpose |
+|---|---|
+| `older_ring_version/cesr.bmad` | Original Bmad CESR lattice and the source of the element settings, Overlay definitions, and Group control coefficients. |
+| `older_ring_version/cesr.jl` | Historical static SciBmad lattice. It contains the physical ring elements, baseline numerical settings, consolidated solenoid model, CESR wigglers, kicker strengths, and RF-cavity helpers. |
+| `older_ring_version/cesr_controls.jl` | Deferred-expression control layer generated from the historical `cesr.bmad`. |
+| `older_ring_version/cesr_model.jl` | Historical model entry point. `load_cesr_model()` creates an independent copy of that ring and attaches its control layer. |
 
 The initialized model returned by `load_cesr_model()` contains two fields:
 `model.ring`, the independent CESR beamline, and `model.controls`, the mutable
@@ -146,9 +158,11 @@ finalized:
 
 ## Directories
 
-### `wigglers/`
+### `wigglers/` and `older_ring_version/wigglers/`
 
-This directory contains the CESR wiggler implementation and its derivation:
+The shared `wigglers/wiggler.jl` file contains the wiggler implementation used
+by both lattice generations. Historical derivation and experiment materials
+are grouped in `older_ring_version/wigglers/`:
 
 - `wiggler.jl` defines the planar wiggler field, magnetic four-potential,
   SciBmad element construction, and GTPSA transport-map utilities.
@@ -156,7 +170,7 @@ This directory contains the CESR wiggler implementation and its derivation:
   formulas, derives the transport-map calculation, and demonstrates the
   corresponding implementation.
 
-### `bmad_comparison/`
+### `older_ring_version/bmad_comparison/`
 
 This directory contains the Bmad/Tao reference outputs and the numerical
 comparison between the Bmad and SciBmad models:
@@ -201,7 +215,7 @@ contains the runners, shared inputs, archived source package, Bmad-compatible
 reference lattice, preliminary runs, formal 1000-sample results, and numerical
 comparison reports.
 
-### `test_codes/`
+### `older_ring_version/test_codes/`
 
 This directory contains development and regression utilities used to verify
 that the ring and its control structure run correctly:
@@ -226,7 +240,8 @@ that the ring and its control structure run correctly:
 
 ## RF-Off Coasting Closed-Orbit Patch
 
-`scibmad_coasting_forwarddiff_patch.jl` fixes the CESR RF-off closed-orbit
+`older_ring_version/scibmad_coasting_forwarddiff_patch.jl` fixes the historical
+CESR RF-off closed-orbit
 failure without modifying the installed SciBmad or BeamTracking packages. When
 `coasting_beam == true`, the physical closed-orbit problem contains only the
 four transverse unknowns `(x, px, y, py)`, while `z` and `pz` remain fixed.
@@ -243,7 +258,7 @@ return code use SciBmad's native `BatchSolve.newton!` implementation.
 The patched RF-off orbit can be calculated with:
 
 ```julia
-include("scibmad_coasting_forwarddiff_patch.jl")
+include("older_ring_version/scibmad_coasting_forwarddiff_patch.jl")
 using .SciBmadCoastingForwardDiffPatch
 
 solution = find_closed_orbit_coasting_forwarddiff(
@@ -255,7 +270,7 @@ solution = find_closed_orbit_coasting_forwarddiff(
 The regression comparison is run from the project root with:
 
 ```console
-julia --project=. test_codes/test_rf_off_closed_orbit.jl
+julia --project=. older_ring_version/test_codes/test_rf_off_closed_orbit.jl
 ```
 
 For the current CESR lattice, both the patched ForwardDiff/BatchSolve method
@@ -273,11 +288,11 @@ controls (58 horizontal and 61 vertical). The resulting matrix has shape
 `198 x 119` and units of `m/rad`.
 
 The Bmad reference is generated with
-`test_codes/test_control_response_tao.py`. The SciBmad comparison is run from
+`older_ring_version/test_codes/test_control_response_tao.py`. The SciBmad comparison is run from
 the project root with:
 
 ```console
-julia --project=. bmad_comparison/test_control_response_scibmad.jl --mode=both
+julia --project=. older_ring_version/bmad_comparison/test_control_response_scibmad.jl --mode=both
 ```
 
 All 119 SciBmad control derivatives are calculated simultaneously using
@@ -345,7 +360,7 @@ records the coordinate convention and RF-off solver details. It can be
 regenerated from existing matrices without rerunning the GTPSA tracking:
 
 ```console
-julia --project=. bmad_comparison/test_control_response_scibmad.jl --mode=summary
+julia --project=. older_ring_version/bmad_comparison/test_control_response_scibmad.jl --mode=summary
 ```
 
 ## Current Agreement with Bmad
@@ -376,4 +391,4 @@ The cumulative normalized discrepancy reaches the `10^-3` level because the
 local differences accumulate around the full ring. Detailed absolute and
 relative results, including percentage differences for the closed orbit and
 tunes, are available in
-`bmad_comparison/bmad_scibmad_rf_on_comparison_summary.md`.
+`older_ring_version/bmad_comparison/bmad_scibmad_rf_on_comparison_summary.md`.

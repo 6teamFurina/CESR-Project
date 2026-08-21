@@ -31,7 +31,7 @@ using TOML
 
 const HERE = @__DIR__
 const PROJECT_DIR = normpath(joinpath(HERE, "..", "..", "..", "..", ".."))
-include(joinpath(PROJECT_DIR, "cesr_model.jl"))
+include(joinpath(PROJECT_DIR, "older_ring_version", "cesr_model.jl"))
 
 const DETECTOR_COLUMNS = (
     :orbit_x,

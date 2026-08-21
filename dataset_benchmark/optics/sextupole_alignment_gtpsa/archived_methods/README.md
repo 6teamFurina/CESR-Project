@@ -1,7 +1,7 @@
 # Archived sextupole-alignment methods
 
 These directories are frozen historical methods based on the older
-`cesr_model.jl` lattice:
+`older_ring_version/cesr_model.jl` lattice:
 
 - `response_map/` generated the 76-sextupole mixed `Kn2`/offset GTPSA response
   map, finite-difference validation, and local SVD summaries.

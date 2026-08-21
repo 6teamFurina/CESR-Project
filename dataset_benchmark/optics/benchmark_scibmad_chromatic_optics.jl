@@ -15,7 +15,7 @@ does not solve them again.
 """
 
 include(joinpath(@__DIR__, "optics_common.jl"))
-include(joinpath(PROJECT_DIR, "scibmad_coasting_forwarddiff_patch.jl"))
+include(joinpath(PROJECT_DIR, "older_ring_version", "scibmad_coasting_forwarddiff_patch.jl"))
 include(joinpath(@__DIR__, "twiss_reuse.jl"))
 using .SciBmadCoastingForwardDiffPatch
 

@@ -1,6 +1,7 @@
 # CESR sextupole-alignment GTPSA study
 
-> Historical archive: this study uses the older `cesr_model.jl` lattice. The
+> Historical archive: this study uses the older
+> `older_ring_version/cesr_model.jl` lattice. The
 > commands below are retained for reproduction only; new work must use the
 > latest repaired SciBmad lattice.
 

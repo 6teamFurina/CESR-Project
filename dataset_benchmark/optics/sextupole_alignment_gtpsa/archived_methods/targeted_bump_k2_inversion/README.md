@@ -1,6 +1,7 @@
 # Targeted bump-by-K2 sextupole offset inversion
 
-> Historical archive: this P0--P3/P1--P2 study uses the older `cesr_model.jl`
+> Historical archive: this P0--P3/P1--P2 study uses the older
+> `older_ring_version/cesr_model.jl`
 > lattice and response dictionaries. The commands below are retained for
 > reproduction only.
 

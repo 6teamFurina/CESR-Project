@@ -21,7 +21,7 @@ const CORRECTOR_INPUT_CSV = joinpath(
     "cesr_corrector_samples_1000.csv",
 )
 
-include(joinpath(PROJECT_DIR, "cesr_model.jl"))
+include(joinpath(PROJECT_DIR, "older_ring_version", "cesr_model.jl"))
 
 const DETECTOR_COLUMNS = (
     :orbit_x,

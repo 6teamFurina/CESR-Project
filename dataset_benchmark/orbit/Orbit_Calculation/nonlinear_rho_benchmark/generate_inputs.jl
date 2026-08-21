@@ -21,7 +21,7 @@ end
 
 const ARTIFACT_RING = selected_ring()
 const CONTROL_SOURCE = ARTIFACT_RING == :latest_cesr ?
-    joinpath(PROJECT_ROOT, "Latest_Lattice", "bmad_control_tracking_reference", "controls.csv") :
+    joinpath(PROJECT_ROOT, "Latest_Lattice", "bmad_reference", "control_tracking", "controls.csv") :
     joinpath(ORBIT_ROOT, "reference", "closed_orbit_response_6x119.csv")
 const OUTPUT_DIR = joinpath(HERE, "shared_input", String(ARTIFACT_RING))
 const INPUT_PATH = joinpath(OUTPUT_DIR, "nonlinear_rho_correctors.csv")

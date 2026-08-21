@@ -17,7 +17,8 @@ PROJECT_ROOT = HERE.parents[2]
 LATEST_CONTROL_METADATA = (
     PROJECT_ROOT
     / "Latest_Lattice"
-    / "bmad_control_tracking_reference"
+    / "bmad_reference"
+    / "control_tracking"
     / "controls.csv"
 )
 LEGACY_REFERENCE = ORBIT_ROOT / "reference" / "closed_orbit_response_6x119.csv"

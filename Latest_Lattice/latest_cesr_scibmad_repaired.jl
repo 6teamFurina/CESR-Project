@@ -1,8 +1,8 @@
 # Repaired from the Tao 20260814-0 raw SciBmad export of lat.bmad.
-# See CONVERSION_REPORT.md and build_repaired_lattice.py.
+# See support_codes/CONVERSION_REPORT.md and support_codes/build_repaired_lattice.py.
 
 using Beamlines
-include(joinpath(@__DIR__, "latest_lattice_support.jl"))
+include(joinpath(@__DIR__, "support_codes", "latest_lattice_support.jl"))
 
 @elements begin
   ip_l0 = Marker()
