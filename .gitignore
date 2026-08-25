@@ -18,7 +18,11 @@ bmad_to_scibmad_missing_translations_issue.md
 
 # Generated Tao control-response artifacts.
 *.npy
+*.npz
 *.init
+
+# Generated Bmad digested lattices.
+*.bmad.digested*
 
 # Local manuscript workspace and generated paper artifacts. Keep the maintained
 # experiment entry points and scope/result documentation visible to version
@@ -34,3 +38,17 @@ orbit/high_throughput_nonlinear_closed_orbit_calculation_and_response_error_anal
 sextupole_misalignment/sextupole_excitation_validity_envelope/results/analysis/state_taylor_errors.csv
 optics/results/**/bmad_detector_chromatic_twiss.csv
 optics/results/**/scibmad_detector_chromatic_twiss.csv
+
+# High-volume nonlinear-rho per-sample tables. Keep metadata, timings,
+# diagnostics, compact comparisons, and generated result summaries.
+orbit/Orbit_Calculation/nonlinear_rho_benchmark/results/**/scibmad_samples.csv
+orbit/Orbit_Calculation/nonlinear_rho_benchmark/results/**/bmad_samples.csv
+orbit/Orbit_Calculation/nonlinear_rho_benchmark/results/**/bmad_rf_on_samples.csv
+
+# Chapter 1 production chunks duplicate the maintained merged trial table.
+orbit/chapter_01_nonlinear_response_rho_sweep/results/latest_cesr/chunks/*/rho_sweep_trial_errors.csv
+orbit/chapter_01_nonlinear_response_rho_sweep/results/latest_cesr/chunks/*/run.stdout.log
+
+# Chapter 2 per-direction element tables are large generated intermediates.
+# Keep the compact element/family summaries and reconstruction diagnostics.
+orbit/chapter_02_lattice_element_attribution/results/latest_cesr/*/element_direction_contributions.csv

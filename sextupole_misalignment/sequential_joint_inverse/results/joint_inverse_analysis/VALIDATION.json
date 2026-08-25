@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "machine_count": 16,
+  "target_count": 76,
+  "bpm_count": 111,
+  "quadrupole_count": 113,
+  "maximum_zero_bpm_reference_error_m": 4.1245823509580544e-14,
+  "maximum_zero_target_reference_error_m": 4.834848329290551e-14,
+  "realized_quadrupole_alignment_rms_um_per_plane": [
+    51.08600254912358,
+    49.9880650678591
+  ],
+  "evaluation_row_count": 14,
+  "per_target_row_count": 1064,
+  "machine_splits": {
+    "train": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "validation": [
+      10,
+      11,
+      12
+    ],
+    "test": [
+      13,
+      14,
+      15
+    ]
+  }
+}

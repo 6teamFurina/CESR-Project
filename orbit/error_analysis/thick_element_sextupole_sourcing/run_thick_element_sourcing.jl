@@ -517,6 +517,7 @@ function main_thick_element_sourcing(args=ARGS; model_factory=nothing, config=no
     open(metadata_path, "w") do io
         metadata = merge(ring_metadata(config; ring), Dict(
             "format" => "cesr-thick-element-hessian-sourcing-v3",
+            "engine" => "SciBmad",
             "date" => string(Dates.today()), "trials" => trials, "seed" => seed,
             "base_kick_rad" => base_kick,
             "output_plane" => output_plane,
@@ -530,6 +531,10 @@ function main_thick_element_sourcing(args=ARGS; model_factory=nothing, config=no
             "source_families" => family_names,
             "element_count" => length(element_indices),
             "element_types" => sort!(unique(linear.element_types)),
+            "active_normal_sextupoles" => length(inventory),
+            "active_normal_sextupole_names" => sort!([
+                linear.element_names[index] for index in keys(inventory)
+            ]),
             "detector_count" => length(detectors),
             "detector_names" => detectors,
             "input_csv" => input_path,

@@ -491,6 +491,7 @@ function main_rho_sweep(args=ARGS; model_factory=nothing, config=nothing)
     metadata_path = joinpath(output_dir, "rho_sweep_metadata.toml")
     metadata = Dict(
         "format" => "cesr-orbit-response-rho-sweep-v1",
+        "engine" => "SciBmad",
         "date" => string(Dates.today()),
         "rho_definition" => "active-control RMS kick divided by base_kick_rad",
         "direction_distribution" => "Gaussian direction normalized to exact unit RMS over active controls",

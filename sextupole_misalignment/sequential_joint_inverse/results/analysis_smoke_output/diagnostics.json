@@ -1,0 +1,22 @@
+{
+  "machine_count": 4,
+  "target_count": 4,
+  "train_machine_indices_zero_based": [
+    0,
+    1
+  ],
+  "validation_machine_indices_zero_based": [
+    2
+  ],
+  "test_machine_indices_zero_based": [
+    3
+  ],
+  "quadrupole_alignment_requested_rms_um_per_plane": 50.0,
+  "quadrupole_alignment_realized_x_rms_um": 50.35496055546492,
+  "quadrupole_alignment_realized_y_rms_um": 49.58489932170673,
+  "paired_reference_bpm_change_rms_um": 836.5445117709324,
+  "paired_reference_bpm_change_p99_um": 2543.098948640831,
+  "paired_beam_relative_truth_change_rms_2d_um": 1264.51016081973,
+  "without_truth_fraction_outside_bump_radius": 0.0,
+  "with_truth_fraction_outside_bump_radius": 0.3125
+}

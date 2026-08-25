@@ -1,7 +1,11 @@
 # Complete-element nonlinear-error attribution: latest CESR ring
 
-Status: `latest_cesr` one-direction x/y smoke validated on 2026-08-20.
-Production reruns are intentionally not part of this smoke.
+Status: `production_complete` in the chapter-scoped destination as of
+2026-08-22. Paired 100-direction x/y results, paper tables, and figures are
+under
+[`../../chapter_02_lattice_element_attribution/`](../../chapter_02_lattice_element_attribution/).
+The local `*_results/latest_cesr_smoke/` directories remain integration
+artifacts.
 
 The runner uses the maintained SciBmad lattice
 [`Latest_Lattice/latest_cesr_scibmad_repaired.jl`](../../../Latest_Lattice/latest_cesr_scibmad_repaired.jl).

@@ -15,18 +15,22 @@ HERE = Path(__file__).resolve().parent
 RESULT_DIR = HERE / "results"
 
 
-def ring_paths(ring: str) -> dict[str, Path]:
+def ring_paths(
+    ring: str,
+    scibmad_variant: str = "scibmad",
+    comparison_variant: str = "comparison",
+) -> dict[str, Path]:
     artifact = "latest_cesr" if ring == "latest" else "legacy"
     bmad_dir = "bmad_reference" if ring == "latest" else "bmad"
     bmad_name = "bmad_rf_on_samples.csv" if ring == "latest" else "bmad_samples.csv"
     return {
-        "scibmad": RESULT_DIR / artifact / "scibmad" / "scibmad_samples.csv",
+        "scibmad": RESULT_DIR / artifact / scibmad_variant / "scibmad_samples.csv",
         "bmad": RESULT_DIR / artifact / bmad_dir / bmad_name,
         "manifest": HERE / "shared_input" / artifact / "sample_manifest.csv",
-        "scibmad_timing": RESULT_DIR / artifact / "scibmad" / "scibmad_group_timings.csv",
+        "scibmad_timing": RESULT_DIR / artifact / scibmad_variant / "scibmad_group_timings.csv",
         "bmad_timing": RESULT_DIR / artifact / bmad_dir / "bmad_group_timings.csv",
-        "scibmad_metadata": RESULT_DIR / artifact / "scibmad" / "scibmad_metadata.toml",
-        "comparison": RESULT_DIR / artifact / "comparison",
+        "scibmad_metadata": RESULT_DIR / artifact / scibmad_variant / "scibmad_metadata.toml",
+        "comparison": RESULT_DIR / artifact / comparison_variant,
     }
 
 
@@ -113,8 +117,14 @@ def main() -> int:
         default="latest",
         help="Compare ring-scoped latest results, or explicitly compare archived legacy results",
     )
+    parser.add_argument("--scibmad-variant", default="scibmad")
+    parser.add_argument("--comparison-variant", default="comparison")
     args = parser.parse_args()
-    paths = ring_paths(args.ring)
+    paths = ring_paths(
+        args.ring,
+        scibmad_variant=args.scibmad_variant,
+        comparison_variant=args.comparison_variant,
+    )
     sample_order, manifest = read_manifest(paths["manifest"])
     sci_header, sci_rows = read_keyed(paths["scibmad"])
     bmad_header, bmad_rows = read_keyed(paths["bmad"])
@@ -277,6 +287,8 @@ def main() -> int:
         "|---|---:|---:|",
         f"| Converged nonzero inputs | {sci_converged}/{total_samples} | {bmad_converged}/{total_samples} |",
         f"| Paired converged inputs | {paired}/{total_samples} | {paired}/{total_samples} |",
+        f"| Julia threads | {sci_metadata.get('julia_threads', 'not recorded')} | n/a |",
+        f"| CPU multithreaded tracking | {sci_metadata.get('cpu_multithreaded_tracking', False)} | native Tao path |",
         f"| Summed physics time | {sci_seconds:.3f} s | {bmad_seconds:.3f} s |",
         f"| Throughput | {total_samples / sci_seconds:.3f} samples/s | {total_samples / bmad_seconds:.3f} samples/s |",
         f"| SciBmad speedup, physics only | {bmad_seconds / sci_seconds:.3f}x | 1x |",
@@ -325,7 +337,9 @@ def main() -> int:
         "",
         "The two engines ran on the same physical machine but in different host runtimes "
         "(SciBmad on Windows Julia and Bmad inside WSL Ubuntu), so timing is an application-level "
-        "comparison rather than a microarchitectural kernel benchmark.",
+        "comparison rather than a microarchitectural kernel benchmark. The recorded Julia "
+        "thread count and CPU-multithreading flag define the SciBmad hardware usage; the Bmad "
+        "reference uses Tao's native execution path rather than a manually threaded sample loop.",
     ]
     report_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Wrote {summary_path}")

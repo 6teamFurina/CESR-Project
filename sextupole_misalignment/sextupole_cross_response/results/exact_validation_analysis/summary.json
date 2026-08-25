@@ -1,0 +1,13 @@
+{
+  "format": "cesr-sextupole-cross-response-exact-validation-analysis-v1",
+  "target_count": 5,
+  "channel_block_count": 10,
+  "aggregate_relative_l2_residual": 0.032674779401194017,
+  "cosine_similarity": 0.9994748100789881,
+  "fitted_scale_multiplying_prediction": 1.0042075729987374,
+  "k2_pair_orbit_difference_rmse_nm": 0.5980993044040044,
+  "k2_pair_orbit_difference_p90_nm": 0.9793217683256343,
+  "k2_pair_orbit_difference_max_nm": 2.0993917296961566,
+  "four_corner_contrast_rmse_nm": 1.1961986088080088,
+  "maximum_block_relative_l2_residual": 0.05780579305635011
+}

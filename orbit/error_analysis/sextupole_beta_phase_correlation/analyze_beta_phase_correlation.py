@@ -22,6 +22,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 ERROR_ANALYSIS = HERE.parent
+PROJECT_ROOT = HERE.parents[2]
 DEFAULT_RESULTS = HERE / "results" / "latest_cesr"
 DEFAULT_CONTRIBUTIONS = (
     ERROR_ANALYSIS
@@ -719,6 +720,16 @@ def _toml_array(values: list[object]) -> str:
     return "[" + ", ".join(_toml_string(value) for value in values) + "]"
 
 
+def _portable_project_path(path: Path) -> str:
+    """Store project artifacts relative to ``CESR Project`` when possible."""
+
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(PROJECT_ROOT).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
 def write_metadata(path: Path, args: argparse.Namespace, contribution_rows: list[dict[str, str]], closure: dict[int, dict[str, float]], nominal: dict[str, dict[str, float]], direction: dict[tuple[int, str], dict[str, float]]) -> None:
     contribution_metadata_path = args.contributions.with_name("metadata.toml").resolve()
     nominal_metadata_path = args.optics_metadata.resolve()
@@ -814,12 +825,12 @@ def write_metadata(path: Path, args: argparse.Namespace, contribution_rows: list
         )
     )
 
-    contribution_path = str(args.contributions.resolve()).replace("\\", "/")
-    closure_path = str(args.closure.resolve()).replace("\\", "/")
+    contribution_path = _portable_project_path(args.contributions)
+    closure_path = _portable_project_path(args.closure)
     metadata_paths = [
-        str(contribution_metadata_path).replace("\\", "/"),
-        str(nominal_metadata_path).replace("\\", "/"),
-        str(direction_metadata_path).replace("\\", "/"),
+        _portable_project_path(contribution_metadata_path),
+        _portable_project_path(nominal_metadata_path),
+        _portable_project_path(direction_metadata_path),
     ]
     lines = [
         "format = \"cesr-latest-sextupole-source-beta-phase-predictor-v1\"",

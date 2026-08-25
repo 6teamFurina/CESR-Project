@@ -147,6 +147,7 @@ def render_paired_svg(
     path: Path,
     horizontal: list[dict[str, str]],
     vertical: list[dict[str, str]],
+    circumference_override: float | None = None,
 ) -> None:
     """Render compact side-by-side panels with shared scales and grid lines."""
     width, height = 1800, 520
@@ -154,10 +155,19 @@ def render_paired_svg(
     chart_top, chart_bottom = 140, 420
     panel_w = (outer_right - outer_left - gap) / 2
     panel_lefts = (outer_left, outer_left + panel_w + gap)
-    circumference = max(
+    data_circumference = max(
         max(f(row, "s_m") for row in horizontal),
         max(f(row, "s_m") for row in vertical),
     )
+    circumference = (
+        data_circumference
+        if circumference_override is None
+        else float(circumference_override)
+    )
+    if circumference < data_circumference:
+        raise ValueError(
+            "circumference_override cannot be smaller than the largest element s"
+        )
     all_values = [
         100 * f(row, "eta_total")
         for row in horizontal + vertical
@@ -260,6 +270,13 @@ def render_paired_svg(
             value = 100 * f(row, "eta_total")
             x, y = x_pos(f(row, "s_m"), left), y_pos(value)
             label_x = label_x_by_name[row["element_name"]]
+            move_horizontal_rank_one = (
+                panel_label == "(a) Horizontal" and rank == 1
+            )
+            if move_horizontal_rank_one:
+                # Separate rank 1 from the nearby rank-10 annotation without
+                # changing the bar, leader origin, or any data-dependent rank.
+                label_x = min(left + panel_w - 4, label_x + 24)
             display_name = row["element_name"].upper().removeprefix("SEX_")
             label = f"{rank}. {display_name}"
             if value < 0:
@@ -273,7 +290,7 @@ def render_paired_svg(
                 rotation = 65
                 line_y1, line_y2 = y + 2, label_y - 4
             else:
-                label_y = y - 11
+                label_y = y - (27 if move_horizontal_rank_one else 11)
                 rotation = -65
                 line_y1, line_y2 = y - 2, label_y + 4
             parts.append(

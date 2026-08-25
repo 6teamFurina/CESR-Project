@@ -1,0 +1,17 @@
+all_sextupole_count = 76
+bump_amplitude_m = 0.0005
+bump_knobs_csv = "D:\\Ring_Design_Development\\CESR Project\\sextupole_misalignment\\quadrupole_affinity\\exact_11_triplet_validation\\results\\bump_knobs\\local_bump_knobs.csv"
+date = "2026-08-21"
+engine = "exact scalar-field BatchParam SciBmad RF-on closed orbit and tracking"
+format = "cesr-sextupole-cross-response-exact-validation-v1"
+julia_version = "1.12.6"
+k2_step_m3 = 0.02
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+misaligned_added_x_offset_m = 0.00035
+misaligned_added_y_offset_m = -0.00025
+observation_location = "first element-entry occurrence of every active normal sextupole"
+paired_subtraction = "misaligned K2-odd/bump-odd gradient minus aligned gradient"
+scenario_order = ["aligned", "misaligned"]
+selected_target_count = 5
+selected_targets = ["SEX_09AW", "SEX_14W", "SEX_18W", "SEX_39W", "SEX_44E"]
+state_count_per_scenario = 9

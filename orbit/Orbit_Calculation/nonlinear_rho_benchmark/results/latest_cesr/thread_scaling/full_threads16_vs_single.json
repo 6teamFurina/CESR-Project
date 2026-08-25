@@ -1,0 +1,10 @@
+{
+  "sample_count": 9001,
+  "observable_count_per_sample": 288,
+  "value_count": 2592288,
+  "convergence_mismatches": 0,
+  "iteration_mismatches": 2,
+  "maximum_observable_difference_m": 4.187762352603902e-10,
+  "observable_difference_relative_l2": 1.5613708897672192e-09,
+  "maximum_closure_difference": 9.407060917976147e-11
+}

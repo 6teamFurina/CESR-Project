@@ -445,9 +445,22 @@ class LatestCesrAudit:
             converged_count = as_count(metadata.get("converged_count"))
             failed_count = as_count(metadata.get("failed_count"))
             if failed_count is not None and failed_count != 0:
-                self.add("FAIL", scope, f"rho metadata reports failed_count={failed_count}", metadata_path)
-            if total_samples is not None and converged_count is not None and total_samples != converged_count:
-                self.add("FAIL", scope, "rho total_samples does not equal converged_count", metadata_path)
+                status = "WARN" if production else "FAIL"
+                self.add(
+                    status,
+                    scope,
+                    f"rho metadata records {failed_count} incomplete exact-reference sample(s); retain them in the survival boundary",
+                    metadata_path,
+                )
+            if total_samples is not None and converged_count is not None:
+                accounted = converged_count + (failed_count or 0)
+                if total_samples != accounted:
+                    self.add(
+                        "FAIL",
+                        scope,
+                        "rho total_samples does not equal converged_count + failed_count",
+                        metadata_path,
+                    )
             detector_count = counts.get("detector_count")
             observable_count = as_count(metadata.get("observable_count"))
             if detector_count is not None and observable_count is not None and observable_count != 2 * detector_count:
@@ -467,7 +480,13 @@ class LatestCesrAudit:
             _, rows = trials
             unconverged = [str(row.get("sample_id", index + 1)) for index, row in enumerate(rows) if bool_from_csv(row.get("converged")) is False]
             if unconverged:
-                self.add("FAIL", scope, "unconverged rho samples: " + ", ".join(unconverged[:8]), trial_path)
+                status = "WARN" if production else "FAIL"
+                self.add(
+                    status,
+                    scope,
+                    "incomplete exact-reference rho samples: " + ", ".join(unconverged[:8]),
+                    trial_path,
+                )
             expected = None
             if metadata:
                 total_key = next(
@@ -478,6 +497,8 @@ class LatestCesrAudit:
             if expected is not None and len(rows) != expected:
                 self.add("FAIL", scope, f"trial CSV has {len(rows)} rows but metadata total_samples={expected}", trial_path)
             for row in rows:
+                if bool_from_csv(row.get("converged")) is False:
+                    continue
                 closure = as_finite_number(row.get("closure_norm"))
                 if closure is not None and (math.isnan(closure) or closure < 0 or closure > CLOSURE_TOLERANCE):
                     self.add("FAIL", scope, f"rho closure_norm exceeds {CLOSURE_TOLERANCE:g}", trial_path)
@@ -838,13 +859,27 @@ class LatestCesrAudit:
                 self.validate_rho_directory(directory, f"rho/{name}", production=False)
         if not found_rho_smoke:
             self.add("FAIL", "rho/smoke", "no latest-CESR rho smoke directory found", rho_latest)
-        self.check_rho_production(rho_latest)
+        rho_chapter = (
+            self.project_root
+            / "orbit"
+            / "chapter_01_nonlinear_response_rho_sweep"
+            / "results"
+            / EXPECTED_RING
+        )
+        self.check_rho_production(rho_chapter)
 
         thick_root = error_root / "thick_element_sextupole_sourcing"
+        thick_chapter = (
+            self.project_root
+            / "orbit"
+            / "chapter_02_lattice_element_attribution"
+            / "results"
+            / EXPECTED_RING
+        )
         for plane in ("horizontal", "vertical"):
             output_plane = "x" if plane == "horizontal" else "y"
             smoke = thick_root / f"{plane}_results" / f"{EXPECTED_RING}_smoke"
-            production = thick_root / f"{plane}_results" / EXPECTED_RING
+            production = thick_chapter / plane
             if smoke.is_dir():
                 self.validate_thick_directory(smoke, f"thick/{plane}/smoke", output_plane, production=False)
             else:

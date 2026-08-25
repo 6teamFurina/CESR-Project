@@ -15,7 +15,31 @@ function selected_nl_ring()
     return canonical_ring_id(ring)
 end
 
+function selected_cpu_multithreading()
+    for argument in ARGS
+        startswith(argument, "--cpu-multithreading=") || continue
+        value = lowercase(split(argument, "="; limit=2)[2])
+        value in ("true", "false") ||
+            error("--cpu-multithreading must be true or false")
+        return value == "true"
+    end
+    return false
+end
+
+function selected_reuse_batch_model()
+    for argument in ARGS
+        startswith(argument, "--reuse-batch-model=") || continue
+        value = lowercase(split(argument, "="; limit=2)[2])
+        value in ("true", "false") ||
+            error("--reuse-batch-model must be true or false")
+        return value == "true"
+    end
+    return false
+end
+
 const ARTIFACT_RING_NL = selected_nl_ring()
+const CPU_MULTITHREADING_NL = selected_cpu_multithreading()
+const REUSE_BATCH_MODEL_NL = selected_reuse_batch_model()
 const RING_NL = ARTIFACT_RING_NL == :latest_cesr ? :latest : :legacy
 const INPUT_PATH_NL = joinpath(
     HERE_NL,
@@ -29,7 +53,16 @@ const MANIFEST_PATH_NL = joinpath(
     String(ARTIFACT_RING_NL),
     "sample_manifest.csv",
 )
-const RESULT_DIR_NL = joinpath(HERE_NL, "results", String(ARTIFACT_RING_NL), "scibmad")
+const RESULT_VARIANT_NL = string(
+    CPU_MULTITHREADING_NL ? "scibmad_threads$(Threads.nthreads())" : "scibmad",
+    REUSE_BATCH_MODEL_NL ? "_reuse" : "",
+)
+const RESULT_DIR_NL = joinpath(
+    HERE_NL,
+    "results",
+    String(ARTIFACT_RING_NL),
+    RESULT_VARIANT_NL,
+)
 const RESPONSE_DIR_NL = joinpath(
     ORBIT_ROOT,
     "reference",
@@ -91,6 +124,7 @@ function write_outputs_nl(path, samples, observables, converged, detectors)
 end
 
 function main_nl()
+    CPU_MULTITHREADING_NL && BLAS.set_num_threads(1)
     samples = read_samples(INPUT_PATH_NL)
     manifest = read_manifest(MANIFEST_PATH_NL)
     samples.sample_ids == manifest.sample_id || error("Input and manifest sample IDs differ")
@@ -110,6 +144,7 @@ function main_nl()
         abstol=ABSTOL_NL,
         maxiter=MAXITER_NL,
         model_factory=MODEL_FACTORY_NL,
+        use_cpu_multithreading=CPU_MULTITHREADING_NL,
     )
 
     guess_timed = @timed prepare_initial_guess(
@@ -127,6 +162,7 @@ function main_nl()
     guess = guess_timed.value
     n_samples = length(samples.sample_ids)
     group_rows = NamedTuple[]
+    groups = ordered_groups(manifest)
 
     baseline_result = simulate_batch(
         samples.names,
@@ -140,6 +176,7 @@ function main_nl()
         abstol=ABSTOL_NL,
         maxiter=MAXITER_NL,
         model_factory=MODEL_FACTORY_NL,
+        use_cpu_multithreading=CPU_MULTITHREADING_NL,
     )
     observables = Matrix{Float64}(
         undef,
@@ -155,27 +192,63 @@ function main_nl()
     iterations[1] = baseline_result.iterations[1]
     closure_norms[1] = baseline_result.closure_norms[1]
 
-    for (scenario, rho) in ordered_groups(manifest)
+    shared_model = nothing
+    shared_model_setup_seconds = 0.0
+    if REUSE_BATCH_MODEL_NL
+        first_scenario, first_rho = first(groups)
+        first_indices = findall(
+            row -> manifest.scenario[row] == first_scenario &&
+                manifest.rho[row] == first_rho,
+            eachindex(manifest.sample_id),
+        )
+        shared_model_timed = @timed prepare_batch_model(
+            samples.names,
+            Matrix(samples.values[first_indices, :]);
+            model_factory=MODEL_FACTORY_NL,
+        )
+        shared_model = shared_model_timed.value
+        shared_model_setup_seconds = shared_model_timed.time
+    end
+
+    for (group_index, (scenario, rho)) in enumerate(groups)
         selected = findall(
             row -> manifest.scenario[row] == scenario && manifest.rho[row] == rho,
             eachindex(manifest.sample_id),
         )
         run_indices = selected
         values = Matrix(samples.values[run_indices, :])
-        model_timed = @timed prepare_batch_model(
-            samples.names,
-            values;
-            model_factory=MODEL_FACTORY_NL,
-        )
+        model_setup_seconds = 0.0
+        control_update_seconds = 0.0
+        model = if REUSE_BATCH_MODEL_NL
+            if group_index > 1
+                control_update_seconds = @elapsed update_batch_model_controls!(
+                    shared_model,
+                    samples.names,
+                    values,
+                )
+            else
+                model_setup_seconds = shared_model_setup_seconds
+            end
+            shared_model
+        else
+            model_timed = @timed prepare_batch_model(
+                samples.names,
+                values;
+                model_factory=MODEL_FACTORY_NL,
+            )
+            model_setup_seconds = model_timed.time
+            model_timed.value
+        end
         exact_timed = @timed begin
             current = frozen_solve_and_track(
-                model_timed.value,
+                model,
                 length(run_indices),
                 guess.nominal_jacobian;
                 initial_v0=Matrix(guess.v0[run_indices, :]),
                 reltol=RELTOL_NL,
                 abstol=ABSTOL_NL,
                 maxiter=MAXITER_NL,
+                use_cpu_multithreading=CPU_MULTITHREADING_NL,
             )
             apply_full_newton_fallback(
                 current,
@@ -198,12 +271,14 @@ function main_nl()
             rho,
             samples=length(selected),
             converged=count(result.converged[selected_local]),
-            model_setup_seconds=model_timed.time,
+            model_setup_seconds,
+            control_update_seconds,
             physics_seconds=exact_timed.time,
             solve_seconds=result.solve_seconds,
             track_seconds=result.track_seconds,
             samples_per_physics_second=length(selected) / exact_timed.time,
-            samples_per_setup_plus_physics_second=length(selected) / (model_timed.time + exact_timed.time),
+            samples_per_setup_plus_physics_second=length(selected) /
+                (model_setup_seconds + control_update_seconds + exact_timed.time),
             mean_iterations=mean(result.iterations[selected_local]),
             max_iterations=maximum(result.iterations[selected_local]),
             max_closure_norm=maximum(result.closure_norms[selected_local]),
@@ -259,11 +334,23 @@ function main_nl()
         "initial_guess" => "nominal first-order closed-orbit response",
         "jacobian" => "frozen nominal phase-space Jacobian with shared LU per group",
         "full_ad_fallback" => true,
+        "cpu_multithreaded_tracking" => CPU_MULTITHREADING_NL,
+        "batch_model_reused" => REUSE_BATCH_MODEL_NL,
         "warmup_seconds" => warmup_seconds,
         "warmup_sample_count" => warmup_sample_count,
         "shared_initial_guess_setup_seconds" => guess_timed.time,
         "group_physics_seconds_sum" => sum(row.physics_seconds for row in group_rows),
         "group_model_setup_seconds_sum" => sum(row.model_setup_seconds for row in group_rows),
+        "group_control_update_seconds_sum" =>
+            sum(row.control_update_seconds for row in group_rows),
+        "setup_plus_physics_seconds" => sum(
+            row.model_setup_seconds + row.control_update_seconds + row.physics_seconds
+            for row in group_rows
+        ),
+        "all_runtime_setup_plus_physics_seconds" => guess_timed.time + sum(
+            row.model_setup_seconds + row.control_update_seconds + row.physics_seconds
+            for row in group_rows
+        ),
         "output_csv" => output_path,
         "diagnostics_csv" => diagnostics_path,
         "group_timings_csv" => timing_path,

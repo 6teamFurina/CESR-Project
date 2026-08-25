@@ -32,6 +32,25 @@ unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
   signed, per-target order-two/order-four last-pass and first-fail envelope.
   The limits quantify Taylor/model validity and deliberately do not claim
   corrector, power-supply, aperture, lifetime, or operator safety limits.
+- `sextupole_cross_response/` uses compact order-one SciBmad/GTPSA transport,
+  one 62-corrector first-derivative calculation, and analytic local-sextupole
+  source composition to form all 76-by-76 bump and K2--bump--center orbit
+  propagation matrices without a global Hessian.  The result rejects a
+  target-only observation assumption and identifies a compact shared spatial
+  basis worth testing while showing that the target axis must be retained for
+  a multiple-center inverse; selected paired exact SciBmad scans validate its
+  sign and scale.
+- `sequential_joint_inverse/` makes one complete latent machine the dataset
+  unit, holds every static nuisance fixed while all 76 sextupoles are scanned
+  one at a time, and compares the fixed physics inverse with shared local and
+  all-target joint residual models.  Its paired cases omit or enable an
+  independent 50-micrometer/plane RMS quadrupole alignment drift relative to
+  the yearly nominal geometry; full-ring BPM readbacks, not oracle sextupole
+  orbit, are the model inputs.  The 16-machine production pilot finds 33.078
+  micrometers held-out 2D RMSE without that drift and no material all-target
+  context gain; the uncorrected drift case reaches 99.119 micrometers while
+  28.618% of truths leave the 1.5-millimeter excitation radius, making recorded
+  BPM-only orbit correction the next required protocol test.
 - `gtpsa_derivative_stochastic_inverse/` fixes the two local `dO/dK2` source
   templates with latest-lattice SciBmad/GTPSA transport, then treats BPM white
   noise and random-walk drift through parity contrasts and analytic

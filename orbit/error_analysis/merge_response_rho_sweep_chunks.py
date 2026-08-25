@@ -278,6 +278,10 @@ def main() -> int:
     )
     combined = {
         "format": "cesr-orbit-response-rho-sweep-chunked-v1",
+        # Pre-field chunks still carry an explicit SciBmad version and can only
+        # be produced by the SciBmad rho runner.  Expose that engine provenance
+        # at the merged, user-facing result boundary.
+        "engine": "SciBmad",
         "chunks": [chunk.name for chunk in chunks],
         "chunk_metadata": metadata_values,
         "ring_id": reference["ring_id"],

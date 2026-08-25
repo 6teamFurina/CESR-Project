@@ -1,0 +1,43 @@
+{
+  "format": "cesr-sequential-joint-inverse-analysis-v1",
+  "generated_seconds": 31.418296947,
+  "scan_root": "/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/exact_joint_machines",
+  "machine_count": 16,
+  "target_count": 76,
+  "train_indices_zero_based": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "validation_indices_zero_based": [
+    10,
+    11,
+    12
+  ],
+  "test_indices_zero_based": [
+    13,
+    14,
+    15
+  ],
+  "repeats_per_signed_state": 3072,
+  "bpm_noise_rms_m_per_read": 5e-06,
+  "drift_endpoint_rms_m": 1e-05,
+  "train_augmentations": 8,
+  "validation_augmentations": 8,
+  "test_augmentations": 32,
+  "residual_modes": 24,
+  "reference_modes": 8,
+  "global_modes": 16,
+  "hidden_units": 96,
+  "local_feature_count": 110,
+  "joint_feature_count": 126,
+  "measurement_seed": 20260923,
+  "model_seed": 20261023
+}

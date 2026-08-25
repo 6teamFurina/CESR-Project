@@ -1,8 +1,9 @@
 # Orbit studies: latest CESR ring
 
-Status: `implementation_smoke_complete` for the shared closed-orbit runner and
-the current calculation paper's three retained latest-ring experiments as of
-2026-08-20. Production ensembles and the manuscript rebuild remain `not_run`.
+Status: `production_complete` for the latest-ring 600-direction nonlinear
+response-radius sweep and the paired 100-direction complete-element attribution
+as of 2026-08-22. The normal-sextupole physical beta/phase thread and the
+manuscript rebuild remain `not_run`.
 Parity/cubic, response-block, and correction-paper studies are outside this
 completion gate. No numerical result under an unscoped legacy result directory
 should be read as a latest-ring result.
@@ -87,8 +88,31 @@ labeled smoke/validation artifact; recompute it when its method metadata does
 not match the requested method, or explicitly select central difference for a
 reproducibility comparison.
 
+## Completed production chapters
+
+- The latest-CESR rho sweep evaluated 36,001 unique RF-on nonlinear states:
+  36,000 converged, one all-control state at `rho=51.2` failed, and 62 of 63
+  fallback lanes were recovered. The maximum converged closure was about
+  `1.0e-13`. Paper-format data and figures are under
+  [`chapter_01_nonlinear_response_rho_sweep/`](chapter_01_nonlinear_response_rho_sweep/).
+- The latest-CESR complete-element study evaluated 100 paired directions for
+  each detector output plane. Horizontal and vertical all-element relative
+  closures were `1.31e-14`; the normal-sextupole family signed projections
+  were `96.508%` and `98.647%`. Paper-format tables and figures are under
+  [`chapter_02_lattice_element_attribution/`](chapter_02_lattice_element_attribution/).
+
+These are SciBmad results on the latest repaired lattice. They do not complete
+the remaining normal-sextupole beta/phase production thread or update the
+old-ring manuscript numbers and cross-code timing claims.
+
 ## Study map
 
+- [`chapter_01_nonlinear_response_rho_sweep/README.md`](chapter_01_nonlinear_response_rho_sweep/README.md):
+  chapter-scoped latest-CESR production rho sweep, paper table, and stacked
+  response-error figures.
+- [`chapter_02_lattice_element_attribution/README.md`](chapter_02_lattice_element_attribution/README.md):
+  chapter-scoped latest-CESR complete-element attribution, paired family table,
+  and signed element/sextupole figures.
 - [`Orbit_Calculation/README.md`](Orbit_Calculation/README.md): generic
   closed-orbit calculation and throughput workflow.
 - [`Orbit_Calculation/nonlinear_rho_benchmark/README.md`](Orbit_Calculation/nonlinear_rho_benchmark/README.md):

@@ -1,7 +1,10 @@
 # Response-radius sweep: latest CESR ring
 
-Status: `smoke`. A 7-state integration run completed on the latest ring; the
-600-trial production grid has not been run.
+Status: `production_complete` in the chapter-scoped destination as of
+2026-08-22. The 600-direction, 20-positive-radius result, generated paper
+tables, and stacked figures are under
+[`../../chapter_01_nonlinear_response_rho_sweep/`](../../chapter_01_nonlinear_response_rho_sweep/).
+The local `latest_cesr/` smoke directories remain integration artifacts.
 
 The latest-ring sweep will use
 [`Latest_Lattice/latest_cesr_scibmad_repaired.jl`](../../../Latest_Lattice/latest_cesr_scibmad_repaired.jl)

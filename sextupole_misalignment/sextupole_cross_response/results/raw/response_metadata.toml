@@ -1,0 +1,27 @@
+alignment_design_axes = ["source_target", "bump_axis", "observation_sextupole", "output_plane", "center_axis"]
+bump_axis_order = ["x", "y"]
+bump_knobs_csv = "D:\\Ring_Design_Development\\CESR Project\\sextupole_misalignment\\quadrupole_affinity\\exact_11_triplet_validation\\results\\bump_knobs\\local_bump_knobs.csv"
+bump_response_axes = ["source_target", "observation_sextupole", "output_plane", "bump_axis"]
+center_axis_order = ["x", "y"]
+coordinate_order = ["x", "y"]
+corrector_count = 62
+corrector_response_descriptor = "Descriptor(NV=6, MO=2, NP=62, PO=1)"
+corrector_response_seconds = 105.7832994
+date = "2026-08-21"
+derivative_policy = "No global Hessian is formed. The selected K2-bump-center derivative is the exact local sextupole polynomial composed with order-1 periodic GTPSA transport and the first-order target-local bump Jacobian."
+engine = "SciBmad/GTPSA nominal RF-on periodic response with analytic normal-sextupole source composition"
+format = "cesr-sextupole-cross-response-v1"
+julia_version = "1.12.6"
+kick_axis_order = ["px", "py"]
+lattice = "D:\\Ring_Design_Development\\CESR Project\\Latest_Lattice\\latest_cesr_scibmad_repaired.jl"
+location_convention = "first element-entry occurrence by base name; a source kick is applied immediately after the source entry"
+nominal_closed_orbit_seconds = 14.9081272
+observation_count = 76
+periodic_kick_response_axes = ["source_target", "observation_sextupole", "output_plane", "kick_plane"]
+source_order = ["normal_qn", "skew_qs"]
+source_response_axes = ["source_target", "observation_sextupole", "output_plane", "source"]
+target_count = 76
+target_local_bump_identity_max_abs_error = 7.771561172376096e-15
+thin_source_qualification = "The source composition applies the integrated normal-sextupole kick at the element entry; finite-length and nonlinear propagation require exact-scan validation."
+transport_descriptor = "Descriptor(NV=6, MO=1)"
+transport_seconds = 25.8061324

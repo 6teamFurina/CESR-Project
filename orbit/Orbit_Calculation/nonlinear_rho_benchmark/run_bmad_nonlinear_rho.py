@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import csv
 import json
+import os
 import platform
 import resource
 import sys
@@ -37,7 +38,20 @@ def raise_value_error() -> None:
     raise ValueError("--ring must be latest or legacy")
 
 
+def selected_omp_threads() -> int | None:
+    for argument in sys.argv[1:]:
+        if argument.startswith("--omp-threads="):
+            threads = int(argument.split("=", 1)[1])
+            if threads < 1:
+                raise ValueError("--omp-threads must be at least 1")
+            return threads
+    return None
+
+
 RING = selected_ring()
+OMP_THREADS = selected_omp_threads()
+if OMP_THREADS is not None:
+    os.environ["OMP_NUM_THREADS"] = str(OMP_THREADS)
 ARTIFACT_RING = "latest_cesr" if RING == "latest" else "legacy"
 INPUT_PATH = HERE / "shared_input" / ARTIFACT_RING / "nonlinear_rho_correctors.csv"
 MANIFEST_PATH = HERE / "shared_input" / ARTIFACT_RING / "sample_manifest.csv"
@@ -46,9 +60,10 @@ LATTICE_PATH = (
     if RING == "latest"
     else ORBIT_ROOT / "reference" / "cesr_bmad_compatible.bmad"
 )
-RESULT_DIR = HERE / "results" / ARTIFACT_RING / (
-    "bmad_reference" if RING == "latest" else "bmad"
-)
+RESULT_VARIANT = "bmad_reference" if RING == "latest" else "bmad"
+if OMP_THREADS is not None:
+    RESULT_VARIANT += f"_threads{OMP_THREADS}"
+RESULT_DIR = HERE / "results" / ARTIFACT_RING / RESULT_VARIANT
 SAMPLES_FILENAME = "bmad_rf_on_samples.csv" if RING == "latest" else "bmad_samples.csv"
 
 
@@ -88,8 +103,20 @@ def main() -> int:
     detectors, horizontal, vertical = common.response_tools.parse_cesr_layout(
         LATTICE_PATH
     )
-    if names != horizontal + vertical:
-        raise RuntimeError("Input control order differs from the Bmad lattice order")
+    expected_names = horizontal + vertical
+    if set(names) != set(expected_names):
+        missing = sorted(set(expected_names).difference(names))
+        extra = sorted(set(names).difference(expected_names))
+        raise RuntimeError(
+            "Input controls do not match the Bmad lattice; "
+            f"missing={missing}, extra={extra}"
+        )
+    input_indices = {name: index for index, name in enumerate(names)}
+    samples = [
+        [sample[input_indices[name]] for name in expected_names]
+        for sample in samples
+    ]
+    names = expected_names
     references = common.variable_references(horizontal, vertical)
 
     RESULT_DIR.mkdir(parents=True, exist_ok=True)
@@ -112,6 +139,12 @@ def main() -> int:
 
     initialize_start = time.perf_counter()
     tao = Tao(init_file=str(init_path), noplot=True)
+    if OMP_THREADS is not None:
+        tao.cmd(f"set global n_threads = {OMP_THREADS}")
+    global_thread_lines = [
+        line for line in tao.cmd("show global", raises=False)
+        if "n_threads" in line
+    ]
     common.enable_rf(tao)
     common.activate_benchmark_data(tao)
     initialization_seconds = time.perf_counter() - initialize_start
@@ -218,6 +251,8 @@ def main() -> int:
         "python_version": platform.python_version(),
         "platform": platform.platform(),
         "tao_version_raw": version,
+        "omp_num_threads_environment": os.environ.get("OMP_NUM_THREADS"),
+        "tao_global_n_threads_raw": global_thread_lines,
         "maximum_resident_set_kib": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss,
         "execution_model": (
             f"one persistent Tao instance; {len(names)} variable commands batched with "

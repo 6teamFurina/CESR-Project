@@ -219,6 +219,21 @@ function prepare_batch_model(
     return model
 end
 
+"""Rebind one existing batch model to another equally sized control batch."""
+function update_batch_model_controls!(
+    model,
+    names::Vector{String},
+    values::Matrix{Float64},
+)
+    n_samples, n_controls = size(values)
+    n_samples > 0 || error("A reused batch model requires at least one sample")
+    n_controls == length(names) || error("Control matrix width does not match labels")
+    for (column, name) in enumerate(names)
+        model.controls[name] = BatchParam(view(values, :, column))
+    end
+    return model
+end
+
 function solve_and_track(
     model,
     n_samples::Int;
@@ -655,6 +670,32 @@ function central_finite_difference_responses(
     )
 end
 
+function _threaded_closed_orbit_residual!(
+    residual,
+    v,
+    ring,
+    set_kernel!,
+    sub_kernel!,
+    v_cache,
+)
+    n_samples = size(v, 1)
+    length(residual) == n_samples * size(v, 2) ||
+        error("Residual storage does not match the batched phase-space state")
+    bunch = Bunch(v_cache)
+    SciBmad.BTBL.check_bl_bunch!(bunch, ring, false)
+    set_kernel!(residual, v_cache, v, n_samples; ndrange=n_samples)
+    SciBmad.KA.synchronize(SciBmad.KA.get_backend(v))
+    track!(
+        bunch,
+        ring;
+        scalar_params=true,
+        use_cpu_multithreading=true,
+    )
+    sub_kernel!(residual, v_cache, n_samples, Val{false}(); ndrange=n_samples)
+    SciBmad.KA.synchronize(SciBmad.KA.get_backend(v))
+    return residual
+end
+
 function frozen_solve_and_track(
     model,
     n_samples::Int,
@@ -663,6 +704,7 @@ function frozen_solve_and_track(
     reltol::Float64,
     abstol::Float64,
     maxiter::Int,
+    use_cpu_multithreading::Bool=false,
 )
     detectors, detector_indices = detector_registry(model)
     coordinate_count = orbit_coordinate_count(model)
@@ -682,11 +724,13 @@ function frozen_solve_and_track(
     iterations = fill(maxiter, n_samples)
     set_kernel! = SciBmad.set_v!(SciBmad.KA.get_backend(v))
     sub_kernel! = SciBmad.sub_v!(SciBmad.KA.get_backend(v))
+    residual_function! = use_cpu_multithreading ?
+        _threaded_closed_orbit_residual! : SciBmad._co_res!
     factorization_seconds = @elapsed factorization = lu(Matrix(frozen_jacobian))
 
     solve_seconds = @elapsed begin
         for iteration in 1:maxiter
-            SciBmad._co_res!(
+            residual_function!(
                 residual,
                 v,
                 model.ring,
@@ -741,7 +785,7 @@ function frozen_solve_and_track(
         SciBmad.BTBL.check_bl_bunch!(bunch, model.ring, false)
         detector_index = 0
         for (element_index, element) in enumerate(model.ring.line)
-            track!(bunch, element)
+            track!(bunch, element; use_cpu_multithreading)
             name = uppercase(String(element.name))
             element_index in detector_indices || continue
             detector_index += 1
@@ -1089,6 +1133,7 @@ function simulate_batch(
     response_controls_per_batch::Int=DEFAULT_RESPONSE_CONTROLS_PER_BATCH,
     response_method::String=DEFAULT_RESPONSE_METHOD,
     model_factory=load_ring_model,
+    use_cpu_multithreading::Bool=false,
 )
     guess = prepare_initial_guess(
         names,
@@ -1127,6 +1172,7 @@ function simulate_batch(
             reltol,
             abstol,
             maxiter,
+            use_cpu_multithreading,
         )
     else
         error("Unsupported Jacobian mode: $jacobian_mode")
@@ -1211,6 +1257,23 @@ function write_labeled_response_matrix(
 end
 
 response_cache_metadata_path(path::AbstractString) = path * ".metadata.toml"
+
+"""Return a machine-independent identity for a CESR lattice path.
+
+Response-cache sidecars can move with the project between Windows, Linux, and
+macOS.  Preserve the lattice filename and its location below `Latest_Lattice`
+while discarding only the host-specific project prefix and path separators.
+Paths outside that directory retain their complete normalized form.
+"""
+function response_cache_lattice_identity(path::AbstractString)
+    portable = replace(String(path), '\\' => '/')
+    parts = split(portable, '/'; keepempty=false)
+    marker = findlast(==("Latest_Lattice"), parts)
+    if isnothing(marker)
+        return replace(normpath(String(path)), '\\' => '/')
+    end
+    return join(parts[marker:end], "/")
+end
 
 """Write provenance beside a reusable closed-orbit response cache."""
 function write_response_cache_metadata(
@@ -1416,8 +1479,8 @@ function read_response_cache_metadata(
                 "Response cache is missing lattice-path provenance: $metadata_path",
             )
             if haskey(metadata, "lattice_path")
-                normpath(String(metadata["lattice_path"])) ==
-                    normpath(String(model_metadata.lattice_path)) ||
+                response_cache_lattice_identity(metadata["lattice_path"]) ==
+                    response_cache_lattice_identity(model_metadata.lattice_path) ||
                     error("Response cache lattice path does not match the selected model: $metadata_path")
             end
         end

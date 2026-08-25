@@ -1,7 +1,9 @@
 # High-throughput nonlinear closed-orbit paper: latest CESR ring
 
-Status: `implementation_smoke_complete`; the latest-ring production statistics
-and manuscript rebuild have not been run.
+Status: `two_of_three_production_threads_complete`; the latest-ring rho sweep
+and complete-element-family attribution were completed on 2026-08-22. The
+normal-sextupole physical beta/phase production thread and manuscript rebuild
+have not been run.
 
 ## Implemented latest-ring experiment threads
 
@@ -20,10 +22,13 @@ closure only:
 - matching nominal and direction-dependent SciBmad optics were exported for
   the sextupole source--beta--phase/Green-function ranking analysis.
 
-These small runs are not the 600-direction rho result or the 100-direction
-attribution ensembles, so their family percentages and correlations are not
-paper conclusions. The maintained experiment descriptions and checked smoke
-artifacts are under
+The completed paper-scoped production results are under
+[`chapter_01_nonlinear_response_rho_sweep`](../chapter_01_nonlinear_response_rho_sweep/README.md)
+and
+[`chapter_02_lattice_element_attribution`](../chapter_02_lattice_element_attribution/README.md).
+The rho run contains 36,001 unique states with 36,000 converged; the complete-
+element x/y ensembles contain 100 directions each and close to `1.31e-14`.
+The maintained experiment descriptions and checked smoke artifacts remain under
 [`response_rho_sweep_600`](../error_analysis/response_rho_sweep_600/README.md),
 [`thick_element_sextupole_sourcing`](../error_analysis/thick_element_sextupole_sourcing/README.md),
 [`sextupole_detector_contributions`](../error_analysis/sextupole_detector_contributions/README.md),
@@ -51,9 +56,11 @@ the absence of paper-facing block-share/third-order fields:
   .\validate_latest_cesr_results.py
 ```
 
-Its current expected result is `OVERALL: MISSING_PRODUCTION` with every smoke
-check passing. Add `--require-production` in a paper-build gate; until all
-four ring-scoped production destinations exist, that mode returns exit code 2.
+Its current expected result remains `OVERALL: MISSING_PRODUCTION` because the
+normal-sextupole contribution and beta/phase production destinations are still
+absent. The rho and complete-element chapter destinations must validate as
+production, and all smoke checks must pass. Add `--require-production` only
+after the remaining two destinations are generated.
 
 ## Frozen latest-ring paper scope
 
