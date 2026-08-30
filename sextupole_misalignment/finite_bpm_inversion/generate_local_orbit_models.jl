@@ -43,6 +43,31 @@ function main(args=ARGS)
     closed_timed = @timed solve_closed_orbit(ring)
     closed = closed_timed.value
 
+    # Save the nominal closed-orbit anchor used by the two-sided absolute-orbit
+    # reconstruction.  These are model quantities, not target-local truth from
+    # any latent-machine scan.  A machine-facing estimate transports the
+    # measured BPM-minus-nominal residual from the neighboring BPM pair and
+    # adds it to this nominal target orbit.
+    nominal_tracked = track_orbits_at_names(
+        ring,
+        closed,
+        vcat(bpm_names, target_names),
+    )
+    nominal_bpm_orbits = zeros(length(detectors), 2)
+    nominal_target_orbits = zeros(length(sextupoles), 2)
+    for (index, name) in enumerate(bpm_names)
+        nominal_bpm_orbits[index, :] .= (
+            nominal_tracked.horizontal[name][1],
+            nominal_tracked.vertical[name][1],
+        )
+    end
+    for (index, name) in enumerate(target_names)
+        nominal_target_orbits[index, :] .= (
+            nominal_tracked.horizontal[name][1],
+            nominal_tracked.vertical[name][1],
+        )
+    end
+
     # Generate ordinary six-dimensional cumulative maps before introducing
     # corrector parameters. This preserves the BeamlineParams attached to the
     # loaded lattice while keeping the order-1 and parameter descriptors apart.
@@ -135,6 +160,8 @@ function main(args=ARGS)
     write_npy(joinpath(output_dir, "bpm_cumulative_maps.npy"), bpm_maps)
     write_npy(joinpath(output_dir, "target_cumulative_maps.npy"), target_maps)
     write_npy(joinpath(output_dir, "one_turn_map.npy"), one_turn_map)
+    write_npy(joinpath(output_dir, "nominal_bpm_orbits.npy"), nominal_bpm_orbits)
+    write_npy(joinpath(output_dir, "nominal_target_orbits.npy"), nominal_target_orbits)
     write_rows(joinpath(output_dir, "bpm_locations.csv"), bpm_rows)
     write_rows(joinpath(output_dir, "target_locations.csv"), target_rows)
     write_rows(joinpath(output_dir, "control_inventory.csv"), control_rows)
@@ -148,6 +175,7 @@ function main(args=ARGS)
         "corrector_count" => length(controls),
         "coordinate_order" => "x, px, y, py, z, pz",
         "location_convention" => "first element-entry occurrence by base name",
+        "nominal_orbit_anchor" => "latest-lattice RF-on SciBmad closed orbit at BPM and target entries",
         "response_descriptor" => "Descriptor(6, 2, $(length(controls)), 1)",
         "transport_descriptor" => "Descriptor(6, 1)",
         "closed_orbit_seconds" => closed_timed.time,

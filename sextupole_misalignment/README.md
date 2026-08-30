@@ -12,7 +12,16 @@ unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
 - `direct_observable_nuisance_ablation/` contains the scan-conditioned
   bump-by-`K2` magnetic-center estimator and its nuisance/protocol ablations.
 - `finite_bpm_inversion/` studies the replacement of exact target-local orbit
-  coordinates by finite BPM information.
+  coordinates by finite BPM information.  Its full-error extension uses one
+  nominal theoretical GTPSA correction ORM, two-sided order-one GTPSA local-
+  orbit transport, balanced signed K2 states, and a periodic-reference random-
+  walk state-space filter across 16 machines and all 76 targets.  Exact target
+  orbit and every realized offset/gain/magnet error are evaluation-only.  The
+  filtered reconstructed-orbit fixed-template result has 27.081-micrometer
+  beam-relative center RMSE and 28.783-micrometer absolute-offset RMSE.  The
+  filter reduces BPM time-state error from 2.632 to 0.320 micrometers, while
+  the balanced parity contrast makes its final center-RMSE change negligible.
+  The deterministic static absolute-offset RMSE is 23.232 micrometers.
 - `real_machine_nuisance_ablation/` adds BPM/corrector gain, K2 calibration,
   quadrupole strength/roll/misalignment, scan-time drift, and BPM noise one at
   a time to the finite-BPM center inverse.
@@ -49,8 +58,33 @@ unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
   orbit, are the model inputs.  The 16-machine production pilot finds 33.078
   micrometers held-out 2D RMSE without that drift and no material all-target
   context gain; the uncorrected drift case reaches 99.119 micrometers while
-  28.618% of truths leave the 1.5-millimeter excitation radius, making recorded
-  BPM-only orbit correction the next required protocol test.
+  28.618% of truths leave the 1.5-millimeter excitation radius.
+- `quadrupole_orbit_correction/` performs that recorded BPM-reference step on
+  the same 16 paired latest-lattice machines.  It uses the 103 normal steering
+  Overlay controls and only BPM readbacks plus a measured response matrix; the
+  latent quadrupole offsets and sextupole-local orbit remain evaluation-only.
+  A response matrix stored in the zero-offset reference state reduces the
+  aggregate BPM-coordinate RMS difference from 860.882 to 126.034 micrometers
+  and the target-sextupole 2D orbit difference from 1,335.740 to 70.709
+  micrometers.  The fraction outside the 1.5-millimeter excitation radius
+  returns from 28.618% to zero.  Holding those baseline commands fixed during
+  all 76 scans reduces the best held-out center RMSE from 99.119 micrometers in
+  the uncorrected-offset protocol to 33.444 micrometers, only 1.104% above the
+  33.078-micrometer zero-offset benchmark.  P99 remains 84.486 micrometers, so
+  the correction restores the workflow but does not pass the strict tail gate.
+  A matched follow-up replaces the finite-difference ORM with the first-order
+  SciBmad/GTPSA periodic closed-orbit Jacobian and adds independent noisy means
+  to the stored reference and current correction orbits.  With 5-micrometer
+  per-read BPM noise averaged over 3,072 reads, the best RMSE is 33.416
+  micrometers; the corrected BPM orbit differs from the finite-difference,
+  noiseless-correction case by only 0.077 micrometers RMS.  This establishes
+  consistency at that high-repeat noise level, not low-repeat robustness.  A
+  stricter production case now uses one nominal 222-by-103 GTPSA ORM with no
+  realized gain/error scaling and no finite-difference ORM.  Six independently
+  loaded Julia worker models generate the fixed-error one-at-a-time 76-target
+  scans; the recorded thread-versus-serial orbit difference is exactly zero.
+  That correction reduces BPM RMS from 860.882 to 126.037 micrometers and
+  target-orbit 2D RMS from 1,335.740 to 70.945 micrometers.
 - `gtpsa_derivative_stochastic_inverse/` fixes the two local `dO/dK2` source
   templates with latest-lattice SciBmad/GTPSA transport, then treats BPM white
   noise and random-walk drift through parity contrasts and analytic

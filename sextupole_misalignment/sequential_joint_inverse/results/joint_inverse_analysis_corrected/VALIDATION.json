@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "machine_count": 16,
+  "target_count": 76,
+  "bpm_count": 111,
+  "quadrupole_count": 113,
+  "cases": [
+    "without_quadrupole_misalignment",
+    "with_quadrupole_misalignment_corrected"
+  ],
+  "maximum_zero_bpm_reference_error_m": 4.1245823509580544e-14,
+  "maximum_zero_target_reference_error_m": 4.834848329290551e-14,
+  "realized_quadrupole_alignment_rms_um_per_plane": [
+    51.08600254912358,
+    49.9880650678591
+  ],
+  "evaluation_row_count": 14,
+  "per_target_row_count": 1064,
+  "machine_splits": {
+    "train": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "validation": [
+      10,
+      11,
+      12
+    ],
+    "test": [
+      13,
+      14,
+      15
+    ]
+  },
+  "corrected_protocol": {
+    "baseline_bpm_rms_before_um": 860.8818077068519,
+    "baseline_bpm_rms_after_um": 126.03403707591657,
+    "baseline_target_2d_rms_before_um": 1335.7402018215303,
+    "baseline_target_2d_rms_after_um": 70.70922867862262,
+    "corrected_truth_outside_bump_radius_fraction": 0.0,
+    "paired_zero_bpm_max_error_m": 4.765226127965717e-14,
+    "paired_zero_target_max_error_m": 4.777412952137192e-14,
+    "standalone_command_max_error": 0.0,
+    "standalone_corrected_bpm_max_error_m": 0.0,
+    "standalone_corrected_target_max_error_m": 0.0
+  }
+}

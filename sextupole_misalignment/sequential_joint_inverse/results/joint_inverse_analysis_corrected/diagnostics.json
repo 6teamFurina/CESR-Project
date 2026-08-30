@@ -1,0 +1,37 @@
+{
+  "machine_count": 16,
+  "target_count": 76,
+  "train_machine_indices_zero_based": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "validation_machine_indices_zero_based": [
+    10,
+    11,
+    12
+  ],
+  "test_machine_indices_zero_based": [
+    13,
+    14,
+    15
+  ],
+  "quadrupole_alignment_requested_rms_um_per_plane": 50.0,
+  "quadrupole_alignment_realized_x_rms_um": 51.08600254912358,
+  "quadrupole_alignment_realized_y_rms_um": 49.9880650678591,
+  "paired_reference_bpm_change_rms_um": 126.03403707588679,
+  "paired_reference_bpm_change_p99_um": 552.2706882131534,
+  "paired_beam_relative_truth_change_rms_2d_um": 70.7092286784731,
+  "without_truth_fraction_outside_bump_radius": 0.0,
+  "with_truth_fraction_outside_bump_radius": 0.0,
+  "baseline_orbit_correction_applied": true,
+  "precorrection_reference_bpm_change_rms_um": 860.881807706852,
+  "precorrection_beam_relative_truth_change_rms_2d_um": 1335.7402018215303
+}

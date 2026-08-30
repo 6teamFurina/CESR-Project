@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "format": "cesr-sequential-bpm-gtpsa-local-orbit-inverse-v1",
+  "case": "with_quadrupole_misalignment_gtpsa_noisy_corrected",
+  "machine_count": 16,
+  "target_count": 76,
+  "bpm_count": 111,
+  "deterministic_fit_count": 1216,
+  "stochastic_fit_count": 7296,
+  "maximum_recomputed_relative_local_difference_m": 0.0,
+  "maximum_recomputed_reference_difference_m": 0.0,
+  "truth_leakage_check": "PASS",
+  "deterministic_relative_center_rmse_um": 21.657874802405175,
+  "deterministic_absolute_offset_rmse_um": 23.346466406304774
+}

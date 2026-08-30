@@ -225,7 +225,8 @@ end
 function scan_joint_target!(
     ring, target_index, target_entry, target_knobs, controls, bpm_names,
     bumps, delta_k2, base_closed, corrector_gain_errors, k2_gain_error,
-    drift_direction, drift_halfwidth,
+    drift_direction, drift_halfwidth;
+    baseline_corrector_fields=nothing,
 )
     nb, nk = length(bumps), length(delta_k2)
     physical_state_count = nb * nk
@@ -253,7 +254,9 @@ function scan_joint_target!(
     end
     for (control_index, control) in enumerate(controls)
         cx, cy = target_knobs[(control.name, String(control.axis))]
-        baseline = Float64(constant_term(first(control.originals)))
+        baseline = isnothing(baseline_corrector_fields) ?
+            Float64(constant_term(first(control.originals))) :
+            Float64(baseline_corrector_fields[control_index])
         command = cx .* bump_x .+ cy .* bump_y
         drift_command = cx .* drift_fraction .* drift_halfwidth .* drift_direction[1] .+
                         cy .* drift_fraction .* drift_halfwidth .* drift_direction[2]

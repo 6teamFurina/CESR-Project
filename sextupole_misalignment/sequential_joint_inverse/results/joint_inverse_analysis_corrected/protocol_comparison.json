@@ -1,0 +1,19 @@
+{
+  "format": "cesr-corrected-sequential-inverse-comparison-v1",
+  "zero_offset_best_model": "shared_target_local_ridge",
+  "zero_offset_best_rmse_2d_um": 33.07848173570432,
+  "uncorrected_offset_best_model": "shared_joint_random_feature",
+  "uncorrected_offset_best_rmse_2d_um": 99.11944235536374,
+  "corrected_offset_best_model": "shared_joint_random_feature",
+  "corrected_offset_best_rmse_2d_um": 33.44362075022283,
+  "corrected_best_rmse_reduction_percent_vs_uncorrected": 66.25927269614722,
+  "corrected_best_rmse_excess_percent_vs_zero_offset": 1.103856632344713,
+  "removed_excess_rmse_percent": 99.44710220582435,
+  "zero_trained_joint_eval_uncorrected_rmse_2d_um": 765.8594539649264,
+  "zero_trained_joint_eval_corrected_rmse_2d_um": 34.17982629957767,
+  "precorrection_bpm_change_rms_um": 860.881807706852,
+  "postcorrection_bpm_change_rms_um": 126.03403707588679,
+  "precorrection_target_change_rms_2d_um": 1335.7402018215303,
+  "postcorrection_target_change_rms_2d_um": 70.7092286784731,
+  "postcorrection_outside_bump_radius_fraction": 0.0
+}

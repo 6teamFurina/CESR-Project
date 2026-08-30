@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "format": "cesr-full-error-state-space-bpm-gtpsa-inverse-v1",
+  "case": "with_all_errors_gtpsa_nominal_corrected",
+  "machine_count": 16,
+  "target_count": 76,
+  "bpm_count": 111,
+  "stochastic_augmentations": 32,
+  "filtered_fit_count": 38912,
+  "nominal_gtpsa_orm_shape": [
+    222,
+    103
+  ],
+  "finite_difference_orm_reapplied": false,
+  "thread_worker_count": 6,
+  "maximum_thread_vs_serial_difference_m": 0.0,
+  "dense_state_space_max_difference_m": 1.52995326097808e-20,
+  "truth_leakage_check": "PASS",
+  "observable_bpm_materialization_max_difference_m": 0.0,
+  "drift_observable_bpm_materialization_max_difference_m": 0.0,
+  "zero_state_bpm_closure_max_difference_m": 1.7364666697822564e-14,
+  "zero_state_target_closure_max_difference_m": 1.7466148021167208e-14,
+  "unfiltered_bpm_time_error_rms_um": 2.631652729152541,
+  "filtered_bpm_time_error_rms_um": 0.3200343231154576,
+  "filtered_relative_center_rmse_um": 27.080530764288103,
+  "filtered_absolute_offset_rmse_um": 28.78286498091203,
+  "filtered_absolute_offset_p99_um": 75.20708171673782,
+  "aggregate_rmse_below_30_um": true,
+  "strict_absolute_p99_below_50_um": false
+}

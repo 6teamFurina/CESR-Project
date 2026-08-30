@@ -1,0 +1,29 @@
+{
+  "format": "cesr-sequential-bpm-gtpsa-local-orbit-inverse-v1",
+  "date": "2026-08-30",
+  "scan_root": "/Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/exact_joint_machines",
+  "case": "with_quadrupole_misalignment_gtpsa_noisy_corrected",
+  "model_dir": "/Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/sextupole_misalignment/finite_bpm_inversion/results/local_orbit_model",
+  "model_engine": "SciBmad latest-lattice nominal RF-on response and transport",
+  "lattice": "/Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/Latest_Lattice/latest_cesr_scibmad_repaired.jl",
+  "machine_count": 16,
+  "target_count": 76,
+  "bpm_count": 111,
+  "bump_count": 5,
+  "k2_count": 3,
+  "center_bound_m": 0.0025,
+  "stochastic_machine_indices_zero_based": [
+    13,
+    14,
+    15
+  ],
+  "stochastic_augmentations": 32,
+  "measurement_repeats": 3072,
+  "bpm_noise_rms_m_per_read": 5e-06,
+  "bpm_mean_noise_std_m": 9.021097956087904e-08,
+  "drift_endpoint_rms_m": 1e-05,
+  "measurement_seed": 20261229,
+  "truth_boundary": "target_orbits, reference_target_orbits, and sextupole_offsets are loaded only after all BPM/GTPSA predictions are persisted",
+  "machine_facing_inputs": "BPM observable readbacks, known bump/K2 commands, nominal SciBmad/GTPSA control responses and order-one transport",
+  "generated_seconds": 349.2495222091675
+}

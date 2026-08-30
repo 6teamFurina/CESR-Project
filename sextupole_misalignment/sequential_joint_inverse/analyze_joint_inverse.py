@@ -41,10 +41,16 @@ import analyze_stochastic_inverse as physics  # noqa: E402
 
 WITHOUT = "without_quadrupole_misalignment"
 WITH = "with_quadrupole_misalignment"
+WITH_CORRECTED = "with_quadrupole_misalignment_corrected"
+WITH_GTPSA_NOISY_CORRECTED = "with_quadrupole_misalignment_gtpsa_noisy_corrected"
 CASES = (WITHOUT, WITH)
 CASE_LABELS = {
     WITHOUT: "No quadrupole alignment drift",
     WITH: "50 um/plane RMS quadrupole alignment drift",
+    WITH_CORRECTED: "50 um/plane drift after fixed baseline correction",
+    WITH_GTPSA_NOISY_CORRECTED: (
+        "50 um/plane drift after noisy-BPM GTPSA baseline correction"
+    ),
 }
 
 
@@ -73,7 +79,13 @@ def summarize(errors_m: np.ndarray) -> dict[str, float]:
 
 
 def case_abbreviation(case: str) -> str:
-    return "no_quad_align" if case == WITHOUT else "quad_align_50um"
+    if case == WITHOUT:
+        return "no_quad_align"
+    if case == WITH_CORRECTED:
+        return "quad_align_50um_corrected"
+    if case == WITH_GTPSA_NOISY_CORRECTED:
+        return "quad_align_50um_gtpsa_noisy_corrected"
+    return "quad_align_50um"
 
 
 def load_metadata(directory: Path) -> dict[str, object]:
@@ -713,6 +725,12 @@ def main() -> int:
         "--scan-root", type=Path, default=HERE / "results" / "exact_joint_machines"
     )
     parser.add_argument(
+        "--comparison-case",
+        choices=(WITH, WITH_CORRECTED, WITH_GTPSA_NOISY_CORRECTED),
+        default=WITH,
+        help="Quadrupole-drift case to compare with the zero-offset reference case.",
+    )
+    parser.add_argument(
         "--model-dir",
         type=Path,
         default=STUDY_ROOT / "finite_bpm_inversion" / "results" / "local_orbit_model",
@@ -737,15 +755,18 @@ def main() -> int:
     scan_root = args.scan_root.resolve()
     output = args.output_dir.resolve()
     output.mkdir(parents=True, exist_ok=True)
+    comparison_case = args.comparison_case
+    cases = (WITHOUT, comparison_case)
+    case_labels = {case: CASE_LABELS[case] for case in cases}
 
     model_rows = read_rows(args.model_dir.resolve() / "target_locations.csv")
     model_target_names = [row["target"] for row in model_rows]
-    data = {case: load_case(scan_root, case, model_target_names) for case in CASES}
+    data = {case: load_case(scan_root, case, model_target_names) for case in cases}
     machine_count = int(data[WITHOUT].metadata["machine_count"])
-    if int(data[WITH].metadata["machine_count"]) != machine_count:
+    if int(data[comparison_case].metadata["machine_count"]) != machine_count:
         raise ValueError("Paired cases have different machine counts")
     train_indices, val_indices, test_indices = machine_split(machine_count)
-    if data[WITHOUT].target_names != data[WITH].target_names:
+    if data[WITHOUT].target_names != data[comparison_case].target_names:
         raise ValueError("Paired cases have different target inventories")
 
     templates = physics.source_templates(args.model_dir.resolve(), args.sextupole_length_m)
@@ -757,7 +778,7 @@ def main() -> int:
 
     bundles: dict[str, TrainedBundle] = {}
     selection_rows: list[dict[str, object]] = []
-    for case in CASES:
+    for case in cases:
         bundle, rows = train_bundle(
             data[case], train_indices, val_indices, design, left_inverses, args
         )
@@ -781,7 +802,7 @@ def main() -> int:
     summary_rows: list[dict[str, object]] = []
     target_rows: list[dict[str, object]] = []
     prediction_payload: dict[str, np.ndarray] = {}
-    for evaluation_case in CASES:
+    for evaluation_case in cases:
         rows, saved, per_target = evaluation_rows(
             None,
             data[evaluation_case],
@@ -796,7 +817,7 @@ def main() -> int:
             prediction_payload[
                 f"physics__{case_abbreviation(evaluation_case)}__{key}"
             ] = value
-        for training_case in CASES:
+        for training_case in cases:
             rows, saved, per_target = evaluation_rows(
                 bundles[training_case],
                 data[evaluation_case],
@@ -823,10 +844,17 @@ def main() -> int:
     alignment_normals = np.load(
         latent_root / "quadrupole_alignment_standard_normals.npy"
     )
-    alignment_rms = float(data[WITH].metadata["quadrupole_alignment_rms_m_per_plane"])
+    alignment_rms = float(
+        data[comparison_case].metadata["quadrupole_alignment_rms_m_per_plane"]
+    )
     actual_offsets = alignment_rms * alignment_normals
-    paired_reference_delta = data[WITH].reference_bpm - data[WITHOUT].reference_bpm
-    paired_truth_delta = data[WITH].truth - data[WITHOUT].truth
+    paired_reference_delta = (
+        data[comparison_case].reference_bpm - data[WITHOUT].reference_bpm
+    )
+    paired_truth_delta = data[comparison_case].truth - data[WITHOUT].truth
+    correction_applied = bool(
+        data[comparison_case].metadata.get("baseline_orbit_correction_applied", False)
+    )
     diagnostics = {
         "machine_count": machine_count,
         "target_count": target_count,
@@ -857,8 +885,21 @@ def main() -> int:
         ),
         "with_truth_fraction_outside_bump_radius": float(
             np.mean(
-                np.linalg.norm(data[WITH].truth, axis=-1)
-                > float(data[WITH].metadata["bump_amplitude_m"])
+                np.linalg.norm(data[comparison_case].truth, axis=-1)
+                > float(data[comparison_case].metadata["bump_amplitude_m"])
+            )
+        ),
+        "baseline_orbit_correction_applied": correction_applied,
+        "precorrection_reference_bpm_change_rms_um": float(
+            data[comparison_case].metadata.get(
+                "baseline_bpm_rms_before_um",
+                np.sqrt(np.mean(paired_reference_delta**2)) * 1.0e6,
+            )
+        ),
+        "precorrection_beam_relative_truth_change_rms_2d_um": float(
+            data[comparison_case].metadata.get(
+                "baseline_target_2d_rms_before_um",
+                np.sqrt(np.mean(np.sum(paired_truth_delta**2, axis=-1))) * 1.0e6,
             )
         ),
     }
@@ -881,7 +922,7 @@ def main() -> int:
         "shared_joint_random_feature",
     ]
     fig, axes = plt.subplots(1, 2, figsize=(12.0, 5.0), sharey=True)
-    for axis, case in zip(axes, CASES):
+    for axis, case in zip(axes, cases):
         values = []
         for model in models:
             candidates = [
@@ -898,7 +939,7 @@ def main() -> int:
             np.arange(len(models)),
             ["Physics\nGLS", "Local\nridge", "Joint\nridge", "Joint random-\nfeature"],
         )
-        axis.set_title(CASE_LABELS[case])
+        axis.set_title(case_labels[case])
         axis.grid(axis="y", alpha=0.25)
     axes[0].set_ylabel("Held-out beam-relative center 2D RMSE [um]")
     axes[1].legend(loc="upper right")
@@ -907,7 +948,7 @@ def main() -> int:
     plt.close(fig)
 
     fig, axes = plt.subplots(1, 2, figsize=(12.0, 4.8))
-    for case, color in ((WITHOUT, "#4c78a8"), (WITH, "#e15759")):
+    for case, color in ((WITHOUT, "#4c78a8"), (comparison_case, "#e15759")):
         radial = np.linalg.norm(data[case].truth, axis=-1).ravel() * 1.0e6
         axes[0].hist(
             radial,
@@ -915,10 +956,10 @@ def main() -> int:
             histtype="step",
             lw=1.7,
             color=color,
-            label=CASE_LABELS[case],
+            label=case_labels[case],
         )
     axes[0].axvline(
-        float(data[WITH].metadata["bump_amplitude_m"]) * 1.0e6,
+        float(data[comparison_case].metadata["bump_amplitude_m"]) * 1.0e6,
         color="#222222",
         ls="--",
         lw=1.2,
@@ -942,14 +983,18 @@ def main() -> int:
         axes[1].annotate(str(machine), (x_value, y_value), fontsize=7, xytext=(3, 2), textcoords="offset points")
     axes[1].set_xlabel("Paired reference BPM change RMS [um]")
     axes[1].set_ylabel("Beam-relative truth change 2D RMS [um]")
-    axes[1].set_title("Uncorrected quadrupole-drift consequence")
+    axes[1].set_title(
+        "Post-correction quadrupole-drift consequence"
+        if correction_applied
+        else "Uncorrected quadrupole-drift consequence"
+    )
     axes[1].grid(alpha=0.25)
     fig.tight_layout()
     fig.savefig(output / "quadrupole_drift_domain_diagnostic.png", dpi=180)
     plt.close(fig)
 
     primary_table_rows = []
-    for case in CASES:
+    for case in cases:
         for model in models:
             candidates = [
                 row
@@ -958,7 +1003,7 @@ def main() -> int:
             ]
             row = candidates[0]
             primary_table_rows.append(
-                f"| {CASE_LABELS[case]} | {model} | "
+                f"| {case_labels[case]} | {model} | "
                 f"{float(row['rmse_2d_um']):.3f} | {float(row['p90_2d_um']):.3f} | "
                 f"{float(row['p99_2d_um']):.3f} | {float(row['worst_target_rmse_2d_um']):.3f} | "
                 f"{100.0*float(row['fraction_below_50um']):.2f}% |"
@@ -967,12 +1012,12 @@ def main() -> int:
         row
         for row in summary_rows
         if row["training_case"] == WITHOUT
-        and row["evaluation_case"] == WITH
+        and row["evaluation_case"] == comparison_case
         and row["model"] == "shared_joint_ridge"
     ]
     ood_row = ood_candidates[0]
     best_by_case = {}
-    for case in CASES:
+    for case in cases:
         candidates = [
             row
             for row in same_case_rows
@@ -980,7 +1025,7 @@ def main() -> int:
         ]
         best_by_case[case] = min(candidates, key=lambda row: float(row["rmse_2d_um"]))
     joint_comparison = {}
-    for case in CASES:
+    for case in cases:
         local = next(
             row
             for row in same_case_rows
@@ -997,17 +1042,92 @@ def main() -> int:
             * (float(joint["rmse_2d_um"]) / float(local["rmse_2d_um"]) - 1.0),
         }
 
-    report = f"""# Sequential excitation and all-target joint-inverse pilot
+    if correction_applied:
+        report_title = "Corrected sequential excitation and joint-inverse pilot"
+        correction_metadata = data[comparison_case].metadata
+        response_method = str(correction_metadata.get("baseline_response_method", ""))
+        if response_method == "reference_gtpsa_orm":
+            response_description = (
+                "the paired zero-offset SciBmad/GTPSA periodic closed-orbit "
+                "Jacobian, including the fixed BPM and corrector gains"
+            )
+            noise_rms_um = 1.0e6 * float(
+                correction_metadata["baseline_bpm_noise_rms_m_per_read"]
+            )
+            correction_repeats = int(
+                correction_metadata["baseline_measurement_repeats"]
+            )
+            mean_noise_um = 1.0e6 * float(
+                correction_metadata["baseline_bpm_mean_noise_std_m"]
+            )
+            correction_noise_description = (
+                f" The stored reference and every current correction readback use "
+                f"independent means of {correction_repeats:,} reads from the same "
+                f"`{noise_rms_um:.1f} um` per-read BPM white-noise model "
+                f"(`{mean_noise_um:.3f} um` standard deviation per mean)."
+            )
+            comparison_phrase = (
+                "50-um/plane drift after noisy-BPM GTPSA baseline correction"
+            )
+        else:
+            response_description = "the stored zero-offset measured ORM"
+            correction_noise_description = ""
+            comparison_phrase = "50-um/plane drift after fixed baseline correction"
+        paired_protocol = f"""The paired quadrupole-alignment case adds independent Gaussian x/y
+displacement to each physical quadrupole with `50 um` RMS per plane.  Before
+any sextupole is excited, it restores the BPM readback toward the paired
+zero-offset closed orbit with {response_description} and 103 normal
+steering controls.{correction_noise_description} That baseline command is then held fixed throughout all
+{target_count} one-at-a-time scans; local bump commands are additive."""
+        orbit_interpretation = f"""Before baseline correction, the quadrupole
+offsets change the full-ring BPM orbit by
+`{diagnostics['precorrection_reference_bpm_change_rms_um']:.3f} um` RMS and the
+beam-relative center truth by
+`{diagnostics['precorrection_beam_relative_truth_change_rms_2d_um']:.3f} um`
+2D RMS.  After the fixed baseline correction, the corresponding changes are
+`{diagnostics['paired_reference_bpm_change_rms_um']:.3f} um` BPM RMS and
+`{diagnostics['paired_beam_relative_truth_change_rms_2d_um']:.3f} um` target
+2D RMS.  The fraction of truths outside the maintained 1.5-mm bump radius is
+`{100.0*diagnostics['without_truth_fraction_outside_bump_radius']:.3f}%` in the
+zero-offset case and
+`{100.0*diagnostics['with_truth_fraction_outside_bump_radius']:.3f}%` after
+correction.
+
+This is the requested correct-then-scan protocol.  The correction receives
+only BPM readbacks and the stored zero-offset response; latent quadrupole offsets
+and target-local orbit remain evaluation-only.  The inverse is not credited
+with performing orbit correction."""
+    else:
+        report_title = "Sequential excitation and all-target joint-inverse pilot"
+        paired_protocol = """The paired quadrupole-alignment case adds independent Gaussian x/y
+displacement to each physical quadrupole with `50 um` RMS per plane, coherent
+across its slices and fixed throughout all target scans."""
+        orbit_interpretation = f"""Before any orbit correction, the offsets
+change the paired full-ring reference BPM orbit by
+`{diagnostics['paired_reference_bpm_change_rms_um']:.3f} um` RMS and the
+beam-relative center truth by
+`{diagnostics['paired_beam_relative_truth_change_rms_2d_um']:.3f} um` 2D RMS.
+The fraction of truths outside the maintained 1.5-mm bump radius changes from
+`{100.0*diagnostics['without_truth_fraction_outside_bump_radius']:.3f}%` to
+`{100.0*diagnostics['with_truth_fraction_outside_bump_radius']:.3f}%`.
+
+This is intentionally the uncorrected residual-drift input requested for the
+paired model test.  If the orbit excursion, tail error, or out-of-range
+fraction dominates the aligned case, the next physical protocol must perform
+and record a BPM-only orbit correction relative to the yearly nominal orbit
+before the sextupole scans; a neural model must not be credited with replacing
+that machine operation."""
+        comparison_phrase = "uncorrected 50-um/plane drift"
+
+    report = f"""# {report_title}
 
 ## Protocol
 
 The exact dataset contains {machine_count} latest-lattice SciBmad latent
 machines.  In each machine, all {target_count} sextupole offsets, BPM gains,
 corrector gains, K2 gains, quadrupole strength errors, and quadrupole rolls are
-fixed while the {target_count} sextupoles are excited one at a time.  The
-paired quadrupole-alignment case adds independent Gaussian x/y displacement to
-each physical quadrupole with `50 um` RMS per plane, coherent across its slices
-and fixed throughout all target scans.
+fixed while the {target_count} sextupoles are excited one at a time.
+{paired_protocol}
 
 Each physical case contains
 `{int(data[WITHOUT].metadata['total_exact_states']):,}` exact SciBmad state
@@ -1027,32 +1147,33 @@ values; latent errors and exact target-local orbit are evaluation-only.
 
 ## Held-out result
 
-| quadrupole-alignment input | inverse | 2D RMSE [um] | P90 [um] | P99 [um] | worst-target RMSE [um] | below 50 um |
+| physical input | inverse | 2D RMSE [um] | P90 [um] | P99 [um] | worst-target RMSE [um] | below 50 um |
 |---|---|---:|---:|---:|---:|---:|
 {chr(10).join(primary_table_rows)}
 
 The best learned same-distribution result without quadrupole alignment is
 `{best_by_case[WITHOUT]['model']}` at
-`{float(best_by_case[WITHOUT]['rmse_2d_um']):.3f} um` RMSE.  With the paired
-50-um/plane quadrupole drift enabled, the best learned result is
-`{best_by_case[WITH]['model']}` at
-`{float(best_by_case[WITH]['rmse_2d_um']):.3f} um` RMSE.  Training the joint
-ridge only on the no-alignment distribution and evaluating it on the aligned
-case gives `{float(ood_row['rmse_2d_um']):.3f} um` RMSE; this is the explicit
-distribution-shift check and must not be replaced by the in-distribution row.
+`{float(best_by_case[WITHOUT]['rmse_2d_um']):.3f} um` RMSE.  With the
+{comparison_phrase}, the best learned result is
+`{best_by_case[comparison_case]['model']}` at
+`{float(best_by_case[comparison_case]['rmse_2d_um']):.3f} um` RMSE.  Training
+the joint ridge only on the no-alignment distribution and evaluating it on the
+comparison case gives `{float(ood_row['rmse_2d_um']):.3f} um` RMSE; this is the
+explicit distribution-shift check and must not be replaced by the
+in-distribution row.
 
 Adding all-target context changes ridge RMSE relative to the matched local
 shared model by `{joint_comparison[WITHOUT]['relative_change_percent']:+.3f}%`
 without quadrupole alignment and
-`{joint_comparison[WITH]['relative_change_percent']:+.3f}%` with the 50-um
-drift.  A negative value is the predeclared evidence that joint context helped;
+`{joint_comparison[comparison_case]['relative_change_percent']:+.3f}%` in the
+comparison case.  A negative value is the predeclared evidence that joint context helped;
 a positive value means this ensemble does not support the added joint-model
 complexity.  The strict reference gate requires aggregate RMSE, P99, and every
 target-level RMSE to remain below 50 um.
 The best learned no-alignment row reports
 `{'PASS' if best_by_case[WITHOUT]['hard_50um_rmse_p99_all_target_gate'] else 'FAIL'}`
 for that gate; the best learned 50-um/plane row reports
-`{'PASS' if best_by_case[WITH]['hard_50um_rmse_p99_all_target_gate'] else 'FAIL'}`.
+`{'PASS' if best_by_case[comparison_case]['hard_50um_rmse_p99_all_target_gate'] else 'FAIL'}`.
 
 ## Quadrupole-drift interpretation
 
@@ -1063,20 +1184,7 @@ If the facility value instead denotes an isotropic two-dimensional radial RMS,
 the corresponding per-plane RMS would be about `35.4 um`; correlated girder
 motion is also a distinct prior.  Neither alternative is silently folded into
 the primary 50-um/plane row.
-Before any orbit correction, it changes the paired full-ring reference BPM
-orbit by `{diagnostics['paired_reference_bpm_change_rms_um']:.3f} um` RMS and
-the beam-relative center truth by
-`{diagnostics['paired_beam_relative_truth_change_rms_2d_um']:.3f} um` 2D RMS.
-The fraction of truths outside the maintained 1.5-mm bump radius changes from
-`{100.0*diagnostics['without_truth_fraction_outside_bump_radius']:.3f}%` to
-`{100.0*diagnostics['with_truth_fraction_outside_bump_radius']:.3f}%`.
-
-This is intentionally the uncorrected residual-drift input requested for the
-paired model test.  If the orbit excursion, tail error, or out-of-range
-fraction dominates the aligned case, the next physical protocol must perform
-and record a BPM-only orbit correction relative to the yearly nominal orbit
-before the sextupole scans; a neural model must not be credited with replacing
-that machine operation.
+{orbit_interpretation}
 
 ## Model definitions
 
@@ -1119,6 +1227,9 @@ lattice provenance.
         "format": "cesr-sequential-joint-inverse-analysis-v1",
         "generated_seconds": time.perf_counter() - started,
         "scan_root": str(scan_root),
+        "cases": list(cases),
+        "comparison_case": comparison_case,
+        "baseline_orbit_correction_applied": correction_applied,
         "machine_count": machine_count,
         "target_count": target_count,
         "train_indices_zero_based": train_indices.tolist(),

@@ -139,6 +139,167 @@ experiment must add and record BPM-only orbit correction before comparing
 inverse architectures.  The complete tables and plots are in
 `results/joint_inverse_analysis/SUMMARY.md`.
 
+## Paired BPM-reference correction follow-up (2026-08-28)
+
+`../quadrupole_orbit_correction/` now implements the required pre-scan
+correction on the same deterministic 16-machine ensemble.  The correction
+target is the closed-orbit BPM readback saved while the quadrupoles are at
+their calibrated nominal alignment positions; it is neither BPM electrical
+zero nor an orbit that has first been corrected to zero.  All other maintained
+random errors remain present and unchanged when the 50-micrometer/plane
+quadrupole offsets are switched on.
+
+Using the zero-offset state's stored response matrix and the 103 normal
+horizontal/vertical steering Overlay controls reduces the aggregate measured
+BPM-coordinate RMS difference from 860.882 to 126.034 micrometers and the
+target-sextupole 2D orbit difference from 1,335.740 to 70.709 micrometers.  A
+response matrix remeasured after the offsets gives 126.003 and 70.724
+micrometers, respectively.  The two corrected BPM vectors differ by only
+1.307 micrometers RMS.  The current-versus-stored response-matrix relative-L2
+difference has 1.996% median and 3.275% maximum across machines, supporting
+the stored reference response as the bounded default for this fixed-error
+ensemble.
+
+The fraction of beam-relative sextupole centers outside the maintained
+1.5-millimeter scan radius falls from 28.618% before correction to zero with
+either response matrix.  This restores the intended excitation range but does
+not make every BPM reading exactly identical: the remaining aggregate BPM RMS
+is about 126 micrometers, and the largest individual residual is about 1.38
+millimeters.  The orbit-restoration benchmark is noise-free and asserts no
+CESR hardware limit.
+
+The full corrected follow-up is now complete.  For every machine, the
+zero-offset reference ORM is measured once, the resulting 103-control baseline
+command is applied after the quadrupole offsets, and that baseline remains
+fixed while all 76 targets are scanned.  Local bump commands are additive.
+The corrected scan tensor contains 36,480 exact SciBmad state lanes and its
+zero-bump/zero-`delta K2` states reproduce the independently saved corrected
+reference with maximum BPM and target discrepancies below `5e-14 m`.
+
+The corrected fixed-physics, target-local ridge, joint ridge, and joint
+random-feature held-out RMSE values are 34.181, 33.477, 33.458, and 33.444
+micrometers.  The best result is therefore 66.259% lower than the best
+uncorrected-offset result of 99.119 micrometers and only 1.104% above the best
+zero-offset result of 33.078 micrometers; 99.447% of the excess RMSE associated
+with the uncorrected protocol is removed.  A joint ridge trained only on the
+zero-offset case changes from 765.859 micrometers on uncorrected drift to
+34.180 micrometers after correction, showing that the operational distribution
+shift is largely removed before inversion.
+
+This does not close the precision problem.  The best corrected P99 is 84.486
+micrometers and the worst-target RMSE is 59.585 micrometers, so the preferred
+30-micrometer aggregate gate and the strict 50-micrometer tail gate still
+fail.  Joint context changes ridge RMSE by only -0.058% relative to the local
+model, which is not a material all-target advantage.  Complete corrected
+results are in `results/joint_inverse_analysis_corrected/SUMMARY.md` and the
+matched three-protocol table is in
+`results/joint_inverse_analysis_corrected/CORRECTION_COMPARISON.md`.
+
+## GTPSA ORM and noisy-reference follow-up (2026-08-28)
+
+The second corrected production run keeps the complete static-error ensemble
+and scan protocol unchanged, but calculates the 103-control stored-reference
+ORM from one first-order SciBmad/GTPSA periodic closed-orbit Jacobian per
+machine.  Fixed BPM gains scale its rows and fixed corrector gains scale its
+columns.  Independent Gaussian noise is added to the stored reference and to
+each current-orbit correction readback before the SVD-ridge command is solved;
+latent quadrupole offsets and target-local orbit remain unavailable to the
+solver.  The resulting command is again fixed during all 76 sextupole scans.
+
+The correction noise matches the maintained scan measurement model:
+5 micrometers RMS per BPM plane/read averaged over 3,072 reads.  Thus each
+correction mean has only 0.090 micrometers expected standard deviation, and
+the realized stored-reference noise is 0.091 micrometers RMS.  The GTPSA ORM
+agrees with a central finite-difference validation to at most `1.879e-8`
+relative L2 difference across the 16 machines, with maximum periodic-response
+closure `3.553e-15`.
+
+Relative to the finite-difference/noiseless correction, the GTPSA/noisy
+baseline commands differ by 0.0107 microradians RMS, the corrected BPM orbit
+by 0.0767 micrometers RMS, and the corrected target orbit by 0.1248
+micrometers 2D RMS.  The fixed-physics, target-local ridge, joint ridge, and
+joint random-feature held-out RMSE values are 34.181, 33.477, 33.458, and
+33.416 micrometers.  The best value is 66.287% below the uncorrected result,
+1.021% above the zero-offset result, and 0.082% below the matched
+finite-difference/noiseless value.  That last tiny signed change is numerical
+equivalence, not evidence that added noise improves estimation.
+
+The P99 and worst-target RMSE remain 84.382 and 59.714 micrometers, so the
+strict tail gate still fails.  This run validates the requested GTPSA-ORM plus
+noisy-orbit workflow only at the tested 3,072-read averaging level.  A repeat-
+count sweep with measured BPM covariance is still required before choosing a
+CESR acquisition protocol.  Full results and the four-protocol comparison are
+in `results/joint_inverse_analysis_gtpsa_noisy_corrected/SUMMARY.md` and
+`results/joint_inverse_analysis_gtpsa_noisy_corrected/GTPSA_NOISY_COMPARISON.md`.
+
+This is an exact-calibration/model-conditioned GTPSA response: its rows and
+columns use the realized simulated BPM and baseline-corrector gains.  It does
+not yet test an unknown calibration mismatch.  The 103 baseline-control gains
+and 62 local-bump-control gains are also separate deterministic draws from the
+same 1%-RMS prior rather than one unified physical-device registry.  This
+convention is identical in the two corrected runs and therefore does not spoil
+their paired numerical comparison, but it remains a machine-transfer limit.
+
+## Explicit BPM/GTPSA local-orbit follow-up (2026-08-30)
+
+`../finite_bpm_inversion/analyze_sequential_bpm_gtpsa_inverse.py` now applies
+the nearest-upstream/downstream order-one GTPSA transport to this exact
+corrected scan tensor before fitting the sextupole centers.  The machine-facing
+phase receives only BPM observable readbacks, commands, and the nominal model;
+it persists all relative and absolute local-orbit and center estimates before
+the exact target orbit or latent offsets are loaded for evaluation.
+
+On deterministic static readbacks, relative local-orbit RMSE is 14.306
+micrometers.  The resulting beam-relative center RMSE is 21.658 micrometers,
+compared with 20.912 micrometers for the evaluation-only exact-local oracle.
+Adding the independently reconstructed absolute reference orbit gives 23.346
+micrometers absolute sextupole-offset RMSE.  This closes the earlier data-path
+gap: the maintained full-error corrected result no longer needs exact target
+orbit as an inverse input.
+
+The stochastic sensitivity remains unresolved.  With 32 held-out measurement
+realizations, 5-micrometer per-read BPM white noise averaged over 3,072 reads,
+and a 10-micrometer endpoint random walk over the unfiltered repeated 15-state
+schedule, local-orbit RMSE remains 13.851 micrometers but center RMSE rises to
+60.667 micrometers and P99 to 165.486 micrometers.  This isolates the next task
+as covariance-aware K2-slope/drift estimation; it is not evidence that the
+BPM/GTPSA local transport failed.
+
+## Nominal-ORM state-space follow-up (2026-08-30)
+
+The maintained full-error follow-up is now
+`with_all_errors_gtpsa_nominal_corrected`.  Unlike the preceding
+exact-calibration comparison, its correction uses one nominal theoretical
+SciBmad/GTPSA ORM with no realized gain/error scaling and no production
+finite-difference ORM.  The same fixed sextupole, BPM/corrector/K2,
+quadrupole-strength/roll/alignment errors remain active across every one-at-a-
+time target scan.  Six independent latest-lattice worker models generated all
+16 by 76 targets in 312.5 seconds; the recorded thread-versus-serial maximum
+difference is zero.
+
+The downstream acquisition replaces the unfiltered 15-state baseline with
+3,072 balanced eight-state cycles, periodic same-bump `K2=0` references every
+256 cycles, and a two-plane random-walk state-space smoother that marginalizes
+finite reference-calibration noise.  The inverse receives only BPM readbacks,
+commands, nominal GTPSA transport/response, and stochastic priors.  Exact
+target orbits and all error realizations remain outside the machine-facing
+estimator.
+
+For the reconstructed-orbit fixed-GTPSA-template estimator, state-space-
+filtered beam-relative center RMSE is 27.081 micrometers and absolute
+sextupole-offset RMSE is 28.783 micrometers, with absolute P99 75.207
+micrometers.  The hidden-state correction reduces BPM time-state error from
+2.632 to 0.320 micrometers.  It changes the displayed center RMSE negligibly
+because the balanced parity contrast already cancels first-order drift; the
+remaining error is dominated by white noise and static source/model mismatch.
+The deterministic static absolute-offset RMSE is 23.232 micrometers.  The
+filtered aggregate RMSE passes the 30-micrometer gate, but its 75.207-
+micrometer absolute P99 still fails the strict 50-micrometer tail gate.
+
+The complete result and independent validation are in
+`../finite_bpm_inversion/results/state_space_sequential_bpm_gtpsa_inverse/SUMMARY.md`
+and `../finite_bpm_inversion/results/state_space_sequential_bpm_gtpsa_inverse/VALIDATION.json`.
+
 ## Reproduction
 
 From `CESR Project/`:
@@ -148,13 +309,45 @@ $env:JULIA_PKG_PRECOMPILE_AUTO='0'
 julia --project=. `
   sextupole_misalignment/sequential_joint_inverse/generate_joint_machine_scans.jl
 
+julia --project=. `
+  sextupole_misalignment/quadrupole_orbit_correction/generate_corrected_joint_machine_scans.jl
+
+julia --project=. `
+  sextupole_misalignment/quadrupole_orbit_correction/generate_gtpsa_noisy_corrected_joint_machine_scans.jl
+
 wsl.exe -d Ubuntu-Bmad -- `
   /home/joeyfurina/miniforge3/envs/bmad/bin/python `
   '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/analyze_joint_inverse.py'
 
 wsl.exe -d Ubuntu-Bmad -- `
   /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/analyze_joint_inverse.py' `
+  --comparison-case with_quadrupole_misalignment_corrected `
+  --output-dir '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/joint_inverse_analysis_corrected'
+
+wsl.exe -d Ubuntu-Bmad -- `
+  /home/joeyfurina/miniforge3/envs/bmad/bin/python `
   '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/validate_joint_inverse.py' `
+  --write-report
+
+wsl.exe -d Ubuntu-Bmad -- `
+  /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/validate_joint_inverse.py' `
+  --comparison-case with_quadrupole_misalignment_corrected `
+  --analysis-dir '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/joint_inverse_analysis_corrected' `
+  --write-report
+
+wsl.exe -d Ubuntu-Bmad -- `
+  /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/analyze_joint_inverse.py' `
+  --comparison-case with_quadrupole_misalignment_gtpsa_noisy_corrected `
+  --output-dir '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/joint_inverse_analysis_gtpsa_noisy_corrected'
+
+wsl.exe -d Ubuntu-Bmad -- `
+  /home/joeyfurina/miniforge3/envs/bmad/bin/python `
+  '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/validate_joint_inverse.py' `
+  --comparison-case with_quadrupole_misalignment_gtpsa_noisy_corrected `
+  --analysis-dir '/mnt/d/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/joint_inverse_analysis_gtpsa_noisy_corrected' `
   --write-report
 ```
 
