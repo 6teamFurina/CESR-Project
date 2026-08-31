@@ -12,6 +12,9 @@ Manifest.toml
 # Local TeX/font caches and rendered PDF verification pages.
 tmp/
 
+# Local sextupole-misalignment manuscript source and rendered paper.
+sextupole_misalignment/paper/
+
 # Local persistent context for Codex; not part of the published project.
 PROJECT_MEMORY.md
 bmad_to_scibmad_missing_translations_issue.md
@@ -52,3 +55,4 @@ orbit/chapter_01_nonlinear_response_rho_sweep/results/latest_cesr/chunks/*/run.s
 # Chapter 2 per-direction element tables are large generated intermediates.
 # Keep the compact element/family summaries and reconstruction diagnostics.
 orbit/chapter_02_lattice_element_attribution/results/latest_cesr/*/element_direction_contributions.csv
+sextupole_misalignment/MANUSCRIPT_DRAFT.md
