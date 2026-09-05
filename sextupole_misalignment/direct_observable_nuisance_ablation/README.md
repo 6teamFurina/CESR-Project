@@ -1,10 +1,9 @@
-# Direct-observable nuisance ablation
+# Frozen all-target direct-orbit baseline
 
-This directory studies whether the two-dimensional magnetic center of a target
-sextupole can be recovered by changing its `K2` strength and the local orbit
-bump, then fitting directly measurable beam responses. It also tests how
-closed orbit and additional direct observables behave in the presence of
-unknown offsets on the other sextupoles and quadrupole strength errors.
+This directory retains the all-76-sextupole orbit-only oracle baseline and the
+shared thin-source fitting functions used by related studies. The early
+direct-observable selection and K1-scan pilots were archived on 2026-09-05 in
+[`../archived_methods/direct_observable_k1_pilots/`](../archived_methods/direct_observable_k1_pilots/README.md).
 
 All forward lattice calculations use the repaired latest SciBmad CESR lattice,
 `Latest_Lattice/latest_cesr_scibmad_repaired.jl`. Python is used only to read
@@ -32,25 +31,7 @@ coordinates at the target sextupole as fit inputs. It is therefore an
 only BPM orbits are available. The finite-BPM successor study is maintained in
 `../finite_bpm_inversion/`.
 
-## Actively varied inputs
-
-Two main protocols must be distinguished.
-
-### A. Direct-observable paired pilot
-
-This pilot tests only `SEX_09AW`. Each latent realization uses:
-
-| Input/intervention | Values | Points |
-|---|---|---:|
-| Target-sextupole `delta K2` | `-0.02, -0.01, 0, +0.01, +0.02 m^-3` | 5 |
-| Commanded local orbit bump | A 3×3 grid with x/y values `-0.5, 0, +0.5 mm` | 9 |
-| Quadrupole `K1` command | Nominal; no active K1 scan | 1 |
-
-Each realization therefore contains `9 × 5 = 45` primary scan states. Eight
-realizations give 360 primary states, in addition to the corrector, launch,
-and energy probes required for the direct readbacks.
-
-### B. All-76 economical orbit-only protocol
+## Scan protocol
 
 This protocol treats each of the 76 active normal sextupoles as the target in
 turn:
@@ -71,15 +52,6 @@ Eight independent latent realizations are generated for every target, giving
 physical lattice in every realization still contains random quadrupole
 strength errors.
 
-### Separate K1 ablation
-
-`results/sex_09aw_k1_orbit_ablation/` separately tests nominal strength and
-one-at-a-time `+/-1%` changes of `QX4D`, `Q18W`, and `Q24E`, giving seven K1
-conditions. Across the same eight `SEX_09AW` realizations, the orbit-only RMSE
-changes from `2.940 µm` without a K1 scan to `2.960 µm` with all seven K1
-conditions. The economical protocol therefore omits active K1 scanning. This
-does not remove the latent quadrupole strength errors.
-
 ## Measured observables
 
 ### Closed orbit
@@ -93,27 +65,6 @@ m = (x_1, y_1, ..., x_111, y_111).
 
 There are therefore 222 closed-orbit channels per state. The all-76 protocol
 uses only these BPM closed-orbit responses as measured fit outputs.
-
-### Additional direct readbacks in the paired pilot
-
-These quantities are produced through their corresponding measurement
-processes. Internal simulator labels such as ideal `beta`, `phase`, or a
-coupling coefficient are not inserted directly as machine observations.
-
-| Physical quantity | Directly measured quantity used in this study |
-|---|---|
-| Phase/beta information | BPM trajectory differences following known position/angle launches |
-| Coupling | Cross-plane components of the same launch-response measurement |
-| Tune | Spectral peak or fitted frequency from a synthesized turn-by-turn BPM trajectory |
-| Dispersion | BPM orbit difference under a symmetric fixed-energy `delta=+/-0.001` probe |
-| Chromaticity | Tune shift under the same fixed-energy probe |
-| Orbit response matrix | Closed-orbit finite differences of the physical correctors `HKICK_9AW` and `VX6D`, using a `1e-6` probe field |
-
-The RF cavities in the current SciBmad lattice are harmonic masters. Directly
-changing their stored `rf_frequency` does not define an independent
-equilibrium-energy state. The dispersion and chromaticity measurements
-therefore use a fixed beam-energy delta probe and are not labeled as an RF
-frequency scan.
 
 ## Latent truth and nuisance variables
 
@@ -144,27 +95,6 @@ The present results are therefore noise-free structural benchmarks. In
 particular, the frozen all-76 inverse reads the exact target-local x/y orbit in
 order to isolate and validate the sextupole-response inverse before adding
 local-orbit reconstruction.
-
-## Direct-observable paired-pilot results
-
-`results/sex_09aw_paired_pilot/` contains eight paired latent realizations for
-`SEX_09AW`. The observable blocks currently use equal structural block
-weighting because measured covariance has not yet been supplied.
-
-| Fit inputs | 2D RMSE | Median | P90 | Paired wins over orbit only / 8 |
-|---|---:|---:|---:|---:|
-| Orbit only | 2.829 µm | 2.930 µm | 3.879 µm | — |
-| Orbit + feed-down direct readbacks | 6.923 µm | 5.203 µm | 9.802 µm | 2 |
-| Orbit + all direct except chromaticity | 10.298 µm | 9.071 µm | 15.877 µm | 2 |
-| Orbit + all direct | 185.943 µm | 62.342 µm | 264.801 µm | 0 |
-
-This is not evidence that the direct observables contain no useful
-information. It shows that measurements with different physical forward
-models cannot be inserted with equal weight into one zero-at-center feed-down
-equation without suitable response models and covariance. In particular, a
-centered sextupole has an intrinsic chromatic response, so its chromaticity K2
-slope does not obey the zero-center relation used by ordinary feed-down
-channels.
 
 ## Frozen results for all 76 sextupoles
 
@@ -223,33 +153,29 @@ first recovers the beam-relative center, then reconstructs the nominal local
 orbit from finite BPM data, and finally compares two-stage and joint-MAP
 absolute-offset inversion.
 
-## Reproduce
+## Reproduction
 
-Run the SciBmad forward calculation from `CESR Project/`:
+Run from `CESR Project/` with the pinned Julia environment and a Python
+environment containing NumPy, SciPy, and Matplotlib:
 
-```powershell
-$env:JULIA_PKG_PRECOMPILE_AUTO='0'
-julia --project=. sextupole_misalignment\direct_observable_nuisance_ablation\generate_paired_scan.jl
+```bash
+julia --startup-file=no --project=. sextupole_misalignment/direct_observable_nuisance_ablation/generate_all_targets_orbit_protocol.jl
+python -B sextupole_misalignment/direct_observable_nuisance_ablation/analyze_all_targets_orbit_protocol.py
 ```
 
-The Python analysis requires NumPy, SciPy, and Matplotlib:
+The generator protects existing output unless overwrite is explicitly enabled.
+The Python analysis reads the saved SciBmad states and performs inversion and
+plotting only.
 
-```powershell
-python sextupole_misalignment\direct_observable_nuisance_ablation\analyze_paired_scan.py `
-  --turns=512 --fft-size=32768
-```
+## Archived pilot studies and shared code
 
-The Python step performs inversion and plotting only; it does not run Bmad,
-Tao, or PyTao.
+The [pilot archive](../archived_methods/direct_observable_k1_pilots/README.md)
+contains the direct-observable comparison, K1-scan negative result, their four
+experiment scripts, and both saved pilot tensors. It also documents the
+bump/K2 subsampling comparison.
 
-## Other protocol comparisons
-
-`analyze_protocol_subsampling.py` refits strict subsets of the same 9-bump by
-5-K2 tensors. Across the present eight noise-free latent worlds, three versus
-five K2 points changes RMSE by less than `0.0001 µm`. The five-point axial
-cross gives `2.939 µm`, the full nine-point grid gives `4.249 µm`, and five
-corners plus center gives `16.507 µm`. The cross-versus-grid reversal is model
-discrepancy between the shared thin-source fit and diagonal finite-amplitude
-states; it must not be interpreted as evidence that less data are inherently
-better.
-
+`analyze_protocol_subsampling.py` remains here because the all-target analyzer
+imports its `fit_center` and `k2_slope` functions. Its command-line default now
+reads the relocated pilot tensor; this path change does not alter the shared
+fitting functions. The all-target frozen tensor remains at
+`results/all_76_orbit_protocol/` for the finite-BPM comparisons.

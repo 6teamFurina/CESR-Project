@@ -1,0 +1,16 @@
+bpm_count = 111
+bpm_gain_rms = 0.01
+corrector_count = 62
+corrector_gain_rms = 0.01
+date = "2026-09-05"
+format = "cesr-sequential-joint-paired-latents-v1"
+k2_gain_rms = 0.01
+machine_count = 16
+pairing = "all latent arrays are shared by both physical cases"
+quadrupole_alignment_standard_normals = "unit Gaussian x/y draws; multiply by the case metadata RMS"
+quadrupole_count = 113
+quadrupole_roll_rms_rad = 0.001
+quadrupole_strength_halfwidth_fraction = 0.01
+random_seed_base = 20260823
+sextupole_offset_rms_m_per_plane = 0.0003
+target_count = 76

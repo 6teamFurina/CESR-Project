@@ -1,0 +1,39 @@
+{
+  "format": "cesr-full-error-burst-size-sweep-v1",
+  "date": "2026-09-05",
+  "lattice": "/Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/Latest_Lattice/latest_cesr_scibmad_repaired.jl",
+  "source_case": "with_all_errors_gtpsa_nominal_corrected",
+  "machine_count": 16,
+  "target_count": 76,
+  "stochastic_augmentations": 32,
+  "burst_sizes": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128
+  ],
+  "signal_reads_per_state": 3072,
+  "reference_cycle_interval_signal_reads": 256,
+  "reference_calibration_reads_per_bump": 32,
+  "bpm_noise_rms_m_per_read": 5e-06,
+  "core_only_drift_endpoint_rms_m": 1e-05,
+  "measurement_seed": 20261230,
+  "paired_random_semantics": "identical latent machines and seeds; identical standardized Gaussian draws because every burst retains the same stochastic-array shapes",
+  "changed_variable": "consecutive signal turns per fixed physical state visit",
+  "fixed_quantities": "all maintained latent errors, exact SciBmad observations, nominal GTPSA models, total signal reads, reference count, calibration, noise priors, filter, and fixed-template inverse",
+  "drift_time_semantics": "one random-walk step per BPM acquisition; total acquisitions are equal across bursts; hardware settling time is not yet included",
+  "truth_boundary": "all burst-indexed machine-facing estimates persisted before exact reference or sextupole offsets were opened",
+  "production_b1_max_abs_differences_m": {
+    "unfiltered_fixed_template_relative_center_estimates": 0.0,
+    "unfiltered_fixed_template_absolute_offset_estimates": 0.0,
+    "filtered_fixed_template_relative_center_estimates": 3.242848697904144e-16,
+    "filtered_fixed_template_absolute_offset_estimates": 3.242848697904144e-16,
+    "unfiltered_bpm_state_error_rms_m": 0.0,
+    "filtered_bpm_state_error_rms_m": 3.662623403486798e-19
+  },
+  "analysis_seconds": 28.336317777633667
+}

@@ -20,8 +20,9 @@
   "orbit_correction_response": "one nominal theoretical SciBmad/GTPSA ORM; no finite-difference ORM and no realized gain/error scaling",
   "observable_readback_provenance": "pre-materialized by the Julia forward generator; no BPM-gain latent is opened by the inverse process",
   "hidden_state_inverse": "two-dimensional local-orbit random walk with periodic same-bump K2=0 references and finite calibration nuisance marginalization",
+  "profiled_optimizer_jacobian": "exact analytic variable-projection Jacobian; no numerical finite difference",
   "machine_facing_inputs": "observable BPM readbacks, commanded bump/K2 states, nominal SciBmad/GTPSA order-one response/transport, and declared stochastic priors",
   "unknown_to_inverse": "all sextupole offsets, BPM/corrector/K2 gain realizations, quadrupole strength/roll/alignment realizations, exact target orbit, and realized drift direction/trajectory",
   "truth_boundary": "exact target orbits and sextupole offsets loaded only after all machine-facing products were persisted",
-  "analysis_seconds": 329.15099596977234
+  "analysis_seconds": 417.01269721984863
 }

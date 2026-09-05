@@ -1,0 +1,117 @@
+{
+  "date": "2026-09-05",
+  "python": "/Users/furinaovo/miniforge3/envs/cesr-analysis/bin/python",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "numpy": "2.5.2",
+  "scipy": "1.18.0",
+  "source": "/Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/sextupole_misalignment/sequential_joint_inverse/results/exact_joint_machines/with_all_errors_gtpsa_nominal_corrected",
+  "lattice": "/Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/Latest_Lattice/latest_cesr_scibmad_repaired.jl",
+  "machines": 1,
+  "targets": 76,
+  "stochastic_realizations": 1,
+  "online_timing_semantics": "warm in-memory single-machine 76-target passes; excludes hardware, raw streaming accumulation, file IO and model/operator setup",
+  "setup": {
+    "load_and_build_local_orbit_model_seconds": 0.011203000001842156,
+    "source_templates_from_saved_gtpsa_maps_seconds": 0.01899912499357015,
+    "build_protocol_seconds": 0.0012720830127364025,
+    "simulation_only_brownian_covariance_seconds": 0.0072802500071702525,
+    "state_space_operators_all_targets_seconds": 0.24586158592137508,
+    "simulation_only_observable_generation_seconds": 0.005785832996480167
+  },
+  "kernels": {
+    "bpm_to_sextupole_local_and_reference_orbit": {
+      "median_seconds": 0.0005808339919894934,
+      "min_seconds": 0.0005452089972095564,
+      "max_seconds": 0.0006476669950643554,
+      "samples_seconds": [
+        0.0006038340070517734,
+        0.0005910839972784743,
+        0.0005602500023087487,
+        0.0006476669950643554,
+        0.000562999994144775,
+        0.0005518750112969428,
+        0.0006076669960748404,
+        0.0005808339919894934,
+        0.0005498750106198713,
+        0.0005452089972095564,
+        0.0005836670025018975
+      ]
+    },
+    "reference_projection": {
+      "median_seconds": 0.0008957499958341941,
+      "min_seconds": 0.0008162919984897599,
+      "max_seconds": 0.0009921669989125803,
+      "samples_seconds": [
+        0.000991875000181608,
+        0.0009921669989125803,
+        0.0009259170037694275,
+        0.0008767499966779724,
+        0.000888458002009429,
+        0.0008494159992551431,
+        0.0008162919984897599,
+        0.0008957499958341941,
+        0.0008399590005865321,
+        0.0009295829950133339,
+        0.0009154590079560876
+      ]
+    },
+    "state_smoother_and_bpm_correction": {
+      "median_seconds": 0.00046979199396446347,
+      "min_seconds": 0.0004530829901341349,
+      "max_seconds": 0.0005029169988119975,
+      "samples_seconds": [
+        0.000466583005618304,
+        0.0004625000001396984,
+        0.0004986660060239956,
+        0.00046979199396446347,
+        0.00045529199996963143,
+        0.0004530829901341349,
+        0.00048170900845434517,
+        0.0004543329996522516,
+        0.00047450000420212746,
+        0.00047729200741741806,
+        0.0005029169988119975
+      ]
+    },
+    "slopes_fixed_template_inverse_and_absolute_offset": {
+      "median_seconds": 0.002959083009045571,
+      "min_seconds": 0.0029233750101411715,
+      "max_seconds": 0.003101500013144687,
+      "samples_seconds": [
+        0.002959083009045571,
+        0.003101500013144687,
+        0.002951707996544428,
+        0.0029241250013001263,
+        0.003067665995331481,
+        0.003034374996786937,
+        0.003059292008401826,
+        0.0029233750101411715,
+        0.0029761670011794195,
+        0.0029485420091077685,
+        0.002928874993813224
+      ]
+    }
+  },
+  "all_comparison_estimators_seconds": 1.5720778329996392,
+  "fixed_path_vs_production_max_abs_m": 0.0,
+  "acquisition": {
+    "signal_reads_per_target": 24576,
+    "reference_reads_per_target": 156,
+    "calibration_reads_per_target": 160,
+    "total_reads_per_target": 24892,
+    "total_reads_all_targets": 1891792,
+    "full_bpm_vectors_per_acquisition": 1,
+    "real_hardware_effective_rate_hz": null,
+    "settling_time_seconds": null
+  },
+  "limitations": [
+    "One latent machine and one stochastic realization; timings are workstation-specific.",
+    "Reference-projection timing uses nominal-space residuals reconstructed from saved simulation statistics.",
+    "Latest-lattice straight multipoles in a curved reference remain an approximation; no girder pitch is varied."
+  ],
+  "thread_settings": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "VECLIB_MAXIMUM_THREADS": "1"
+  }
+}

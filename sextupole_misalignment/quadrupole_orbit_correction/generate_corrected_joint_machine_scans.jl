@@ -2,13 +2,15 @@
 
 """Generate sextupole scans after a fixed BPM-reference orbit correction.
 
-For every latent machine, this script first measures a corrector-to-BPM
-response matrix in the paired zero-quadrupole-offset state.  It then applies
-the 50-micrometer/plane quadrupole offsets, solves one baseline correction from
-the stored reference BPM readback, and holds that baseline command fixed while
-all selected sextupoles are scanned one at a time.  Local bump and K2 commands
-are superposed on the fixed corrected machine; no latent quadrupole offset or
-target-local orbit is supplied to the correction or inverse.
+By default, one theoretical corrector-to-BPM response matrix is calculated
+from the nominal latest-lattice SciBmad/GTPSA model and reused for every latent
+machine.  The script then applies the 50-micrometer/plane quadrupole offsets,
+solves one baseline correction from the stored reference BPM readback, and
+holds that baseline command fixed while all selected sextupoles are scanned
+one at a time.  Local bump and K2 commands are superposed on the fixed
+corrected machine; no latent quadrupole offset or target-local orbit is
+supplied to the correction or inverse.  The historical finite-difference ORM
+remains available only through an explicit command-line selection.
 """
 
 include(joinpath(@__DIR__, "run_quadrupole_orbit_correction.jl"))
@@ -931,7 +933,7 @@ function generate_corrected_joint_case(
         "paired_case_latents" => "same draws as zero-offset and uncorrected cases; only quadrupole alignment and recorded baseline correction differ",
         "baseline_orbit_correction_applied" => true,
         "baseline_reference_semantics" => "paired BPM closed orbit with quadrupole alignment offsets disabled; not BPM zero",
-        "baseline_solver_inputs" => "reference/current BPM readbacks and zero-offset response only; latent offsets and target orbit excluded",
+        "baseline_solver_inputs" => "reference/current BPM readbacks and the configured model response only; latent offsets and target orbit excluded",
         "baseline_response_method" => baseline_response_method == "gtpsa" ?
             "reference_gtpsa_orm" : "reference_finite_difference_orm",
         "baseline_gtpsa_response_model" => gtpsa_response_model,
@@ -1046,15 +1048,15 @@ function main_corrected_scans(args=ARGS)
         "k2-amplitude-m3" => "1.0e-1",
         "drift-halfwidth-m" => "5.0e-6",
         "bump-knobs-csv" => JOINT_BUMP_KNOBS,
-        "baseline-response-method" => "finite_difference",
-        "gtpsa-response-model" => "realized",
+        "baseline-response-method" => "gtpsa",
+        "gtpsa-response-model" => "nominal",
         "target-parallelism" => "serial",
         "scan-thread-count" => "0",
         "thread-equivalence-check" => "true",
         "response-step" => "1.0e-6",
         "validate-gtpsa-with-finite-difference" => "false",
-        "correction-bpm-noise-rms-m" => "0.0",
-        "correction-measurement-repeats" => "1",
+        "correction-bpm-noise-rms-m" => "5.0e-6",
+        "correction-measurement-repeats" => "3072",
         "correction-noise-seed" => "20261123",
         "ridge-ratio" => "1.0e-2",
         "relative-svd-cutoff" => "1.0e-8",
@@ -1062,7 +1064,7 @@ function main_corrected_scans(args=ARGS)
         "tolerance-m" => "1.0e-7",
         "max-update" => "0.0",
         "line-search-steps" => "8",
-        "corrected-case-name" => CORRECTED_JOINT_CASE,
+        "corrected-case-name" => GTPSA_NOMINAL_CORRECTED_CASE,
         "include-reference-case" => "false",
         "output-root" => CORRECTED_SCAN_ROOT,
         "overwrite" => "false",

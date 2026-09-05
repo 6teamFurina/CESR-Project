@@ -1,0 +1,12 @@
+source_relative_to_study	destination_relative_to_study	file_count	logical_bytes	status	completed_at_utc
+quadrupole_affinity/generate_bmad_affinity_responses.py	archived_methods/bmad_quadrupole_affinity/generate_bmad_affinity_responses.py	1	24802	moved	2026-09-05T16:38:16.395947+00:00
+quadrupole_affinity/validate_nominal_responses.py	archived_methods/bmad_quadrupole_affinity/validate_nominal_responses.py	1	4977	moved	2026-09-05T16:38:16.396076+00:00
+quadrupole_affinity/results/responses	archived_methods/bmad_quadrupole_affinity/results/responses	81	97935986	moved	2026-09-05T16:38:16.396768+00:00
+quadrupole_affinity/results/affinity	archived_methods/bmad_quadrupole_affinity/results/affinity	11	1414764	moved	2026-09-05T16:38:16.396975+00:00
+direct_observable_nuisance_ablation/generate_paired_scan.jl	archived_methods/direct_observable_k1_pilots/generate_paired_scan.jl	1	14798	moved	2026-09-05T16:38:16.397101+00:00
+direct_observable_nuisance_ablation/analyze_paired_scan.py	archived_methods/direct_observable_k1_pilots/analyze_paired_scan.py	1	18514	moved	2026-09-05T16:38:16.397177+00:00
+direct_observable_nuisance_ablation/generate_k1_orbit_ablation.jl	archived_methods/direct_observable_k1_pilots/generate_k1_orbit_ablation.jl	1	8819	moved	2026-09-05T16:38:16.397266+00:00
+direct_observable_nuisance_ablation/analyze_k1_orbit_ablation.py	archived_methods/direct_observable_k1_pilots/analyze_k1_orbit_ablation.py	1	4176	moved	2026-09-05T16:38:16.402498+00:00
+direct_observable_nuisance_ablation/results/sex_09aw_paired_pilot	archived_methods/direct_observable_k1_pilots/results/sex_09aw_paired_pilot	23	6478958	moved	2026-09-05T16:38:16.402887+00:00
+direct_observable_nuisance_ablation/results/sex_09aw_k1_orbit_ablation	archived_methods/direct_observable_k1_pilots/results/sex_09aw_k1_orbit_ablation	8	1514147	moved	2026-09-05T16:38:16.403092+00:00
+interleaved_measurement_protocol	archived_methods/interleaved_measurement_protocol	10	2980076	moved	2026-09-05T16:38:16.403405+00:00

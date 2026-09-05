@@ -120,8 +120,11 @@ python 'CESR Project/sextupole_misalignment/quadrupole_affinity/validate_quadrup
 ```
 
 Response bundles are resumable by target and candidate condition. Results are
-kept under `results/scibmad_latest`, separate from the archived Bmad/Tao
-prototype. Both static and interactive heatmaps use target sextupole on the
+kept under `results/scibmad_latest`, separate from the
+[archived Bmad/Tao prototype](../archived_methods/bmad_quadrupole_affinity/README.md).
+The old Bmad generator, comparison validator, and `results/responses` and
+`results/affinity` trees were moved there on 2026-09-05. Both static and
+interactive heatmaps use target sextupole on the
 x-axis and quadrupole on the y-axis.
 
 ## Repaired-lattice result

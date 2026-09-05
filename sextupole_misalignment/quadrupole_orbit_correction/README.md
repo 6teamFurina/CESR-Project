@@ -15,17 +15,19 @@ SciBmad lattice:
 3. corrector-only orbit restoration to the paired reference BPM vector.
 
 The correction solver receives only reference/current BPM readbacks and a
-measured corrector-to-BPM response matrix. It never consumes the latent
-quadrupole offsets or target-sextupole orbit. Two response choices are
-compared: the response stored in the zero-offset reference state and a response
-remeasured in the current offset state.
+corrector-to-BPM response matrix. It never consumes the latent quadrupole
+offsets or target-sextupole orbit. The maintained scan generator now defaults
+to one theoretical response calculated from the nominal latest-lattice
+SciBmad/GTPSA model and reused for every latent machine. A realized-model
+GTPSA response and the historical measured finite-difference responses remain
+explicit comparison options.
 
 The correction basis is the dynamically discovered set of 103 horizontal and
-vertical steering Overlay controls in the repaired latest lattice. The
-corrector response is calculated by one exact RF-on SciBmad batch of central
-finite differences. A coupled horizontal/vertical SVD-ridge inverse then
-proposes corrector commands. Exact scalar closed-orbit solves and a
-backtracking line search verify every accepted update.
+vertical steering Overlay controls in the repaired latest lattice. A coupled
+horizontal/vertical SVD-ridge inverse proposes corrector commands. Exact
+scalar closed-orbit solves and a backtracking line search verify every accepted
+update. Central finite differences are no longer a calculation default; they
+must be requested explicitly and remain useful as an independent validation.
 
 The default ridge scale is `1e-2` times the largest response singular value.
 It deliberately suppresses weak response modes; the setting is a bounded
@@ -100,7 +102,12 @@ Run the corrected workflow from `CESR Project/`:
 
 ```powershell
 julia --project=. `
-  sextupole_misalignment/quadrupole_orbit_correction/generate_corrected_joint_machine_scans.jl
+  sextupole_misalignment/quadrupole_orbit_correction/generate_corrected_joint_machine_scans.jl `
+  --baseline-response-method=finite_difference `
+  --gtpsa-response-model=realized `
+  --correction-bpm-noise-rms-m=0.0 `
+  --correction-measurement-repeats=1 `
+  --corrected-case-name=with_quadrupole_misalignment_corrected
 
 python `
   sextupole_misalignment/sequential_joint_inverse/analyze_joint_inverse.py `
@@ -196,13 +203,16 @@ unify that registry before drawing calibration conclusions.
 
 ## Nominal GTPSA ORM and threaded full-error scan (2026-08-30)
 
-`generate_gtpsa_nominal_corrected_joint_machine_scans.jl` adds the stricter
-unknown-calibration experiment.  A single theoretical 222-by-103 ORM is built
-from the nominal latest-lattice SciBmad/GTPSA periodic closed-orbit Jacobian
-and reused for all 16 latent machines.  Production explicitly disables the
-central-finite-difference ORM check, and the response is not scaled by realized
-BPM gains, corrector gains, quadrupole errors, or alignment errors.  Those
-realizations remain embedded only in the simulated BPM observations.
+`generate_corrected_joint_machine_scans.jl` now defaults to this stricter
+unknown-calibration experiment; the named
+`generate_gtpsa_nominal_corrected_joint_machine_scans.jl` wrapper fixes the
+complete maintained acquisition protocol.  A single theoretical 222-by-103
+ORM is built from the nominal latest-lattice SciBmad/GTPSA periodic
+closed-orbit Jacobian and reused for all 16 latent machines.  Production
+explicitly disables the central-finite-difference ORM check, and the response
+is not scaled by realized BPM gains, corrector gains, quadrupole errors, or
+alignment errors.  Those realizations remain embedded only in the simulated
+BPM observations.
 
 With 5-micrometer RMS BPM noise per read averaged over 3,072 reads, the nominal
 response correction reduces aggregate BPM-coordinate RMS from 860.882 to

@@ -1,0 +1,4 @@
+┌ Warning: Straight multipoles are being used in a curved reference system. Maxwell's equations in free space are not satisfied.
+└ @ BeamTrackingBeamlinesExt ~/.julia/packages/BeamTracking/Fzh4e/ext/BeamTrackingBeamlinesExt/yoshida_bl.jl:374
+Wrote local-orbit models to /Users/furinaovo/Documents/Accelerator Physics/Ring_Design_Development/CESR Project/sextupole_misalignment/finite_bpm_inversion/results/runtime_breakdown_20260905/local_orbit_model
+BPM / target / corrector counts: 111 / 76 / 62

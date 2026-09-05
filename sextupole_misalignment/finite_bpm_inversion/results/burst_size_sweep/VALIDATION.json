@@ -1,0 +1,25 @@
+{
+  "format": "cesr-full-error-burst-size-sweep-validation-v1",
+  "status": "PASS",
+  "burst_sizes": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128
+  ],
+  "array_shape": [
+    8,
+    32,
+    16,
+    76,
+    2
+  ],
+  "maximum_summary_recalculation_difference": 0.0,
+  "production_b1_max_abs_difference_m": 3.242848697904144e-16,
+  "truth_persistence_order_check": "PASS",
+  "protocol_invariants_check": "PASS"
+}

@@ -88,6 +88,59 @@ def source_matrix(local_xy_m: np.ndarray, center_m: np.ndarray) -> np.ndarray:
     return np.column_stack((0.5 * (x * x - y * y), x * y))
 
 
+def profiled_source_has_full_rank(
+    local_xy_m: np.ndarray, center_m: np.ndarray
+) -> bool:
+    """Return whether both profiled sextupole source columns are identifiable."""
+    source = source_matrix(local_xy_m, center_m)
+    tolerance = 1.0e-12 * np.linalg.norm(source, 2)
+    return bool(np.linalg.matrix_rank(source, tol=tolerance) == 2)
+
+
+def profiled_residual_and_jacobian(
+    normalized_slopes: np.ndarray,
+    local_xy_m: np.ndarray,
+    center_m: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return the profiled residual and its exact center Jacobian.
+
+    The two propagation vectors are linear nuisance parameters.  Differentiating
+    their normal equations gives the exact variable-projection derivative, so
+    the nonlinear optimizer never requests a numerical finite difference.
+    """
+    local = np.asarray(local_xy_m, dtype=float)
+    center = np.asarray(center_m, dtype=float)
+    normalized = np.asarray(normalized_slopes, dtype=float)
+    source = source_matrix(local, center)
+    if not profiled_source_has_full_rank(local, center):
+        raise ValueError("Profiled center source matrix is rank deficient")
+    propagation = np.linalg.lstsq(source, normalized, rcond=1.0e-12)[0]
+    residual = source @ propagation - normalized
+
+    x = local[:, 0] - center[0]
+    y = local[:, 1] - center[1]
+    source_derivatives = (
+        np.column_stack((-x, -y)),
+        np.column_stack((y, -x)),
+    )
+    gram = source.T @ source
+
+    jacobian = np.empty((residual.size, 2))
+    for parameter, source_derivative in enumerate(source_derivatives):
+        propagation_derivative = np.linalg.solve(
+            gram,
+            -(
+                source_derivative.T @ residual
+                + source.T @ source_derivative @ propagation
+            ),
+        )
+        residual_derivative = (
+            source_derivative @ propagation + source @ propagation_derivative
+        )
+        jacobian[:, parameter] = residual_derivative.ravel()
+    return residual.ravel(), jacobian
+
+
 def fit_profiled_center(
     slopes: np.ndarray,
     local_xy_m: np.ndarray,
@@ -98,11 +151,24 @@ def fit_profiled_center(
     positive = channel_scale[np.isfinite(channel_scale) & (channel_scale > 0)]
     floor = np.median(positive) * 1.0e-8 if positive.size else 1.0
     normalized = slopes / np.maximum(channel_scale, floor)
+    cached_center: np.ndarray | None = None
+    cached_evaluation: tuple[np.ndarray, np.ndarray] | None = None
+
+    def evaluate(center: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        nonlocal cached_center, cached_evaluation
+        if cached_center is None or not np.array_equal(center, cached_center):
+            cached_center = np.array(center, dtype=float, copy=True)
+            cached_evaluation = profiled_residual_and_jacobian(
+                normalized, local_xy_m, cached_center
+            )
+        assert cached_evaluation is not None
+        return cached_evaluation
 
     def residual(center: np.ndarray) -> np.ndarray:
-        source = source_matrix(local_xy_m, center)
-        propagation = np.linalg.lstsq(source, normalized, rcond=1.0e-12)[0]
-        return (source @ propagation - normalized).ravel()
+        return evaluate(center)[0]
+
+    def jacobian(center: np.ndarray) -> np.ndarray:
+        return evaluate(center)[1]
 
     raw_starts = (
         np.zeros(2),
@@ -117,10 +183,18 @@ def fit_profiled_center(
         np.clip(start, -center_bound_m + margin, center_bound_m - margin)
         for start in raw_starts
     ]
+    starts = [
+        start
+        for start in starts
+        if profiled_source_has_full_rank(local_xy_m, start)
+    ]
+    if not starts:
+        raise ValueError("No full-rank profiled center start is available")
     solutions = [
         least_squares(
             residual,
             start,
+            jac=jacobian,
             bounds=(-center_bound_m, center_bound_m),
             xtol=1.0e-12,
             ftol=1.0e-12,
@@ -1042,6 +1116,10 @@ model, not an optimized CESR acquisition order.
         "machine_facing_inputs": (
             "BPM observable readbacks, known bump/K2 commands, nominal "
             "SciBmad/GTPSA control responses and order-one transport"
+        ),
+        "profiled_optimizer_jacobian": (
+            "exact analytic variable-projection Jacobian; no numerical "
+            "finite difference"
         ),
         "generated_seconds": time.time() - started,
     }

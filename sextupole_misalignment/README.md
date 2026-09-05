@@ -9,8 +9,10 @@ unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
 
 ## Maintained studies
 
-- `direct_observable_nuisance_ablation/` contains the scan-conditioned
-  bump-by-`K2` magnetic-center estimator and its nuisance/protocol ablations.
+- `direct_observable_nuisance_ablation/` retains the frozen all-target
+  bump-by-`K2` oracle baseline and shared fitting functions. The early
+  direct-observable and K1 pilots are in
+  `archived_methods/direct_observable_k1_pilots/`.
 - `finite_bpm_inversion/` studies the replacement of exact target-local orbit
   coordinates by finite BPM information.  Its full-error extension uses one
   nominal theoretical GTPSA correction ORM, two-sided order-one GTPSA local-
@@ -25,10 +27,6 @@ unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
 - `real_machine_nuisance_ablation/` adds BPM/corrector gain, K2 calibration,
   quadrupole strength/roll/misalignment, scan-time drift, and BPM noise one at
   a time to the finite-BPM center inverse.
-- `interleaved_measurement_protocol/` compares blocked and interleaved
-  `0,+,0,-,0` acquisition, repeated per-point averaging, correlated random-walk
-  drift, and BPM white noise while all sextupole offsets remain hidden and
-  quadrupole misalignment is disabled.
 - `quadrupole_affinity/` studies quadrupole selection and nuisance leverage on
   the latest repaired lattice.
 - `sextupole_misalignment_only_bpm_taylor_map/` is the isolated 76-sextupole
@@ -98,13 +96,21 @@ unresolved quadrupole-misalignment problem, see [`EXPLAINER.md`](EXPLAINER.md).
 
 ## `archived_methods/`
 
-This folder preserves the two historical studies built around the older
-`older_ring_version/cesr_model.jl` lattice and nominal/conditioned response dictionaries:
+This folder preserves historical methods and completed protocol comparisons.
+The lattice and engine are identified separately for each archived study:
 
 - `response_map/`: the 76-sextupole `Kn2`/offset GTPSA response map and local
   SVD baseline;
 - `targeted_bump_k2_inversion/`: the P0--P3 and P1/P2 source-reconstruction
   experiments that consume the historical response map.
+- `bmad_quadrupole_affinity/`: the old Bmad/Tao affinity reference and its
+  saved-response comparison against SciBmad/GTPSA.
+- `direct_observable_k1_pilots/`: the latest-lattice SciBmad direct-observable
+  selection and orbit-only K1-scan pilots.
+- `interleaved_measurement_protocol/`: the latest-lattice SciBmad-based
+  blocked/interleaved, repeated-read, and drift comparison.
 
 They remain useful for provenance and method comparison, but are not the
 default starting point for new sextupole-alignment calculations.
+See the [archive index](archived_methods/README.md) for reproducibility boundaries
+and the completed relocation manifest.

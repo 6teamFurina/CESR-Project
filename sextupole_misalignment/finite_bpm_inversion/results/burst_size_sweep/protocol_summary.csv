@@ -1,0 +1,9 @@
+burst_size,visits_per_signal_state,idealized_signal_state_visits,reference_cycle_count,reference_event_count,total_signal_turns,total_protocol_acquisitions,physical_state_visits_excluding_calibration,physical_state_switches_excluding_calibration,bump_changes_excluding_calibration,k2_changes_excluding_calibration
+1,3072,24576,13,156,24576,24732,24732,24731,12287,24692
+2,1536,12288,13,156,24576,24732,12444,12443,6143,12404
+4,768,6144,13,156,24576,24732,6300,6299,3071,6260
+8,384,3072,13,156,24576,24732,3228,3227,1535,3188
+16,192,1536,13,156,24576,24732,1692,1691,767,1652
+32,96,768,13,156,24576,24732,924,923,383,884
+64,48,384,13,156,24576,24732,540,539,191,500
+128,24,192,13,156,24576,24732,348,347,95,307

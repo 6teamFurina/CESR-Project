@@ -13,13 +13,16 @@ balanced K2-sign/bump-sign signal states are repeated
 3,072 times.  Every 256
 cycles and at the endpoint, same-bump K2=0 references observe a hidden
 two-plane local-orbit random walk.  Their finite 32-read
-calibration errors are marginalized rather than treated as exact.
+calibration errors are marginalized rather than treated as exact.  The
+profiled comparison estimator supplies the optimizer with an exact analytic
+variable-projection Jacobian; it does not use SciPy's numerical-difference
+default.
 
 | acquisition | inverse | beam-relative RMSE [um] | relative P99 [um] | absolute-offset RMSE [um] | absolute P99 [um] |
 |---|---|---:|---:|---:|---:|
 | deterministic static | noise-floor profiled BPM/GTPSA | 19.470 | 58.138 | 21.343 | 64.823 |
-| balanced time series | unfiltered profiled BPM/GTPSA | 53.167 | 142.696 | 53.856 | 142.905 |
-| periodic-reference time series | filtered profiled BPM/GTPSA | 53.163 | 142.670 | 53.853 | 142.778 |
+| balanced time series | unfiltered profiled BPM/GTPSA | 53.185 | 142.699 | 53.875 | 142.932 |
+| periodic-reference time series | filtered profiled BPM/GTPSA | 53.179 | 142.685 | 53.869 | 142.845 |
 | deterministic static | reconstructed-orbit fixed GTPSA template | 21.126 | 63.269 | 23.232 | 66.133 |
 | balanced time series | unfiltered fixed GTPSA template | 27.081 | 69.184 | 28.783 | 75.207 |
 | periodic-reference time series | filtered fixed GTPSA template | 27.081 | 69.184 | 28.783 | 75.207 |

@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "date": "2026-09-05",
+  "scope": [
+    "bmad_quadrupole_affinity",
+    "direct_observable_k1_pilots",
+    "interleaved_measurement_protocol"
+  ],
+  "unchanged_result_files": 5642,
+  "moved_files": 139,
+  "moved_paths": 11,
+  "changed_sources": [
+    "archived_methods/bmad_quadrupole_affinity/generate_bmad_affinity_responses.py",
+    "archived_methods/bmad_quadrupole_affinity/validate_nominal_responses.py",
+    "archived_methods/interleaved_measurement_protocol/validate_interleaved_protocol.py",
+    "archived_methods/interleaved_measurement_protocol/analyze_interleaved_protocol.py",
+    "direct_observable_nuisance_ablation/analyze_protocol_subsampling.py",
+    "archived_methods/direct_observable_k1_pilots/analyze_k1_orbit_ablation.py",
+    "archived_methods/direct_observable_k1_pilots/generate_paired_scan.jl",
+    "archived_methods/direct_observable_k1_pilots/generate_k1_orbit_ablation.jl"
+  ],
+  "bmad_comparison_rows": 760,
+  "checks": {
+    "archive_source_locations_absent_and_destinations_present": "PASS",
+    "preserved_result_file_identity_size_and_mtime": "PASS",
+    "saved_bmad_vs_scibmad_comparison": "PASS",
+    "interleaved_existing_validator": "PASS",
+    "python_cli_import_and_help_checks": 7,
+    "julia_generator_includes_latest_lattice_and_bump_knobs": 2,
+    "new_lattice_scans_generated": false,
+    "cryptographic_hash_validation_performed": false
+  },
+  "python_runtime": "/Users/furinaovo/miniforge3/envs/cesr-analysis/bin/python",
+  "deferred": [
+    "sextupole_misalignment_only_bpm_taylor_map",
+    "K1 triplet/exact-11 organization",
+    "older sequential/ORM comparison organization"
+  ]
+}

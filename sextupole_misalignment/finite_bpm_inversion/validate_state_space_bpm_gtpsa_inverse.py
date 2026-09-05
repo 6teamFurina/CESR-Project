@@ -128,6 +128,52 @@ def dense_state_space_check() -> float:
     return difference
 
 
+def analytic_profiled_jacobian_check() -> float:
+    """Check the exact optimizer Jacobian against an independent FD audit."""
+    local_orbits = np.asarray(
+        [
+            (-1.2e-3, 0.1e-3),
+            (0.2e-3, -1.1e-3),
+            (0.0, 0.0),
+            (0.1e-3, 1.3e-3),
+            (1.4e-3, -0.2e-3),
+        ]
+    )
+    center = np.asarray((0.23e-3, -0.17e-3))
+    normalized = np.random.default_rng(71024).normal(size=(5, 12))
+    _, jacobian = analysis.base.profiled_residual_and_jacobian(
+        normalized, local_orbits, center
+    )
+    step = 1.0e-9
+    finite_difference = np.column_stack(
+        [
+            (
+                analysis.base.profiled_residual_and_jacobian(
+                    normalized,
+                    local_orbits,
+                    center + np.eye(2)[parameter] * step,
+                )[0]
+                - analysis.base.profiled_residual_and_jacobian(
+                    normalized,
+                    local_orbits,
+                    center - np.eye(2)[parameter] * step,
+                )[0]
+            )
+            / (2.0 * step)
+            for parameter in range(2)
+        ]
+    )
+    relative_difference = float(
+        np.linalg.norm(jacobian - finite_difference)
+        / max(np.linalg.norm(finite_difference), 1.0e-30)
+    )
+    require(
+        relative_difference <= 1.0e-8,
+        f"Profiled analytic Jacobian difference is {relative_difference}",
+    )
+    return relative_difference
+
+
 def main() -> int:
     with (SOURCE / "scan_metadata.toml").open("rb") as stream:
         scan = tomllib.load(stream)
@@ -318,6 +364,41 @@ def main() -> int:
     )
     nominal_hits = [token for token in nominal_forbidden if token in nominal_block]
     require(not nominal_hits, f"Nominal GTPSA ORM leaks {nominal_hits}")
+    generator_source = (
+        STUDY_ROOT
+        / "quadrupole_orbit_correction"
+        / "generate_corrected_joint_machine_scans.jl"
+    ).read_text(encoding="utf-8")
+    defaults_start = generator_source.index(
+        "function main_corrected_scans(args=ARGS)"
+    )
+    defaults_end = generator_source.index(
+        "options = parse_exact11_options(defaults, args)", defaults_start
+    )
+    defaults_block = generator_source[defaults_start:defaults_end]
+    require(
+        '"baseline-response-method" => "gtpsa"' in defaults_block,
+        "Generic correction generator no longer defaults to GTPSA",
+    )
+    require(
+        '"gtpsa-response-model" => "nominal"' in defaults_block,
+        "Generic correction generator no longer defaults to the nominal model",
+    )
+    require(
+        '"corrected-case-name" => GTPSA_NOMINAL_CORRECTED_CASE'
+        in defaults_block,
+        "Generic correction output is mislabeled as the historical FD case",
+    )
+    require(
+        '"correction-bpm-noise-rms-m" => "5.0e-6"' in defaults_block
+        and '"correction-measurement-repeats" => "3072"' in defaults_block,
+        "Generic correction acquisition no longer matches the maintained case",
+    )
+    profiled_source = inspect.getsource(analysis.fit_noise_aware_profiled_center)
+    require(
+        "jac=jacobian" in profiled_source,
+        "Profiled optimizer fell back to SciPy numerical differencing",
+    )
     complete_source = Path(analysis.__file__).read_text(encoding="utf-8")
     persistence = complete_source.index(
         "# Persist every machine-facing product before evaluation truth is opened."
@@ -340,6 +421,7 @@ def main() -> int:
         f"The inverse process opens latent artifacts before evaluation: {pre_evaluation_hits}",
     )
     dense_difference = dense_state_space_check()
+    profiled_jacobian_difference = analytic_profiled_jacobian_check()
 
     validation = {
         "status": "PASS",
@@ -352,6 +434,9 @@ def main() -> int:
         "filtered_fit_count": int(np.prod(relative.shape[:-1])),
         "nominal_gtpsa_orm_shape": list(orm.shape),
         "finite_difference_orm_reapplied": False,
+        "generic_correction_default": "nominal_gtpsa",
+        "profiled_optimizer_jacobian": "exact_analytic_variable_projection",
+        "profiled_jacobian_fd_audit_relative_difference": profiled_jacobian_difference,
         "thread_worker_count": int(scan["target_scan_worker_count"]),
         "maximum_thread_vs_serial_difference_m": max(float(scan[field]) for field in thread_fields),
         "dense_state_space_max_difference_m": dense_difference,

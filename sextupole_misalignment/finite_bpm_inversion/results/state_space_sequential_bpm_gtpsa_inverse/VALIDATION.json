@@ -12,6 +12,9 @@
     103
   ],
   "finite_difference_orm_reapplied": false,
+  "generic_correction_default": "nominal_gtpsa",
+  "profiled_optimizer_jacobian": "exact_analytic_variable_projection",
+  "profiled_jacobian_fd_audit_relative_difference": 6.515807794900169e-11,
   "thread_worker_count": 6,
   "maximum_thread_vs_serial_difference_m": 0.0,
   "dense_state_space_max_difference_m": 1.52995326097808e-20,

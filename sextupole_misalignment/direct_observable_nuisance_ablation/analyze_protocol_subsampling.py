@@ -67,7 +67,8 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--input-dir", type=Path,
-        default=here / "results" / "sex_09aw_paired_pilot",
+        default=here.parent / "archived_methods" / "direct_observable_k1_pilots"
+        / "results" / "sex_09aw_paired_pilot",
     )
     args = parser.parse_args()
     source = args.input_dir.resolve()

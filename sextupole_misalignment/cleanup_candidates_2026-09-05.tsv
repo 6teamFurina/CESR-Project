@@ -1,0 +1,25 @@
+path_relative_to_sextupole_misalignment	category	file_count	logical_bytes	reason
+response_map	duplicate_historical_copy	29	77403994	Canonical archived_methods counterpart retained; numerical artifacts byte-identical; source differences only relocate paths.
+targeted_bump_k2_inversion	duplicate_historical_copy	63	9635944	Canonical archived_methods counterpart retained; numerical artifacts byte-identical; source differences only relocate paths.
+sequential_joint_inverse/results/smoke	superseded_development_output	33	129987	Development subset or analysis iteration; remove together with the other listed sequential smoke outputs; production exact_joint_machines retained.
+sequential_joint_inverse/results/full_target_smoke	superseded_development_output	33	8198798	Development subset or analysis iteration; remove together with the other listed sequential smoke outputs; production exact_joint_machines retained.
+sequential_joint_inverse/results/analysis_smoke	superseded_development_output	33	1780996	Development subset or analysis iteration; remove together with the other listed sequential smoke outputs; production exact_joint_machines retained.
+sequential_joint_inverse/results/analysis_smoke_output	superseded_development_output	16	266156	Development subset or analysis iteration; remove together with the other listed sequential smoke outputs; production exact_joint_machines retained.
+sequential_joint_inverse/results/analysis_smoke_output2	superseded_development_output	17	361125	Development subset or analysis iteration; remove together with the other listed sequential smoke outputs; production exact_joint_machines retained.
+sextupole_excitation_validity_envelope/results/pilot_analysis_fallback	superseded_development_output	5	1479718	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/pilot_analysis_final	superseded_development_output	5	1442798	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/pilot_exact_conditional	superseded_development_output	4	296842	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/pilot_exact_conditional_v2	superseded_development_output	4	322644	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/pilot_exact_extended	superseded_development_output	4	227655	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/pilot_exact_final	superseded_development_output	4	335607	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/pilot_exact_full	superseded_development_output	4	162203	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/smoke_exact	superseded_development_output	4	28662	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/smoke_exact_batch	superseded_development_output	4	28566	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/smoke_maps	superseded_development_output	3	12941	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+sextupole_excitation_validity_envelope/results/smoke_maps_order4	superseded_development_output	3	21782	Single-target development iteration; current exact_validation, gtpsa_maps, analysis, and validators retained.
+direct_observable_nuisance_ablation/results/smoke	superseded_development_output	22	940397	One-realization preliminary scan; documented eight-realization paired pilot and frozen all-target baseline retained.
+.DS_Store	regenerable_cache	1	10244	Finder metadata; no scientific result.
+finite_bpm_inversion/__pycache__	regenerable_cache	7	246982	Regenerable Python bytecode; source retained.
+gtpsa_derivative_stochastic_inverse/__pycache__	regenerable_cache	2	83302	Regenerable Python bytecode; source retained.
+quadrupole_orbit_correction/__pycache__	regenerable_cache	1	15933	Regenerable Python bytecode; source retained.
+sequential_joint_inverse/__pycache__	regenerable_cache	2	93315	Regenerable Python bytecode; source retained.

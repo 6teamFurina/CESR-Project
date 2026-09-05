@@ -1,0 +1,9 @@
+{
+  "bpm_control_response.npy": 0.0,
+  "target_control_response.npy": 0.0,
+  "bpm_cumulative_maps.npy": 0.0,
+  "target_cumulative_maps.npy": 0.0,
+  "one_turn_map.npy": 0.0,
+  "nominal_bpm_orbits.npy": 0.0,
+  "nominal_target_orbits.npy": 0.0
+}

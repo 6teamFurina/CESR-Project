@@ -1,0 +1,11 @@
+warm_max_seconds = 0.14078875
+first_call_seconds = 0.275995667
+semantics = "one correction per latent machine; includes SVD, three updates, exact SciBmad trial orbits, readout simulation and validation; excludes nominal ORM setup"
+cpu = "apple-m1"
+blas_threads = 1
+accepted_iterations_by_machine = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+date = "2026-09-05"
+julia = "1.12.6"
+warm_median_seconds = 0.122376291
+seconds_by_machine = [0.275995667, 0.118312042, 0.122376291, 0.139700708, 0.133192292, 0.14078875, 0.131462, 0.119687042, 0.107139292, 0.125961792, 0.112812333, 0.126602334, 0.107988667, 0.121547167, 0.112869958, 0.132756666]
+warm_min_seconds = 0.107139292

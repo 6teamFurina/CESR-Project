@@ -291,6 +291,12 @@ references; the finite 32-read reference-calibration error is marginalized as
 a static nuisance.  The batch Gaussian-conditioning implementation is the
 RTS-smoother-equivalent form of the state-space model.
 
+The profiled comparison estimator now supplies an exact analytic
+variable-projection Jacobian to the nonlinear optimizer.  SciPy's two-point
+finite-difference Jacobian is no longer used in this calculation.  This is an
+algebraic derivative of the profiled least-squares problem; the lattice
+response and transport derivatives remain SciBmad/GTPSA quantities.
+
 | acquisition and inverse | beam-relative RMSE [micrometers] | relative P99 [micrometers] | absolute-offset RMSE [micrometers] | absolute P99 [micrometers] |
 |---|---:|---:|---:|---:|
 | deterministic static, noise-floor profiled | 19.470 | 58.138 | 21.343 | 64.823 |

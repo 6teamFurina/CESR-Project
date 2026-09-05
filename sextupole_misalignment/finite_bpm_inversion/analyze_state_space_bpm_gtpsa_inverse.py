@@ -522,16 +522,29 @@ def fit_noise_aware_profiled_center(
     center_bound_m: float,
     multi_start: bool = False,
 ) -> tuple[np.ndarray, float, bool]:
-    """Profile propagation vectors with a measurement-covariance noise floor."""
+    """Profile propagation vectors using the exact center Jacobian."""
     channel_scale = np.sqrt(
         np.mean(np.asarray(slopes) ** 2, axis=0) + slope_noise_floor_m**2
     )
     normalized = slopes / np.maximum(channel_scale, 1.0e-30)
+    cached_center: np.ndarray | None = None
+    cached_evaluation: tuple[np.ndarray, np.ndarray] | None = None
+
+    def evaluate(center: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        nonlocal cached_center, cached_evaluation
+        if cached_center is None or not np.array_equal(center, cached_center):
+            cached_center = np.array(center, dtype=float, copy=True)
+            cached_evaluation = base.profiled_residual_and_jacobian(
+                normalized, local_orbits_m, cached_center
+            )
+        assert cached_evaluation is not None
+        return cached_evaluation
 
     def residual(center: np.ndarray) -> np.ndarray:
-        source = base.source_matrix(local_orbits_m, center)
-        propagation = np.linalg.lstsq(source, normalized, rcond=1.0e-12)[0]
-        return (source @ propagation - normalized).ravel()
+        return evaluate(center)[0]
+
+    def jacobian(center: np.ndarray) -> np.ndarray:
+        return evaluate(center)[1]
 
     margin = max(center_bound_m * 1.0e-12, 1.0e-15)
     starts = [np.asarray(start_m, dtype=float)]
@@ -550,10 +563,40 @@ def fit_noise_aware_profiled_center(
         np.clip(start, -center_bound_m + margin, center_bound_m - margin)
         for start in starts
     ]
+    clipped = [
+        start
+        for start in clipped
+        if base.profiled_source_has_full_rank(local_orbits_m, start)
+    ]
+    if not clipped:
+        fallback_starts = (
+            np.zeros(2),
+            np.mean(local_orbits_m, axis=0),
+            np.array((np.min(local_orbits_m[:, 0]), 0.0)),
+            np.array((np.max(local_orbits_m[:, 0]), 0.0)),
+            np.array((0.0, np.min(local_orbits_m[:, 1]))),
+            np.array((0.0, np.max(local_orbits_m[:, 1]))),
+        )
+        clipped = [
+            np.clip(
+                start,
+                -center_bound_m + margin,
+                center_bound_m - margin,
+            )
+            for start in fallback_starts
+        ]
+        clipped = [
+            start
+            for start in clipped
+            if base.profiled_source_has_full_rank(local_orbits_m, start)
+        ]
+    if not clipped:
+        raise ValueError("No full-rank profiled center start is available")
     solutions = [
         least_squares(
             residual,
             start,
+            jac=jacobian,
             bounds=(-center_bound_m, center_bound_m),
             xtol=1.0e-11,
             ftol=1.0e-11,
@@ -1259,6 +1302,7 @@ def main() -> int:
         "orbit_correction_response": "one nominal theoretical SciBmad/GTPSA ORM; no finite-difference ORM and no realized gain/error scaling",
         "observable_readback_provenance": "pre-materialized by the Julia forward generator; no BPM-gain latent is opened by the inverse process",
         "hidden_state_inverse": "two-dimensional local-orbit random walk with periodic same-bump K2=0 references and finite calibration nuisance marginalization",
+        "profiled_optimizer_jacobian": "exact analytic variable-projection Jacobian; no numerical finite difference",
         "machine_facing_inputs": "observable BPM readbacks, commanded bump/K2 states, nominal SciBmad/GTPSA order-one response/transport, and declared stochastic priors",
         "unknown_to_inverse": "all sextupole offsets, BPM/corrector/K2 gain realizations, quadrupole strength/roll/alignment realizations, exact target orbit, and realized drift direction/trajectory",
         "truth_boundary": "exact target orbits and sextupole offsets loaded only after all machine-facing products were persisted",
@@ -1282,7 +1326,10 @@ balanced K2-sign/bump-sign signal states are repeated
 {args.measurement_repeats:,} times.  Every {args.reference_cycle_interval}
 cycles and at the endpoint, same-bump K2=0 references observe a hidden
 two-plane local-orbit random walk.  Their finite {args.reference_calibration_reads}-read
-calibration errors are marginalized rather than treated as exact.
+calibration errors are marginalized rather than treated as exact.  The
+profiled comparison estimator supplies the optimizer with an exact analytic
+variable-projection Jacobian; it does not use SciPy's numerical-difference
+default.
 
 | acquisition | inverse | beam-relative RMSE [um] | relative P99 [um] | absolute-offset RMSE [um] | absolute P99 [um] |
 |---|---|---:|---:|---:|---:|
